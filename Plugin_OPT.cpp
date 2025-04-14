@@ -645,7 +645,7 @@ void ReportCMA(OPTstruct &opt){
 				opt.currentBestf = opt.cma.bestf;
 				opt.currentBestx = opt.cma.bestx;
 				opt.currentBestp = opt.cma.bestp;
-				opt.cma.report[0] = "  ... new bestf found : " + to_string_with_precision(opt.currentBestf,16) + " @ x=" + vec_to_str_with_precision(opt.currentBestx,16) + "\n\n";
+				opt.cma.report[0] = "  ... new bestf found : " + to_string_with_precision(opt.currentBestf,16) + " @ x=" + vec_to_str_with_precision(opt.currentBestx,16) + "\n\n\n";
 			}
 			else opt.NewbestFoundQ = false;
 		}
