@@ -531,6 +531,7 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
 
 //BEGIN Michael Tsesmelis code
 
+
 struct params_t {
     double A;
     double B;
@@ -563,7 +564,7 @@ double dvdu(double u, double v, double A, double B, double gamma){
     return val;
 }
 
-bool is_close(double a, double b, double atol) {
+bool is_close(double a, double b, double atol = 1.e-8) {
     return std::abs(a - b) <= atol;
 }
 
@@ -640,7 +641,7 @@ double fcontour(double u, void *params){
     //printf("v: %.10f\n", v);
 
     // Plug in (u, v) into real part of integral
-    //std::complex<double> t(u, v);
+    //std::complex<double> t(u, v); 
     double Reexponent = -A*gamma*v - g3 * (3*u2*v-v3) * B3/3 + v/(4*gamma*(u2+v2));
     //double Imexponent = A*gamma*u + 1/3*pow(gamma, 3)*(pow(u, 3)-3*u*pow(v,2))*pow(B, 3) + u/(4*gamma*(pow(u, 2)+pow(v, 2)));
     //double Imexponent = A*gamma + pow(gamma, 3)/3 + 1/(4*gamma);
@@ -672,7 +673,7 @@ double fcontour(double u, void *params){
     //std::complex<double> denom = 2.0 * gamma * std::complex<double>(0, 1) * t;
     //std::complex<double> coeff_term =  gamma * 1.0 / pow(denom, D+1);
     //printf("coeff: %.10f\n", real(coeff_term));
-
+    
     //printf("coeff analysis: %.10f\n", - gamma * real(std::complex<double>((u2-v2)/ 4*g2*pow((u2+v2), 2), 2*u*v/ 4*g2*pow((u2+v2), 2))) );
     //val = re * real(coeff_term * jac * im);
 
@@ -796,16 +797,16 @@ double fcontour_gaussian(double u, void *params){
     //cout << (u*v*t04) << endl;
     //cout << "u: " << u << " v: " << v << endl;
     //cout << t01 << " " << t02 << " " << t03 << " " << t04 << endl;
-    //cout << "ddvduu: " << ddvduu << endl;
+    //cout << "ddvduu: " << ddvduu << endl; 
     double a, b, c;
     a = -A*gamma*v + v/(4*gamma*(1+v2)) + 1./3*B3*g3*(-3*v+v3);
-    b = -A*gamma*dvdu + (-2*v+dvdu-v2*dvdu)/(4*gamma*pow((1+v2), 2))
+    b = -A*gamma*dvdu + (-2*v+dvdu-v2*dvdu)/(4*gamma*pow((1+v2), 2)) 
         + B3*g3*(-2*v-dvdu+v2*dvdu);
-    c = -1./2*A*gamma*ddvduu + 1./2*B3*g3*(-2*v - 4*dvdu + 2*v*dvdu2
-            - ddvduu + v2*ddvduu)
+    c = -1./2*A*gamma*ddvduu + 1./2*B3*g3*(-2*v - 4*dvdu + 2*v*dvdu2 
+            - ddvduu + v2*ddvduu) 
         + 1 / (8*gamma*pow((1+v2), 3)) * (6*v-2*v3-4*dvdu+12*v2*dvdu -
             6*v*dvdu2 + 2*v3*dvdu2 + ddvduu - v4*ddvduu);
-
+    
     //cout << a << " " << b << " " << c << endl;
     double re;
     if (c>=0){
@@ -851,14 +852,7 @@ double fcontour_gaussian(double u, void *params){
 
 
 
-double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
-
-    double gamma;
-    if (A > 0 && B < KDip.minB)
-        gamma = 0.5 * 1./sqrt(A);
-    else
-        gamma = sqrt( (-A + sqrt(pow(A, 2) + pow(B, 3))) / (2*pow(B, 3)) );
-    double eta = A*gamma + 1./3. * pow(gamma, 3)*pow(B, 3) + 1./(4*gamma);
+double KD_contour(int D, double A, double B, double eta, double gamma, gsl_integration_workspace *workspace/*, std::vector<double> &fc*/){
 
     double g2 = pow(gamma, 2);
     double g3 = pow(gamma, 3);
@@ -889,7 +883,7 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
 
     //gsl_integration_qng(&F, 0.01, 100., 1e-2, 1000, &result, &error, &neval);
 
-    if (B < KDip.minB){
+    if (B < 1e-4){
         double arg = sqrt(max(A, 0.));
         return pow(arg, D) * gsl_sf_bessel_Jn(D, arg);
     }
@@ -897,17 +891,13 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
     int L = 1;
     double result_gaussian;
     if(A>100000 || B>100000 || (A>1e5 && B < 1.) || (A < -10 && (std::abs(A) > 100*std::abs(B))) || (A<1 && B >= 1e4)){
-        //cout <<  "Gaussian contour" << endl;
+        cout <<  "Gaussian contour" << endl;
         result = fcontour_gaussian(1.000001, &params);
 
     } else {
-        //cout <<  "GSL Integration" << endl;
-        gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(KDip.IntegrationArraySize);
-        gsl_set_error_handler_off();
-        int status = gsl_integration_qags(&F, 1e-4, 3., 1e-6, 1e-4, KDip.IntegrationArraySize, workspace, &result, &error); // take out e^I \eta
-        if (status != GSL_SUCCESS) printf("KD_contour: Error in integration: %s\n A = %f B = %f \n", gsl_strerror(status),A,B);
-        gsl_integration_workspace_free(workspace);
-    }
+        cout <<  "GSL Integration" << endl;
+        gsl_integration_qags(&F, 0.0001, 3., 1.e-4, 1.e-4, 1000, workspace, &result, &error); // take out e^I \eta
+    } 
     //auto mid = std::chrono::high_resolution_clock::now();
 
     double total_result = 2/3.14159 * result;
@@ -924,6 +914,453 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
     return total_result;
 }
 
+std::tuple<double, double, double, double> run_contour(int D, double A, double B, std::vector<double> &fc){
 
+    struct KDintegrationParams KDip;
+    double gamma;
+    if (A > 0 && B < 1e-2)
+        gamma = 0.5 * 1./sqrt(A);
+    else
+        gamma = sqrt( (-A + sqrt(pow(A, 2) + pow(B, 3))) / (2*pow(B, 3)) );
+    printf("gamma original %.10f\n", gamma);
+    double eta = A*gamma + 1./3. * pow(gamma, 3)*pow(B, 3) + 1./(4*gamma);
+    //printf("eta original %.10f\n", eta);
+
+    params_t params = {A, B, D, gamma, eta, 1};
+    //double sp = fcontour(0.62626263, &params);
+
+    //double contour_advanced = 1;
+    double contour_advanced;
+    gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(1000);
+
+    //for (int i=1; i<1000; i++){
+    auto start = std::chrono::high_resolution_clock::now();
+
+    contour_advanced = KD_contour(D, A, B, eta, gamma, workspace/*, fc*/);
+    //}
+    auto mid = std::chrono::high_resolution_clock::now();
+
+    gsl_integration_workspace_free(workspace);
+
+
+
+    double err = 0.;
+    double contour;
+
+    //for (int i=0; i<1000; i++){
+    cout << "D: " << D << " A: " << A << " B: " << B << endl;
+    contour = KD(D, A, B, err, 0.01, KDip);
+    //}
+    auto end = std::chrono::high_resolution_clock::now();
+
+    cout << "A: " << A << ", B: " << B << endl;
+    printf("Existing KD integration result: %.10f\n", contour);
+    printf("Contour KD integration result: %.10f\n", contour_advanced);
+
+    std::chrono::duration<double> duration1 = mid - start;
+    std::chrono::duration<double> duration2 = end - mid;
+
+    std::cout << "Time taken for contour: " << duration1.count() << " and for existing KD: " << duration2.count() << "(ratio: " << duration2.count() / duration1.count() << ")" << std::endl;
+
+    return std::tuple<double, double, double, double>{contour_advanced, contour, duration1.count(), duration2.count()};
+}
+
+void writeVectorsToFile(const std::vector<double>& vec1, const std::vector<double>& vec2, const std::vector<double>& vec3, const std::vector<double>& vec4, const std::vector<double>& vec5, const std::vector<std::vector<double>> mat, const std::string& filename) {
+    if (vec1.size() != vec2.size() || vec1.size() != vec3.size()){
+        std::cerr << "Error: Vectors must have the same size." << std::endl;
+        return;
+    }
+
+    std::ofstream file(filename);
+    if (!file) {
+        std::cerr << "Error: Could not open file for writing." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < vec1.size(); ++i) {
+        file << vec1[i] << "\t" << vec2[i] << "\t" << vec3[i] << "\t" << vec4[i] << "\t" << vec5[i]; // Tab-separated columns
+        for(double v : mat[i]){
+            file << "\t" << v;
+        }
+        file << "\n";
+    }
+
+    file.close();
+    std::cout << "Data written to " << filename << std::endl;
+}
+
+double log_uniform(double min, double max, std::mt19937& gen) {
+    std::uniform_real_distribution<double> distrib(std::log10(min), std::log10(max));
+    return std::pow(10, distrib(gen));
+}
+
+/*double GetKDa(double A, double scale){ return 1./(1.+EXP(-A/scale)); }
+double GetKDb(double B, double scale){ return 1.-EXP(-B/scale); }
+double GetKDA(double a, double scale){ 
+    if(a<=0. || a>=1.)
+        return Sign(a)*1.0e+300; 
+    else return -scale*LOG(1./a-1.); 
+}
+double GetKDB(double b, double scale){ 
+    if(b>=1.) 
+        return 1.0e+300; 
+    else if(b<=0.) 
+        return 0.; 
+    else return -scale*LOG(1.-b); 
+}*/
+
+int run_range(int fnum, double scale, double amin, double amax, double bmin, double bmax){
+
+    int points = 100;
+    int NumSamples = points/100;
+    double BoundarySamplingFreq = 30.;//30.;//the larger the more points near the interval borders [0,1] of a & b
+    //END USER INPUT
+
+    cout << "testKD:" << endl;
+
+    double RELERR = 0.1, ABSERR;
+    double a,b,A,B,res,pmin,pmax;
+    double MP = 1e-15;
+    int D = 1;
+    string FileNameSuffix = "results/Martin_Oscillations/";
+    if (amin == 0.0 && amax == 1.0)
+        FileNameSuffix +=  + "K" + to_string(D) + "_b/";
+    else if(bmin == 0.0 && bmax == 1.0)
+        FileNameSuffix +=  + "K" + to_string(D) + "_a/";
+    else
+        FileNameSuffix +=  + "K" + to_string(D) + "_zoom/";
+
+
+    //double contour_advanced = 1;
+    double contour, contour_advanced;
+    gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(1000);
+    double p, result;
+    std::vector<double> results_KD;
+    std::vector<double> results_contour;
+    std::vector<double> a_values;
+    std::vector<double> b_values;
+    std::vector<double> A_values;
+    std::vector<double> B_values;
+
+    double gamma, eta;
+    params_t params;
+    double err=0.;
+    struct KDintegrationParams KDip;
+
+
+
+
+    if(bmax-bmin<MP){ // b=const
+        cout << "@ b = " << bmin << " <-> B = " << GetKDB(bmin,scale) << endl;
+        pmin = amin + 0.5 * (amax-amin) * ( 1. + tanh(BoundarySamplingFreq*(1./points - 0.5)) );
+        pmax = amin + 0.5 * (amax-amin) * ( 1. + tanh(BoundarySamplingFreq*(0.5)) );
+        cout << "        amin = " << pmin << " <-> minA = " << GetKDA(pmin,scale) << endl;
+        cout << "        amax = " << pmax << " <-> maxA = " << GetKDA(pmax,scale) << endl;
+        FileNameSuffix += to_string(fnum) + "_" + to_string(D) + "_b=" + to_string_with_precision(bmin,14);
+        FileNameSuffix += "_amin=" + to_string_with_precision(amin,14) + ".txt";
+        std::ofstream file(FileNameSuffix);
+        file << std::fixed << std::setprecision(12);
+
+        for (int i=1; i<=points; i++){
+
+            p = amin + 0.5 * (amax-amin) * ( 1. + tanh(BoundarySamplingFreq*((double)i/points - 0.5)) );
+            A = GetKDA(p,scale);
+            B = GetKDB(bmin,scale);
+            cout << "\n" << endl;
+            cout << "a: " << p << " A: " << A << endl;
+            cout << "b: " << bmin << " B: " << B << endl;
+            if (A > 0 && B < 1e-2)
+                gamma = 0.5 * 1./sqrt(A);
+            else
+                gamma = sqrt( (-A + sqrt(pow(A, 2) + pow(B, 3))) / (2*pow(B, 3)) );
+            eta = A*gamma + 1./3. * pow(gamma, 3)*pow(B, 3) + 1./(4*gamma);
+            params = {A, B, D, gamma, eta, 1};
+
+            a_values.push_back(p);
+            b_values.push_back(bmin);
+            A_values.push_back(A);
+            B_values.push_back(B);
+            cout << "Running original function" << endl;
+            contour = KD(D, A, B, err, 0.1, KDip);
+            cout << "Running new function" << endl;
+            contour_advanced = KD_contour(D, A, B, eta, gamma, workspace);
+            //if (abs(contour_advanced)/abs(contour) > 1.1 || abs(contour_advanced)/abs(contour) < 0.9)
+            //    contour_advanced = 0.;
+            results_KD.push_back(contour);
+            results_contour.push_back(contour_advanced);
+            cout << "contour: " << contour << " contour_advanced: " << contour_advanced << endl;
+
+        }
+
+        for (size_t i = 0; i < a_values.size(); ++i) {
+            file << a_values[i] << "\t" << b_values[i] << "\t" << A_values[i] << "\t" << B_values[i] << "\t" << results_KD[i] << "\t" << results_contour[i] << "\n"; // Tab-separated columns
+        }
+        file.close();
+
+    }
+    else{//a=const
+        cout << "@ a = " << amin << " <-> A = " << GetKDA(amin,scale) << endl;
+        pmin = bmin + 0.5 * (bmax-bmin) * ( 1. + tanh(BoundarySamplingFreq*(0.001 - 0.5)) );
+        pmax = bmin + 0.5 * (bmax-bmin) * ( 1. + tanh(BoundarySamplingFreq*(0.5)) );
+        cout << "        bmin = " << pmin << " <-> minB = " << GetKDB(pmin,scale) << endl;
+        cout << "        bmax = " << pmax << " <-> maxB = " << GetKDB(pmax,scale) << endl;
+        FileNameSuffix += to_string(fnum) + "_" + to_string(D) + "_a=" + to_string_with_precision(amin,14);
+        FileNameSuffix += "_bmin=" + to_string_with_precision(bmin,14) + ".txt";
+
+        std::ofstream file(FileNameSuffix);
+        file << std::fixed << std::setprecision(12);
+
+        for (int i=1; i<=points; i++){
+
+            p = bmin + 0.5 * (bmax-bmin) * ( 1. + tanh(BoundarySamplingFreq*((double)i/points - 0.5)));
+            A = GetKDA(amin,scale);
+            B = GetKDB(p,scale);
+            cout << "\n" << endl;
+            cout << "a: " << amin << " A: " << A << endl;
+            cout << "b: " << p << " B: " << B << endl;
+            if (A > 0 && B < 1e-2)
+                gamma = 0.5 * 1./sqrt(A);
+            else
+                gamma = sqrt( (-A + sqrt(pow(A, 2) + pow(B, 3))) / (2*pow(B, 3)) );
+            eta = A*gamma + 1./3. * pow(gamma, 3)*pow(B, 3) + 1./(4*gamma);
+            params = {A, B, D, gamma, eta, 1};
+            //cout << "gamma:" << gamma << " eta:" << eta << " Contour value:" << KD_contour(D, A, B, eta, gamma, workspace) << endl;
+            a_values.push_back(amin);
+            b_values.push_back(p);
+            A_values.push_back(A);
+            B_values.push_back(B);
+            cout << "Running original function" << endl;
+            contour = KD(D, A, B, err, 0.1, KDip);
+            cout << "Running new function" << endl;
+            contour_advanced = KD_contour(D, A, B, eta, gamma, workspace);
+            //if (abs(contour_advanced)/abs(contour) > 1.1 || abs(contour_advanced)/abs(contour) < 0.9)
+            //    contour_advanced = 0.;
+            results_KD.push_back(contour);
+            results_contour.push_back(contour_advanced);
+            cout << "contour: " << contour << " contour_advanced: " << contour_advanced << endl;
+
+        }
+
+        for (size_t i = 0; i < a_values.size(); ++i) {
+            file << a_values[i] << "\t" << b_values[i] << "\t" << A_values[i] << "\t" << B_values[i] << "\t" << results_KD[i] << "\t" << results_contour[i] << "\n"; // Tab-separated columns
+        }
+        file.close();
+
+    }
+
+
+
+    gsl_integration_workspace_free(workspace);
+
+
+    return 0;
+}
+
+int run_full_range(){
+    double scale = 1.0e+6;
+
+    std::vector<std::vector<double>> configurations = {
+
+        /*{GetKDa(-1.e7,scale), GetKDa(-1.e7,scale), 0., 0.001}, 
+        {GetKDa(-1.e6,scale), GetKDa(-1.e6,scale), 0., 0.001},
+        {GetKDa(-1.e5,scale), GetKDa(-1.e5,scale), 0., 0.001},     
+        {GetKDa(0.,scale), GetKDa(0.,scale), 0., 0.001},
+        {GetKDa(1.e5,scale), GetKDa(1.e5,scale), 0., 0.001}, 
+        {GetKDa(1.e6,scale), GetKDa(1.e6,scale), 0., 0.001},
+        {GetKDa(1.e7,scale), GetKDa(1.e7,scale), 0., 0.001},
+        
+        {GetKDa(-1.e7,scale), GetKDa(-1.e7,scale), 0.5, 0.505}, 
+        {GetKDa(-1.e6,scale), GetKDa(-1.e6,scale), 0.5, 0.505},
+        {GetKDa(-1.e5,scale), GetKDa(-1.e5,scale), 0.5, 0.505},     
+        {GetKDa(0.,scale), GetKDa(0.,scale), 0.5, 0.505},
+        {GetKDa(1.e5,scale), GetKDa(1.e5,scale), 0.5, 0.505}, 
+        {GetKDa(1.e6,scale), GetKDa(1.e6,scale), 0.5, 0.505},
+        {GetKDa(1.e7,scale), GetKDa(1.e7,scale), 0.5, 0.505}, 
+
+        {GetKDa(-1.e7,scale), GetKDa(-1.e7,scale), 0.9999, 0.999901}, 
+        {GetKDa(-1.e6,scale), GetKDa(-1.e6,scale), 0.9999, 0.999901},
+        {GetKDa(-1.e5,scale), GetKDa(-1.e5,scale), 0.9999, 0.999901},     
+        {GetKDa(0.,scale), GetKDa(0.,scale), 0.9999, 0.999901},
+        {GetKDa(1.e5,scale), GetKDa(1.e5,scale), 0.9999, 0.999901}, 
+        {GetKDa(1.e6,scale), GetKDa(1.e6,scale), 0.9999, 0.999901},
+        {GetKDa(1.e7,scale), GetKDa(1.e7,scale), 0.9999, 0.999901}, 
+
+        {GetKDa(1.0e1,scale), GetKDa(1.0e1,scale), 0., 0.001}, 
+        {GetKDa(1.0e1,scale), GetKDa(1.0e1,scale), 0.5, 0.9999},
+        {GetKDa(1.0e1,scale), GetKDa(1.0e1,scale), 0.505, 0.999901},
+
+        //{0.495, 0.505, GetKDb(1.e-4,scale), GetKDb(1.e-4,scale)}, 
+        //{0.495, 0.505, GetKDb(1.e-3,scale), GetKDb(1.e-3,scale)}, 
+        //{0.495, 0.505, GetKDb(1.e-2,scale), GetKDb(1.e-2,scale)}, 
+        //{0.495, 0.505, GetKDb(1.e-1,scale), GetKDb(1.e-1,scale)}, 
+        {0.495, 0.505, GetKDb(1.e0,scale), GetKDb(1.e0,scale)}, 
+        {0.495, 0.505, GetKDb(1.e1,scale), GetKDb(1.e1,scale)}, 
+        {0.495, 0.505, GetKDb(1.e2,scale), GetKDb(1.e2,scale)}, 
+        {0.495, 0.505, GetKDb(1.e3,scale), GetKDb(1.e3,scale)}, 
+        {0.495, 0.505, GetKDb(1.e4,scale), GetKDb(1.e4,scale)}, 
+        {0.495, 0.505, GetKDb(1.e5,scale), GetKDb(1.e5,scale)}, 
+        {0.495, 0.505, GetKDb(1.e6,scale), GetKDb(1.e6,scale)}, 
+        {0.495, 0.505, GetKDb(1.e7,scale), GetKDb(1.e7,scale)}, 
+
+        //{0.498, 0.508, GetKDb(1.e-4,scale), GetKDb(1.e-4,scale)}, 
+        //{0.498, 0.508, GetKDb(1.e-3,scale), GetKDb(1.e-3,scale)}, 
+        //{0.498, 0.508, GetKDb(1.e-2,scale), GetKDb(1.e-2,scale)}, 
+        //{0.498, 0.508, GetKDb(1.e-1,scale), GetKDb(1.e-1,scale)}, 
+        {0.498, 0.508, GetKDb(1.e0,scale), GetKDb(1.e0,scale)}, 
+        {0.498, 0.508, GetKDb(1.e1,scale), GetKDb(1.e1,scale)}, 
+        {0.498, 0.508, GetKDb(1.e2,scale), GetKDb(1.e2,scale)}, 
+        {0.498, 0.508, GetKDb(1.e3,scale), GetKDb(1.e3,scale)}, 
+        {0.498, 0.508, GetKDb(1.e4,scale), GetKDb(1.e4,scale)}, 
+        {0.498, 0.508, GetKDb(1.e5,scale), GetKDb(1.e5,scale)}, 
+        {0.498, 0.508, GetKDb(1.e6,scale), GetKDb(1.e6,scale)}, 
+        {0.498, 0.508, GetKDb(1.e7,scale), GetKDb(1.e7,scale)}, 
+
+        {GetKDa(3.0e+4,scale), GetKDa(3.0e+4,scale), 0.5, 0.505}*/
+
+        /*{0, 4.5397868702434e-05, 4.5397868702434e-05, 0.0, 1.0},
+        {1, 0.26894142137, 0.26894142137, 0.0, 1.0},
+        {2, 0.47502081252106, 0.47502081252106, 0.0, 1.0},
+        {3, 0.500001, 0.500001, 0.0, 1.0},
+        {4, 0.52497918747894, 0.52497918747894, 0.0, 1.0},
+        {5, 0.73105857863, 0.73105857863, 0.0, 1.0},
+        {6, 0.9999546021313, 0.9999546021313, 0.0, 1.0},
+
+        {0, 0.0, 1.0, 1.0000000827404e-10, 1.0000000827404e-10},
+        {1, 0.0, 1.0, 9.9999997171807e-10, 9.9999997171807e-10},
+        {2, 0.0, 1.0, 9.9999999392253e-09, 9.9999999392253e-09},
+        {3, 0.0, 1.0, 9.9999994951361e-08, 9.9999994951361e-08},
+        {4, 0.0, 1.0, 9.9999949998431e-07, 9.9999949998431e-07},
+        {5, 0.0, 1.0, 9.9999500001724e-06, 9.9999500001724e-06},
+        {6, 0.0, 1.0, 9.9995000166664e-05, 9.9995000166664e-05},
+        {7, 0.0, 1.0, 0.00099950016662498, 0.00099950016662498},
+        {8, 0.0, 1.0, 0.0099501662508319, 0.0099501662508319},
+        {9, 0.0, 1.0, 0.09516258196404, 0.09516258196404},
+        {10, 0.0, 1.0, 0.63212055882856, 0.63212055882856},
+        {11, 0.0, 1.0, 0.99995460007024, 0.99995460007024}, */
+
+        {0, 0.51, 0.51, 0.0, 0.001}, // disconnected contours
+        /*{1, 0.5, 0.5, 0.5, 0.505},
+        {2, 0.5, 0.5, 0.9999, 0.999901},// ?
+        {3, 0.5000025, 0.5000025, 0.0, 0.001},
+        {4, 0.5000025, 0.5000025, 0.5, 0.505},
+        {5, 0.5000025, 0.5000025, 0.9999, 0.999901}, //?
+        {6, 0.50749943755062, 0.50749943755062, 0.5, 0.505},
+        {7, 0.498, 0.508, 9.9999949998431e-07, 9.9999949998431e-07},
+        {8, 0.9999, 0.99995, 9.9999949998431e-07, 9.9999949998431e-07},
+        {9, 0.496, 0.506, 1.0000000827404e-10, 1.0000000827404e-10}*/
+
+
+    };
+    
+    // Loop through each configuration
+    for (const auto& config : configurations) {
+        int fnum = config[0];
+        double amin = config[1];
+        double amax = config[2];
+        double bmin = config[3];
+        double bmax = config[4];
+        
+        // Call the function with the current set of parameters
+        run_range(fnum, scale, amin, amax, bmin, bmax);
+    }
+    return 0;
+}
+
+int main_local(){
+
+    std::vector<double> B_values;
+    std::vector<double> contour_values;
+    std::vector<double> contour_advanced_values;
+    std::vector<double> duration1;
+    std::vector<double> duration2;
+    std::vector<std::vector<double>> matrix;
+    std::vector<std::vector<double>> matrix1;
+    std::vector<std::vector<double>> matrix2;
+
+    std::vector<double> fc;
+    std::random_device rd;  // Obtain a random seed
+    std::mt19937 gen(rd()); // Mersenne Twister PRNG
+    double min_val = 1.0e4;   // Smallest possible value
+    double max_val = 1.0e7; // Largest possible value
+
+    // Generate a log-uniform random number
+    auto [ca, c, d1, d2] = run_contour(1, 0, 0.003372003904, fc);
+    //return 0;
+
+
+    run_full_range();
+    return 0;
+
+    double A1, B1;
+    for(int i=0; i<100; i++){
+        A1=log_uniform(min_val, max_val, gen);
+        B1=log_uniform(min_val, max_val, gen);
+        auto [ca, c, d1, d2] = run_contour(3, A1, B1, fc);
+        fc.clear();
+    }
+    return 0;
+    A1 = 29217.5;
+    B1 = 2.35441e+06;
+    run_contour(3, A1, B1, fc);
+    for(double v: fc){
+        cout << v << " ";
+    }
+
+    int D=3;
+    double A = 1;
+    //std::cout << "Time taken for contour:" << std::endl;
+    fc.clear();
+    for(double B=0.1; B<10; B+=0.1){
+        B_values.push_back(B);
+        auto [ca, c, d1, d2] = run_contour(D, A, B, fc);
+        contour_advanced_values.push_back(ca);
+        contour_values.push_back(c);
+        duration1.push_back(d1);
+        duration2.push_back(d2);
+        matrix.push_back(fc);
+        fc.clear();
+    }
+
+    writeVectorsToFile(B_values, contour_advanced_values, contour_values, duration1, duration2, matrix, "results/A_1_B_small.txt");
+    std::cout << "Time taken for contour:" << std::endl;
+
+    B_values.clear();
+    contour_values.clear();
+    contour_advanced_values.clear();
+
+    for(double B=1; B<1000; B+=10){
+        B_values.push_back(B);
+        auto [ca, c, d1, d2] = run_contour(D, A, B, fc);
+        contour_advanced_values.push_back(ca);
+        contour_values.push_back(c);
+        duration1.push_back(d1);
+        duration2.push_back(d2);
+        matrix1.push_back(fc);
+        fc.clear();
+    }
+    fc.clear();
+    writeVectorsToFile(B_values, contour_advanced_values, contour_values, duration1, duration2, matrix1, "results/A_1_B_large.txt");
+
+
+    B_values.clear();
+    contour_values.clear();
+    contour_advanced_values.clear();
+    
+    double B=1;
+    for(double Av=-1000; Av<1000; Av+=10){
+        B_values.push_back(Av);
+        auto [ca, c, d1, d2] = run_contour(D, Av, B, fc);
+        contour_advanced_values.push_back(ca);
+        contour_values.push_back(c);
+        duration1.push_back(d1);
+        duration2.push_back(d2);
+        matrix2.push_back(fc);
+        fc.clear();
+    }
+    fc.clear();
+    writeVectorsToFile(B_values, contour_advanced_values, contour_values, duration1, duration2, matrix2, "results/A_large_B_1.txt");
+
+    return 0;
+}
 
 //END Michael Tsesmelis code
