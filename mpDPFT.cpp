@@ -87,6 +87,8 @@
 #include "sys/types.h"
 //#include <sys/wait.h>
 #include "sys/sysinfo.h"
+#include <iostream>
+#include <fstream>
 
 
 
@@ -861,8 +863,11 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
 	data.txtout << "\\newpage \n";
 	data.txtout << "**** HardCodedParameters ****\\\\";
 	data.EdgeLength = data.steps+1; //number of grid points in each cartesian direction; choose data.steps even !!!
+  cout << "edgelength " << data.EdgeLength << endl;
 	data.DDIM = (double)data.DIM;
 	data.GridSize = (int)(pow((double)data.EdgeLength,data.DDIM)+0.5);
+  cout << "gridsize " << data.GridSize << endl;
+
 	data.CentreIndex = (data.GridSize-1)/2;
 	if(data.Interactions[0]>=1000 && data.Interactions[0]<2000) data.FLAGS.SCO = 1;
 	if(data.FLAGS.SCO) data.edge = (double)data.steps;//ensure that data.Deltax==1. for proper interpretation of density (necessary?)
@@ -908,6 +913,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
 
 	if(data.DensityExpression==11) data.FLAGS.KD = 1;
 	if(data.FLAGS.KD){
+        cout << "KD " << endl;
+
       	//BEGIN USER INPUT for KD
       	data.KD.ExportCleanDensity = 1.0e+2;//<1.0e-12: don't modify anything --- >1.0e-12: plot only densities with absolute values smaller than ExportCleanDensity
       	data.txtout << "KD.ExportCleanDensity " << data.KD.ExportCleanDensity << "\\\\";
@@ -921,7 +928,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = 256;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = 128;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -931,6 +938,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
         data.txtout << "KD.RetainSurplusFraction " << data.KD.RetainSurplusFraction << "\\\\";
       	//END USER INPUT for KD
       	data.KD.CoarseGridSize = min((int)(POW((double)(FocalDensitySteps+1),data.DIM)+0.5),data.GridSize);
+        cout << "KD coarse grid size" << data.KD.CoarseGridSize << endl;
+
       	if(FocalDensitySteps<data.steps){
         	if(data.KD.CoarseGridSize<data.GridSize){
 				set<int> CoarseIndexSet;
@@ -1028,7 +1037,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
 			}
 		}
 	}
-  
+  cout << "Before task type 100 " << endl;
+
   if(data.TaskType==100){//1p-exact DFT, ToDo: more than one species in all dimensions, and other than unpolarized spin-1/2 (-> account for degeneracies)
     TASK.ex.settings.clear(); TASK.ex.settings.resize(21);
     //retrieved from mpDPFT.input:
@@ -1108,6 +1118,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
   if(data.DensityExpression==5) data.CalculateEnergyQ = false;
 
   //ENVIRONMENTS
+  cout << "environments " << endl;
+
   data.rpow = 1.;/*2.;*/ data.txtout << "rpow " << data.rpow << "\\\\";//for Environment 1
   data.flatEnv = 0.; data.txtout << "flatEnv " << data.flatEnv << "\\\\";//value of (flat) Environment 0
   data.AutomaticTratio = 1.0e-6; data.txtout << "AutomaticTratio " << data.AutomaticTratio << "\\\\"; //if(data.TVec[0]<0) T -> AutomaticTratio*NucleiEnergy
@@ -1307,6 +1319,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
     }
   }
   else if(data.FLAGS.ForestGeo){//ForestGeo
+    cout << "forestgeo " << endl;
+
     data.zeta = 1.;
     
     //Start-values for fit parameters, will get overwritten by RetrieveTask (TaskType 44 & 444)
@@ -1360,6 +1374,8 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
   }
   
   //OUTPUT:
+  cout << "precision " << endl;
+
   data.OutPrecision = 16; data.txtout << "OutPrecision " << data.OutPrecision << "\\\\";
   if(task.Type==61) data.OutCut = {{-data.edge/2.},{-data.edge/2.},{data.edge/2.},{data.edge/2.}};//diagonal
   else if(data.FLAGS.ForestGeo) data.OutCut = {{-data.edge/2.},{-data.edge/2.},{data.edge/2.},{0.}};
@@ -4163,7 +4179,7 @@ void Getn7(int s, datastruct &data){
 	KDparameters.distinguishabilityThreshold = 1.0e-14;
 	KDparameters.printQ = 0;
 	KDparameters.CompareKD = true;
-  	KDip.contourQ = true;
+  KDip.contourQ = true;
 	//data.Print = 1;
     double tauThreshold = 1.0e-10;
 	//END USER INPUT
@@ -4259,14 +4275,16 @@ void Getn7(int s, datastruct &data){
 				double A = prefactorA*dist2*(data.muVec[s]-data.V[s][FocalIndex]/3.-2.*data.V[s][j]/3.);
 				double B = prefactorB*dist2*pow(data.GradSquared[s][j],1./3.);
 				if(j!=FocalIndex){
-					double KDval;
+					double KDval;        
 					if(METHOD==3){
 						if(data.KD.UseTriangulation){
 							COMPUTEKD[c][j] = GetTriangulatedFuncVal(data.DIM, {A,B}, data.KD.GoodTriangles, data.InternalAcc, 1., data.KD.Vertextree);
 							KDval = COMPUTEKD[c][j].ABres[2];
 							if(COMPUTEKD[c][j].ABres.size()!=3){ PRINT("Getn7: GetTriangulatedFuncVal error: COMPUTEKD[c][j].ABres.size()!=3",data); usleep(10000000); }
 						}
-						else KDval = KD(data.DIM,A,B,ABSERR2,data.InternalAcc,KDip);
+						else {
+                KDval = KD(data.DIM,A,B,ABSERR2,data.InternalAcc,KDip);
+            }
                         if(!std::isfinite(KDval)){ PRINT("Getn7: KDval error: !std::isfinite(KDval) " + to_string(c) + " " + to_string(j),data); usleep(10000000); }
 					}
 					else if(METHOD==4){
@@ -4281,7 +4299,7 @@ void Getn7(int s, datastruct &data){
 			}
 			data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
  			if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
-        }
+    }
 	}
   
 	data.FocalSpecies = s;
@@ -5975,7 +5993,9 @@ void ExpandSymmetry(int ExpandDensityQ, vector<double> &Field, datastruct &data)
 			scriptPath += "/mpScripts/mpScript_rbf.py";
     		ostringstream cmd;
     		cmd << "python3 " << scriptPath << " " << exeDir << "/" << inputFilename << " " << exeDir << "/" << outputFilename << " " << data.EdgeLength;
-
+        cout << scriptPath << endl;
+        cout << cmd.str() << endl;
+        cout << cmd.str().c_str() << endl;
     		int ret = std::system(cmd.str().c_str());
 			if (ret != 0) PRINT("ExpandSymmetry: Script failed with exit code " + to_string(WEXITSTATUS(ret)),data);
         	else PRINT("ExpandSymmetry: Script succeeded with output written to " + outputFilename,data);
