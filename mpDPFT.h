@@ -274,7 +274,7 @@ inline double FD(double arg, double T){ return 1./(1.+EXP(-arg/T)); }
 inline double RelDiff(double a, double b){ double res = 0.; if(a!=0.) res = ABS(b/a-1.); else if(b!=0.) res = ABS(a/b-1.); return res; }
 inline vector<double> VecDiff(vector<double> &v,vector<double> &w){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = v[i]-w[i]; return res;}
 inline vector<double> VecAbsDiff(vector<double> &v,vector<double> &w){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = ABS(v[i]-w[i]); return res;}
-inline vector<double> VecRelDiff(vector<double> &v,vector<double> &w){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = RelDiff(v[i],w[i]); return res;}
+inline vector<double> VecRelDiff(const vector<double> &v, const vector<double> &w){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = RelDiff(v[i],w[i]); return res;}
 inline vector<double> VecSum(vector<double> &v,vector<double> &w){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = v[i]+w[i]; return res;}
 inline vector<double> VecFact(vector<double> &v,double factor){ vector<double> res(v.size()); for(int i=0;i<v.size();i++) res[i] = v[i]*factor; return res;}
 inline void vecFact(vector<double> &v,double factor){ for(int i=0;i<v.size();i++) v[i] *= factor; }
@@ -325,18 +325,18 @@ inline void SleepForever(void){ cout << "-> going to sleep forever ... press ctr
 inline void KeepInRange(auto &x, vector<auto> &range){ if(x<range[0]) x = range[0]; else if(x>range[1]) x = range[1]; }
 void ReadVec(string FileName, vector<double> &vec);
 vector<vector<double>> ReadMat(string FileName);
-inline double SigmoidX(double y, double a, double b){ return a+(b-a)/(1.+EXP(-100.*y)); }
-inline double Sigmoid(double y, double a, double b, double scale){ return a+(b-a)/(1.+EXP(-scale*y)); }
+inline double SigmoidX(double x, double a, double b){ return a+(b-a)/(1.+EXP(-100.*x)); }
+inline double Sigmoid(double x, double a, double b, double scale, double centre){ return a+(b-a)/(1.+EXP(-scale*(x-centre))); }
 inline double GetConditionNumber(MatrixXd &A){
 	JacobiSVD<MatrixXd> svd(A);
 	return svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size()-1);
 }
-inline VectorXd VecToVectorXd(vector<double> &vec){
+inline VectorXd VecToVectorXd(const vector<double> &vec){
 	VectorXd Vec(vec.size());
 	for(int i=0;i<vec.size();i++) Vec(i) = vec[i];
 	return Vec;
 }
-inline vector<double> VectorXdToVec(VectorXd &vec){
+inline vector<double> VectorXdToVec(const VectorXd &vec){
 	vector<double> Vec(vec.size());
 	for(int i=0;i<vec.size();i++) Vec[i] = vec(i);
 	return Vec;
