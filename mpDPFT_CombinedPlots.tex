@@ -9,18 +9,28 @@
 \setlength\parindent{0pt}
 \pdfminorversion=7
 \begin{document}
-threads = 1\\**** InputParameters from mpDPFT.input ****\\System 100\\Symmetry 0\\TaskType 101\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 1\\Units 1\\edge 12\\steps 1024\\S 1\\Abundances 10\\RelAcc 0.001\\InternalAcc 0.001\\K 0\\Resources\\DensityExpression 100\\mpp 0.5\\Mpp 10\\tauVec 1\\tVec 1\\TVec 1\\Environments 1\\stretchfactor 1\\Wall 0\\Noise 0\\InterpolVQ 0\\Interactions 10\\incrementalV 1\\muVec 1\\DeltamuModifier -3\\Mixer 0 0 0\\thetaVec 0.2\\SCcriterion 1e-12\\maxSCcount 0\\method 1\\DelFieldMethod 5\\MovieQ 1\\Schedule 0\\EkinTypes 0\\alpha 0\\beta 1\\gamma 0\\gammaH 0\\degeneracy 2\\regularize 0\\RegularizationThreshold 0.375\\Print 1\\\newpage 
-**** HardCodedParameters ****\\Deltax 0.0117188\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 10\\MaxIteration 4\\SmearingExtent 0.046875 = 4*Deltax\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronParam 62.9524\\libxcPolarization 1\\zeta 0\\sigma 0\\kappa 0\\Consumption:\\Amensalism:\\0 \\RepMut:\\0 \\Competition:\\0 \\OutPrecision 8\\OutCut -6 0 6 0 \\MonitorFlag 0\\\newpage 
-**** FieldStats ****\\DenMin = 2.621759919670564e-10 \\DenMax = 2.115663177900875 \\EnvMin = 0 \\EnvMax = 18 \\VMin = 0 \\VMax = 18 \\**** Final Output Variables ****\\FinalAbundances              = 9.999774258323287 \\RelativeAbundances           = 1 \\muVec                        = 1 \\DeltamuModifier              = -3\\Linear/Pulay-Mixings         = 0/0\\**** 1p-exact DFT ***\\settings (L,DensityExpression,MinimizeEint-type) = 10 100 0 2 1 \\ConjGradDescParam(epsf,epsg,epsx,diffstep) = 0 0 0 0 \\CGD gradient evaluations = 0\\CGD function evaluations (4 per dimension and gradient) = 100000\\OccNum(10) = 2 2 2 2 1.999774258371752 8.881784197001252e-16 1.110223024625157e-16 1.110223024625157e-16 0 1.110223024625157e-16\\E1p = 24.99898416267288\\Eint = 0\\********************\\TotalEnergy                  = 24.99898416267288\\SCiterations                 = -1/0\\ConvergenceCheck             = 0\\ComputationalTime            = 1\\\newpage 
+threads = 12\\**** InputParameters from mpDPFT.input ****\\System 0\\Symmetry 4\\TaskType 0\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 2\\Units 1\\edge 16\\steps 384\\S 1\\Abundances 15\\RelAcc 0\\InternalAcc 0.01\\K 0\\Resources\\DensityExpression 11\\mpp 0.5\\Mpp 1 1 1e-06\\tauVec 1\\tVec 1\\TVec 1\\Environments 1\\stretchfactor 1\\Wall 0\\Noise 0\\InterpolVQ 0\\Interactions 0\\incrementalV 1\\muVec 5.5\\DeltamuModifier -3\\Mixer 0 10 -1\\thetaVec 0.3\\SCcriterion 1e-12\\maxSCcount 0\\method 1\\DelFieldMethod 5\\MovieQ 1\\Schedule 0\\EkinTypes 0\\alpha 0\\beta 0\\gamma 0\\gammaH 0\\degeneracy 1\\regularize 0\\RegularizationThreshold 0.375\\Print 2\\\newpage 
+**** HardCodedParameters ****\\Deltax 0.0416667\\k0 -75.3982\\U 1\\KD.ExportCleanDensity 100\\KD.UseTriangulation 0\\KD.UpdateTriangulation 1\\KD.IntermediateCleanUp 0\\KD.ReevaluateTriangulation 100\\KD.NumChecks 100\\FocalDensitySteps 128\\KD.MergerRatioThreshold 0.1\\KD.RemovalFraction 0.6\\KD.RetainSurplusFraction 0.1\\Symmetry 4\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 50\\MaxIteration 4\\SmearingExtent 0.25 = 6*Deltax\\ConvolutionSigma -0.03125\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronPP 2\\AllElectronParam 17.4593\\libxcPolarization 1\\OutPrecision 16\\OutCut -8 0 8 0 \\MonitorFlag 0\\\newpage 
+**** FieldStats ****\\DenMin = -0.000546318 \\DenMax = 0.903203 \\EnvMin = 1.97215226305253e-31 \\EnvMax = 64 \\VMin = 1.97215226305253e-31 \\VMax = 64 \\**** Final Output Variables ****\\FinalAbundances              = 14.52316490068816 \\TargetAbundances             = 15 \\RelativeAbundances           = 1 \\muVec                        = 5.5 \\DeltamuModifier              = -3\\Linear/Pulay-Mixings         = 0/0\\AuxilliaryEkin[s=0]          = 25.64874997676748 0 0 0 \\AuxilliaryEint[s=0]          = 0 0 0 0 \\DispersalEnergies            = 0 \\AlternativeDispersalEnergies = 0 \\EnvironmentalEnergies        = 26.59676402250891 \\InteractionEnergies          = 0 \\TotalEnergy                  = 26.59676402250891\\FigureOfMerit                = 0\\SCiterations                 = -1/0\\ConvergenceCheck             = 0\\ComputationalTime            = 3180\\\newpage 
 
 \begin{figure}[htb!]
+\includegraphics[width=0.49\linewidth]{mpDPFT_Plots-2DcontourDen0}
 \includegraphics[width=0.49\linewidth]{mpDPFT_Plots-CutDen0}
 \end{figure}
 \begin{figure}[htb!]
+\includegraphics[width=0.49\linewidth]{mpDPFT_Plots-2DcontourEnv0}
 \includegraphics[width=0.49\linewidth]{mpDPFT_Plots-CutEnv+V0}
 \end{figure}
 \begin{figure}[htb!]
+\includegraphics[width=0.49\linewidth]{mpDPFT_Plots-2DcontourV0}
 \includegraphics[width=0.49\linewidth]{mpDPFT_Plots-LogPlot-CutDen0}
+\end{figure}
+ \FloatBarrier ------------------------------------------------------\newpage 
+
+ \FloatBarrier ------------------------------------------------------\newpage 
+
+\begin{figure}[htb!]
+\includegraphics[width=0.49\linewidth]{mpDPFT_Plots-2Dcontour-TotalDensity}
 \end{figure}
  \FloatBarrier ------------------------------------------------------\newpage 
 

@@ -4265,40 +4265,59 @@ void Getn7(int s, datastruct &data){
         }
 		#pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
 		for(int c=0;c<data.KD.CoarseGridSize;c++){
-			int FocalIndex = data.KD.CoarseIndices[c];
-			double ABSERR2, AverageRelERR = 0.;
-			vector<double> tmpfield(data.GridSize);
-            vector<double> rVec(data.VecAt[FocalIndex]);
-			for(int j=0;j<data.GridSize;j++){
-				if(data.KD.UseTriangulation) COMPUTEKD[c].resize(data.GridSize);//grid over which KD is integrated
-				double dist2 = Norm2(VecDiff(rVec,data.VecAt[j]));
-				double A = prefactorA*dist2*(data.muVec[s]-data.V[s][FocalIndex]/3.-2.*data.V[s][j]/3.);
-				double B = prefactorB*dist2*pow(data.GradSquared[s][j],1./3.);
-				if(j!=FocalIndex){
-					double KDval;        
-					if(METHOD==3){
-						if(data.KD.UseTriangulation){
-							COMPUTEKD[c][j] = GetTriangulatedFuncVal(data.DIM, {A,B}, data.KD.GoodTriangles, data.InternalAcc, 1., data.KD.Vertextree);
-							KDval = COMPUTEKD[c][j].ABres[2];
-							if(COMPUTEKD[c][j].ABres.size()!=3){ PRINT("Getn7: GetTriangulatedFuncVal error: COMPUTEKD[c][j].ABres.size()!=3",data); usleep(10000000); }
-						}
-						else {
+      //if (c<7000 || c>9000)
+      //  continue;
+      int FocalIndex = data.KD.CoarseIndices[c];
+      //cout << c << " " << FocalIndex << endl;
+      double ABSERR2, AverageRelERR = 0.;
+      vector<double> tmpfield(data.GridSize);
+      double KDmin, KDmax;
+      vector<double> tmpKD(data.GridSize);
+      vector<double> rVec(data.VecAt[FocalIndex]);
+      for(int j=0;j<data.GridSize;j++){
+        if(data.KD.UseTriangulation) COMPUTEKD[c].resize(data.GridSize);//grid over which KD is integrated
+        double dist2 = Norm2(VecDiff(rVec,data.VecAt[j]));
+        double A = prefactorA*dist2*(data.muVec[s]-data.V[s][FocalIndex]/3.-2.*data.V[s][j]/3.);
+        double B = prefactorB*dist2*pow(data.GradSquared[s][j],1./3.);
+        if(j!=FocalIndex){
+          double KDval;        
+          if(METHOD==3){
+            if(data.KD.UseTriangulation){
+              COMPUTEKD[c][j] = GetTriangulatedFuncVal(data.DIM, {A,B}, data.KD.GoodTriangles, data.InternalAcc, 1., data.KD.Vertextree);
+              KDval = COMPUTEKD[c][j].ABres[2];
+              if(COMPUTEKD[c][j].ABres.size()!=3){ PRINT("Getn7: GetTriangulatedFuncVal error: COMPUTEKD[c][j].ABres.size()!=3",data); usleep(10000000); }
+            }
+            else {
                 KDval = KD(data.DIM,A,B,ABSERR2,data.InternalAcc,KDip);
+                //cout << "A: "<< A<< " B: "<<B<<" KD: "<<KDval <<endl;
             }
                         if(!std::isfinite(KDval)){ PRINT("Getn7: KDval error: !std::isfinite(KDval) " + to_string(c) + " " + to_string(j),data); usleep(10000000); }
-					}
-					else if(METHOD==4){
-						KDparams kdparameters = KDparameters;
-						GetKD(1,A,B,kdparameters,data,TASK);
-						KDval = kdparameters.Result;
-					}
-					tmpfield[j] = KDval/POW(4.*PI*dist2,data.DIM);
-					if(ABS(tmpfield[j])>MP) AverageRelERR += ABSERR2/ABS(tmpfield[j]);
-				}
-				else tmpfield[j] = GetID(tauThreshold,s,FocalIndex,Norm(rVec),FocalIndex,Norm(rVec),data);
-			}
-			data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
- 			if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
+          }
+          else if(METHOD==4){
+            KDparams kdparameters = KDparameters;
+            GetKD(1,A,B,kdparameters,data,TASK);
+            KDval = kdparameters.Result;
+          }
+          //if (abs(A) < 0.005 && A > 0)
+            //cout << j << " " << KDval << " " << POW(4.*PI*dist2,data.DIM) << endl;
+          tmpKD[j] = KDval;
+          tmpfield[j] = KDval/POW(4.*PI*dist2,data.DIM);
+          if(ABS(tmpfield[j])>MP) AverageRelERR += ABSERR2/ABS(tmpfield[j]);
+        }
+        else tmpfield[j] = GetID(tauThreshold,s,FocalIndex,Norm(rVec),FocalIndex,Norm(rVec),data);
+      }
+      // Remove small KD values
+      KDmin = *std::min_element(tmpKD.begin(), tmpKD.end());
+      KDmax = *std::max_element(tmpKD.begin(), tmpKD.end());
+      //cout << KDmax << " is larger than " << KDmin << endl;
+      for(int i=0; i<data.GridSize; i++){
+        double dist2 = Norm2(VecDiff(rVec,data.VecAt[i]));
+        if (tmpKD[i] < 1.e-2 && POW(4.*PI*dist2,data.DIM) < 0.1){
+          tmpfield[i] = 0.;
+        }
+      }
+      data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
+      if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
     }
 	}
   
