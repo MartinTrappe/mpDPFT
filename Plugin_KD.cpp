@@ -338,11 +338,11 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
 		return POW(arg,D) * gsl_sf_bessel_Jn(D, arg);
 	}
     else {
-        if(KDip.contourQ){// && (abs(A) > 0.005 || A < 0)){//(abs(B) < 0 || abs(B) > 1000)){ // && (abs(A) > 0.1)
+        if(KDip.contourQ)//{// && (abs(A) > 0.005 || A < 0)){//(abs(B) < 0 || abs(B) > 1000)){ // && (abs(A) > 0.1)
             return KD_Contour(D, A, B, KDip);
-        } else {
-            KDval = KD_Contour(D, A, B, KDip);
-        }
+        //} else {
+        //    KDval = KD_Contour(D, A, B, KDip);
+        //}
 
         abserr = 0.;
         // set up parameters
@@ -404,7 +404,7 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
             if (testK > maxK) {
                 abserr = 0.;
                 double appr = KDapr(D,A,B);
-                if (true)
+                if (false)
                 {
                     printf("Contour %f %f %f \n", A, B, KDval); // CHANGE
                     printf("Res %f %f %f \n", A, B, appr); // CHANGE
@@ -456,7 +456,7 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
         F.params = &params;
         double testK = (lim2-lim1)/dd;
         if(testK<0. || testK>2147483646.){
-            if (true){
+            if (false){
                     printf("Contour %f %f %f \n", A, B, KDval); // CHANGE
                     printf("Res %f %f %f \n", A, B, res); // CHANGE
                 }
@@ -499,7 +499,7 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
             F.params = &params;
             double testK = (lim2-lim1)/dd;
         	if(testK<0. || testK>2147483646.){
-                if (true){
+                if (false){
                     printf("Contour %f %f %f \n", A, B, KDval); // CHANGE
                     printf("Res %f %f %f \n", A, B, res); // CHANGE
                 }
@@ -542,7 +542,7 @@ double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrati
         gsl_integration_workspace_free(w);
         for (int i = 0; i < W.size(); ++i) gsl_integration_workspace_free(W[i]);
         
-        if (true){
+        if (false){
             printf("Contour %f %f %f \n", A, B, KDval); // CHANGE
             printf("Res %f %f %f \n", A, B, res); // CHANGE
         }
@@ -909,7 +909,7 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
         int status = gsl_integration_qags(&F, 1e-4, 3., 1e-6, 1e-4, IntegrationArraySize, workspace, &result, &error);
         if (status != GSL_SUCCESS){
             double resultp1, resultp2, resultp3;
-            printf("KD_contour: Error in integration: %s\n A = %f B = %f -> result %f\n", gsl_strerror(status),A,B, result);
+            //printf("KD_contour: Error in integration: %s\n A = %f B = %f -> result %f\n", gsl_strerror(status),A,B, result);
             gsl_integration_workspace *workspace2 = gsl_integration_workspace_alloc(IntegrationArraySize);
             gsl_integration_workspace *workspace3 = gsl_integration_workspace_alloc(IntegrationArraySize);
             gsl_integration_workspace *workspace4 = gsl_integration_workspace_alloc(IntegrationArraySize);
@@ -920,9 +920,9 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
 
             result = resultp1 + resultp2 + resultp3;
             if (status2 != GSL_SUCCESS || status3 != GSL_SUCCESS || status4 != GSL_SUCCESS)
-                printf("New result WITH error: %f, %s, %s, %s\n", result, gsl_strerror(status2), gsl_strerror(status3), gsl_strerror(status4));
-            else
-                printf("New result, NO error: %f\n", result);
+                printf("New result WITH error @ A = %f B = %f: %f, %s, %s, %s\n", A, B, result, gsl_strerror(status2), gsl_strerror(status3), gsl_strerror(status4));
+            //else
+            //    printf("New result, NO error: %f\n", result);
 
             gsl_integration_workspace_free(workspace2);
             gsl_integration_workspace_free(workspace3);

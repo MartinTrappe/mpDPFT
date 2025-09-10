@@ -11,1517 +11,1073 @@
 
  ***** Input loaded *****
 System 0
-Symmetry 4
+Symmetry 0
 TaskType 0
 TaskParameterCount 0
 TaskHyperBox 0 0
 DIM 2
 Units 1
 edge 16
-steps 384
-S 1
-Abundances 15
-RelAcc 0
-InternalAcc 0.01
+steps 96
+S 2
+Abundances 15 15
+RelAcc 1e-05
+InternalAcc 1
 K 0
 Resources
-DensityExpression 11
-mpp 0.5
+DensityExpression 6
+mpp 0.5 0.5
 Mpp 1 1 1e-06
-tauVec 1
-tVec 1
-TVec 1
-Environments 1
+tauVec 1 1
+tVec 1 1
+TVec 1 1
+Environments 1 1
 stretchfactor 1
 Wall 0
-Noise 0
+Noise 0.1
 InterpolVQ 0
-Interactions 0
+Interactions 1
 incrementalV 1
-muVec 5.5
+muVec 6 6
 DeltamuModifier -3
 Mixer 0 10 -1
-thetaVec 0.3
+thetaVec 0.3 0.3
 SCcriterion 1e-12
-maxSCcount 0
-method 1
-DelFieldMethod 5
+maxSCcount 1000
+method 2
+DelFieldMethod 2
 MovieQ 1
-Schedule 0
+Schedule 4
 EkinTypes 0
 alpha 0
-beta 0
+beta 8
 gamma 0
 gammaH 0
 degeneracy 1
 regularize 0
 RegularizationThreshold 0.375
-Print 2
+Print 0
 
  ***** run auxilliary tasks 1 *****
-StartTimer for SetStreams:
-EndTimer for SetStreams: 0.000010 seconds
-StartTimer for InitializeRandomNumberGenerator:
-EndTimer for InitializeRandomNumberGenerator: 0.000002 seconds
  ***** initialize support, input derivatives, additional and system-specific parameters *****
-StartTimer for InitializeHardCodedParameters:
-InitializeHardCodedParameters: data.KD.CoarseIndices = 32 46 64 69 72 85 89 98 111 118 ... 148147 148154 148163 148167 148177 148201 148202 148214 148221 
-EndTimer for InitializeHardCodedParameters: 0.052629 seconds
-StartTimer for AuxTasks 2 & task parameterization:
  ***** run auxilliary tasks 2 *****
  ***** set up task parameterization *****
-EndTimer for AuxTasks 2 & task parameterization: 0.000002 seconds
  ***** allocate memory and FFT plans *****
-StartTimer for AllocateDensityMemory:
-EndTimer for AllocateDensityMemory: 0.000348 seconds
-StartTimer for SetupMovieStorage:
-EndTimer for SetupMovieStorage: 0.000011 seconds
-StartTimer for InitializeGlobalFFTWplans:
-EndTimer for InitializeGlobalFFTWplans: 0.011825 seconds
-StartTimer for AllocateTMPmemory:
-EndTimer for AllocateTMPmemory: 0.009861 seconds
  ***** initialize tabulated functions *****
-EndTimer for GetResources: 0.011035 seconds
-StartTimer for LoadReferenceDensity:
-EndTimer for LoadReferenceDensity: 0.000001 seconds
-StartTimer for GetSpecialFunctions:
-EndTimer for GetSpecialFunctions: 0.011933 seconds
  ***** initialize potentials ****
  ***** test ground *****
  ***** run auxilliary tasks 3 ****
  ***** initialize densities ****
-StartTimer for GetDensity:
-density[69] = 0.000225
-density[260] = 0.000167
-density[345] = -0.000319
-density[430] = 0.000241
-density[563] = 0.000130
-density[731] = -0.000326
-density[831] = 0.000117
-density[943] = 0.000052
-density[1040] = 0.000371
-density[1156] = 0.000250
-density[1248] = -0.000110
-density[1330] = -0.000126
-density[1468] = -0.000336
-density[1598] = 0.000108
-density[1698] = 0.000087
-density[1782] = 0.000164
-density[1954] = 0.000048
-density[2069] = 0.000242
-density[2219] = -0.000154
-density[2366] = 0.000167
-density[2456] = 0.000160
-density[2554] = 0.000231
-density[2657] = 0.000069
-density[2765] = -0.000224
-density[2868] = -0.000425
-density[2992] = -0.000187
-density[3087] = 0.000209
-density[3166] = -0.000212
-density[3222] = 0.000024
-density[3353] = -0.000282
-density[3442] = 0.000220
-density[3535] = 0.000094
-density[3602] = 0.000078
-density[3734] = -0.000368
-density[3842] = 0.000263
-density[3896] = -0.000209
-density[3977] = 0.000230
-density[4063] = -0.000081
-density[4170] = -0.000322
-density[4374] = -0.000312
-density[4492] = 0.000200
-density[4601] = 0.000187
-density[4653] = 0.000326
-density[4723] = -0.000305
-density[4830] = 0.000228
-density[4909] = 0.000267
-density[5042] = -0.000011
-density[5136] = -0.000242
-density[5254] = -0.000389
-density[5430] = -0.000256
-density[5509] = 0.000214
-density[5632] = -0.000325
-density[5758] = 0.000208
-density[5829] = -0.000300
-density[5934] = 0.000280
-density[6040] = 0.000123
-density[6104] = -0.000334
-density[6187] = 0.000193
-density[6330] = 0.000045
-density[6432] = 0.000250
-density[6538] = -0.000170
-density[6636] = -0.000126
-density[6710] = 0.000008
-density[6853] = -0.000090
-density[6930] = 0.000260
-density[7052] = -0.000417
-density[7181] = -0.000149
-density[7263] = -0.000327
-density[7366] = -0.000334
-density[7436] = -0.000443
-density[7551] = 0.000204
-density[7637] = 0.000283
-density[7729] = 0.000030
-density[7886] = -0.000390
-density[7979] = 0.000221
-density[8072] = 0.000139
-density[8257] = -0.000372
-density[8376] = -0.000234
-density[8466] = -0.000230
-density[8552] = -0.000050
-density[8639] = -0.000323
-density[8749] = 0.000039
-density[8844] = 0.000155
-density[8923] = -0.000046
-density[9036] = -0.000018
-density[9114] = 0.000135
-density[9205] = 0.000034
-density[9391] = -0.000416
-density[9482] = -0.000237
-density[9553] = 0.000301
-density[9629] = 0.000159
-density[9751] = 0.000255
-density[9838] = 0.000146
-density[9941] = 0.000185
-density[10061] = 0.000331
-density[10208] = 0.000343
-density[10299] = 0.000185
-density[10402] = 0.000016
-density[10585] = 0.000345
-density[10679] = -0.000260
-density[10787] = -0.000091
-density[10874] = 0.000058
-density[10961] = 0.000299
-density[11149] = 0.000188
-density[11239] = -0.000252
-density[11318] = 0.000234
-density[11431] = 0.000251
-density[11569] = 0.000037
-density[11719] = 0.000223
-density[11836] = -0.000418
-density[11982] = 0.000330
-density[12078] = 0.000132
-density[12197] = -0.000190
-density[12305] = 0.000332
-density[12375] = -0.000176
-density[12472] = 0.000361
-density[12538] = 0.000012
-density[12656] = 0.000168
-density[12772] = -0.000075
-density[12867] = -0.000026
-density[13080] = 0.000005
-density[13187] = -0.000273
-density[13273] = -0.000386
-density[13355] = -0.000356
-density[13463] = 0.000321
-density[13566] = -0.000446
-density[13648] = -0.000387
-density[13782] = 0.000168
-density[13881] = 0.000022
-density[14036] = -0.000338
-density[14152] = -0.000381
-density[14244] = -0.000065
-density[14337] = -0.000287
-density[14462] = -0.000350
-density[14559] = -0.000234
-density[14630] = -0.000265
-density[14735] = 0.000021
-density[14832] = -0.000044
-density[14968] = -0.000237
-density[15036] = 0.000245
-density[15152] = 0.000092
-density[15236] = -0.000225
-density[15352] = -0.000204
-density[15451] = 0.000285
-density[15541] = -0.000234
-density[15636] = -0.000391
-density[15752] = -0.000057
-density[15875] = 0.000058
-density[15981] = 0.000297
-density[16099] = 0.000223
-density[16279] = -0.000351
-density[16385] = 0.000266
-density[16467] = -0.000079
-density[16543] = -0.000230
-density[16636] = -0.000439
-density[16723] = 0.000296
-density[16839] = -0.000254
-density[16927] = -0.000235
-density[17052] = 0.000130
-density[17148] = 0.000200
-density[17255] = 0.000236
-density[17379] = -0.000193
-density[17493] = 0.000206
-density[17564] = -0.000036
-density[17666] = -0.000010
-density[17763] = -0.000199
-density[17857] = 0.000171
-density[17968] = -0.000254
-density[18020] = -0.000416
-density[18103] = -0.000255
-density[18258] = 0.000075
-density[18379] = -0.000355
-density[18543] = 0.000239
-density[18650] = -0.000272
-density[18736] = -0.000375
-density[18816] = 0.000143
-density[18868] = 0.000037
-density[18953] = -0.000007
-density[19075] = -0.000455
-density[19242] = -0.000244
-density[19344] = -0.000395
-density[19461] = -0.000518
-density[19642] = -0.000135
-density[19780] = 0.000177
-density[19944] = -0.000095
-density[20037] = -0.000320
-density[20086] = -0.000336
-density[20147] = -0.000012
-density[20243] = -0.000509
-density[20358] = -0.000087
-density[20477] = -0.000162
-density[20566] = -0.000546
-density[20663] = 0.000059
-density[20786] = -0.000248
-density[20887] = 0.000242
-density[20970] = -0.000074
-density[21074] = 0.000342
-density[21167] = 0.000122
-density[21256] = -0.000085
-density[21349] = -0.000013
-density[21475] = -0.000335
-density[21617] = 0.000114
-density[21705] = -0.000471
-density[21809] = -0.000016
-density[21897] = -0.000359
-density[22025] = -0.000220
-density[22103] = -0.000185
-density[22292] = 0.000355
-density[22380] = 0.000101
-density[22482] = -0.000291
-density[22585] = 0.000076
-density[22719] = 0.000179
-density[22847] = -0.000253
-density[22936] = 0.000147
-density[23027] = 0.000253
-density[23179] = -0.000386
-density[23286] = -0.000068
-density[23372] = -0.000023
-density[23456] = -0.000158
-density[23530] = -0.000156
-density[23626] = -0.000386
-density[23699] = -0.000025
-density[23802] = 0.000216
-density[23937] = 0.000260
-density[24003] = -0.000522
-density[24097] = 0.000096
-density[24178] = -0.000352
-density[24283] = 0.000088
-density[24455] = -0.000365
-density[24556] = 0.000040
-density[24640] = 0.000120
-density[24761] = -0.000155
-density[24822] = -0.000435
-density[24960] = 0.000220
-density[25055] = 0.000358
-density[25125] = -0.000337
-density[25234] = -0.000463
-density[25333] = -0.000384
-density[25430] = -0.000140
-density[25518] = 0.000284
-density[25583] = -0.000485
-density[25679] = 0.000053
-density[25769] = 0.000011
-density[25873] = -0.000023
-density[25954] = -0.000359
-density[26078] = -0.000065
-density[26173] = -0.000356
-density[26284] = 0.000248
-density[26418] = -0.000067
-density[26557] = -0.000352
-density[26662] = -0.000184
-density[26794] = -0.000410
-density[26885] = 0.000100
-density[27001] = -0.000447
-density[27123] = -0.000271
-density[27219] = -0.000410
-density[27322] = 0.000362
-density[27413] = 0.000355
-density[27532] = -0.000083
-density[27630] = -0.000364
-density[27739] = -0.000159
-density[27853] = 0.000040
-density[27964] = -0.000206
-density[28039] = -0.000302
-density[28132] = 0.000133
-density[28240] = -0.000091
-density[28390] = 0.000302
-density[28514] = 0.000346
-density[28619] = 0.000044
-density[28720] = -0.000317
-density[28912] = 0.000216
-density[29063] = -0.000032
-density[29176] = -0.000279
-density[29292] = -0.000281
-density[29354] = 0.000262
-density[29512] = -0.000230
-density[29618] = -0.000035
-density[29743] = 0.000169
-density[29820] = -0.000028
-density[29935] = 0.000302
-density[30056] = -0.000232
-density[30173] = -0.000328
-density[30352] = -0.000409
-density[30450] = 0.000262
-density[30593] = -0.000065
-density[30688] = -0.000180
-density[30796] = 0.000035
-density[30881] = -0.000390
-density[31021] = -0.000038
-density[31129] = 0.000015
-density[31223] = -0.000107
-density[31316] = -0.000484
-density[31484] = -0.000021
-density[31622] = 0.000166
-density[31725] = -0.000032
-density[31854] = -0.000497
-density[31920] = 0.000247
-density[32047] = 0.000075
-density[32154] = 0.000337
-density[32238] = -0.000517
-density[32317] = -0.000145
-density[32494] = -0.000058
-density[32611] = 0.000049
-density[32690] = 0.000137
-density[32758] = 0.000165
-density[32898] = 0.000381
-density[32972] = -0.000009
-density[33083] = -0.000238
-density[33200] = -0.000056
-density[33335] = 0.000087
-density[33458] = -0.000308
-density[33578] = 0.000290
-density[33694] = 0.000863
-density[33762] = -0.000389
-density[33836] = 0.000052
-density[33915] = -0.000344
-density[34037] = 0.000238
-density[34111] = 0.000084
-density[34211] = -0.000393
-density[34323] = 0.000038
-density[34390] = -0.000199
-density[34481] = 0.000793
-density[34599] = -0.000221
-density[34691] = 0.000058
-density[34794] = -0.000036
-density[34935] = -0.000003
-density[35077] = 0.000222
-density[35236] = 0.000960
-density[35340] = 0.000281
-density[35438] = -0.000310
-density[35538] = -0.000349
-density[35635] = 0.000997
-density[35775] = 0.000087
-density[35910] = -0.000115
-density[36040] = 0.000504
-density[36101] = -0.000488
-density[36191] = 0.000082
-density[36342] = 0.000799
-density[36469] = -0.000194
-density[36582] = 0.000051
-density[36699] = 0.000029
-density[36790] = 0.000890
-density[36894] = -0.000299
-density[37037] = 0.000287
-density[37202] = 0.000452
-density[37302] = 0.000176
-density[37428] = -0.000399
-density[37526] = 0.000944
-density[37619] = -0.000430
-density[37706] = 0.000215
-density[37811] = -0.000291
-density[37956] = 0.000885
-density[38102] = 0.000059
-density[38255] = 0.000704
-density[38341] = 0.000826
-density[38549] = -0.000131
-density[38595] = 0.000042
-density[38713] = 0.001254
-density[38875] = 0.000312
-density[38991] = -0.000415
-density[39090] = 0.002563
-density[39159] = -0.000187
-density[39238] = -0.000343
-density[39320] = 0.000169
-density[39425] = 0.000776
-density[39584] = 0.000277
-density[39688] = 0.000057
-density[39795] = 0.000986
-density[39866] = 0.003379
-density[40019] = 0.000231
-density[40127] = 0.000081
-density[40231] = 0.007705
-density[40324] = -0.000475
-density[40381] = -0.000412
-density[40564] = 0.000976
-density[40624] = 0.009184
-density[40777] = 0.000071
-density[40948] = 0.000966
-density[41059] = 0.000983
-density[41137] = -0.000279
-density[41216] = 0.000040
-density[41344] = 0.000989
-density[41444] = 0.000987
-density[41562] = 0.000187
-density[41683] = -0.000179
-density[41779] = 0.017591
-density[41866] = -0.000457
-density[41978] = -0.000221
-density[42042] = -0.000515
-density[42127] = 0.007220
-density[42305] = -0.000104
-density[42395] = 0.000121
-density[42537] = 0.026318
-density[42660] = -0.000466
-density[42752] = 0.000237
-density[42868] = 0.000906
-density[42965] = 0.005254
-density[43101] = 0.000169
-density[43261] = 0.001083
-density[43377] = 0.000986
-density[43487] = 0.000214
-density[43603] = -0.000208
-density[43682] = 0.035439
-density[43782] = -0.000048
-density[43907] = 0.000136
-density[44035] = 0.003328
-density[44144] = 0.000879
-density[44242] = 0.000172
-density[44310] = -0.000275
-density[44379] = -0.000022
-density[44462] = 0.058450
-density[44573] = -0.000185
-density[44690] = 0.000251
-density[44789] = 0.000832
-density[44884] = 0.024856
-density[44974] = -0.000461
-density[45069] = -0.000216
-density[45155] = 0.000104
-density[45289] = 0.003131
-density[45398] = 0.000118
-density[45508] = 0.000095
-density[45585] = 0.023649
-density[45736] = 0.000095
-density[45873] = 0.000207
-density[45955] = 0.005023
-density[46067] = 0.001194
-density[46200] = 0.000347
-density[46310] = 0.000351
-density[46396] = 0.113617
-density[46503] = -0.000054
-density[46571] = 0.000240
-density[46630] = 0.000205
-density[46713] = 0.000939
-density[46824] = 0.014763
-density[46900] = -0.000512
-density[46993] = -0.000031
-density[47089] = 0.000961
-density[47218] = 0.004992
-density[47335] = -0.000446
-density[47429] = 0.000075
-density[47528] = 0.121210
-density[47605] = 0.004341
-density[47696] = 0.000308
-density[47792] = -0.000205
-density[47905] = 0.099942
-density[48003] = 0.000820
-density[48092] = -0.000367
-density[48187] = -0.000187
-density[48277] = 0.051383
-density[48352] = 0.072864
-density[48460] = -0.000387
-density[48539] = -0.000156
-density[48704] = 0.218008
-density[48819] = 0.000071
-density[48935] = 0.000357
-density[49069] = 0.190330
-density[49157] = 0.000950
-density[49228] = -0.000149
-density[49380] = -0.000003
-density[49519] = 0.041683
-density[49589] = 0.000021
-density[49737] = 0.000104
-density[49820] = 0.101212
-density[49943] = 0.000700
-density[50054] = -0.000287
-density[50147] = -0.000065
-density[50234] = 0.296723
-density[50315] = 0.000909
-density[50430] = -0.000287
-density[50550] = 0.000810
-density[50637] = 0.313350
-density[50807] = -0.000089
-density[50923] = 0.000593
-density[50983] = 0.206045
-density[51072] = 0.015669
-density[51176] = -0.000308
-density[51297] = -0.000022
-density[51434] = 0.150680
-density[51530] = -0.000309
-density[51637] = -0.000267
-density[51736] = 0.089589
-density[51887] = 0.000013
-density[52003] = -0.000378
-density[52103] = 0.013094
-density[52236] = 0.005193
-density[52327] = -0.000111
-density[52424] = -0.000248
-density[52522] = 0.273170
-density[52759] = -0.000429
-density[52845] = 0.000612
-density[52941] = 0.461871
-density[53067] = -0.000451
-density[53135] = 0.000147
-density[53179] = 0.000180
-density[53262] = 0.033642
-density[53337] = 0.444603
-density[53459] = -0.000042
-density[53578] = -0.000210
-density[53675] = 0.310769
-density[53744] = 0.248257
-density[53866] = 0.000225
-density[53934] = 0.000338
-density[54079] = 0.488747
-density[54196] = -0.000016
-density[54279] = 0.000197
-density[54402] = 0.003705
-density[54462] = 0.495716
-density[54591] = -0.000395
-density[54686] = -0.000036
-density[54805] = 0.070596
-density[54858] = 0.534660
-density[54921] = 0.057004
-density[54984] = -0.000101
-density[55080] = -0.000363
-density[55174] = 0.007855
-density[55297] = 0.144757
-density[55453] = -0.000378
-density[55581] = 0.144301
-density[55686] = 0.111757
-density[55761] = 0.000036
-density[55828] = 0.000146
-density[55921] = 0.000660
-density[55997] = 0.524306
-density[56115] = 0.000386
-density[56174] = 0.000269
-density[56265] = -0.000410
-density[56359] = 0.286070
-density[56439] = 0.379343
-density[56523] = -0.000332
-density[56607] = -0.000405
-density[56679] = -0.000005
-density[56822] = 0.424472
-density[56958] = -0.000012
-density[57099] = 0.014497
-density[57226] = 0.150436
-density[57350] = -0.000108
-density[57449] = -0.000025
-density[57530] = 0.527883
-density[57621] = 0.058962
-density[57702] = 0.000291
-density[57803] = -0.000320
-density[57944] = 0.588905
-density[58065] = -0.000282
-density[58223] = 0.000023
-density[58298] = 0.534014
-density[58394] = 0.047547
-density[58517] = 0.000200
-density[58592] = -0.000454
-density[58669] = 0.386175
-density[58807] = 0.000992
-density[58986] = -0.000003
-density[59138] = 0.433193
-density[59208] = -0.000003
-density[59342] = -0.000335
-density[59450] = 0.539529
-density[59512] = 0.550778
-density[59635] = -0.000392
-density[59728] = -0.000471
-density[59883] = 0.604908
-density[60026] = 0.000203
-density[60112] = -0.000398
-density[60224] = 0.569453
-density[60356] = 0.000197
-density[60471] = -0.000088
-density[60594] = 0.456275
-density[60722] = 0.002567
-density[60817] = -0.000115
-density[60947] = 0.025393
-density[61064] = 0.481534
-density[61153] = 0.000128
-density[61251] = -0.000337
-density[61352] = 0.259737
-density[61490] = 0.005468
-density[61631] = 0.000300
-density[61760] = 0.571403
-density[61880] = 0.001525
-density[61962] = -0.000412
-density[62033] = -0.000003
-density[62164] = 0.686793
-density[62284] = 0.000050
-density[62463] = 0.000984
-density[62542] = 0.654703
-density[62667] = 0.000304
-density[62752] = 0.000223
-density[62866] = 0.012201
-density[62954] = 0.737797
-density[63087] = -0.000535
-density[63165] = -0.000021
-density[63315] = 0.698706
-density[63388] = 0.294095
-density[63522] = 0.000194
-density[63593] = -0.000477
-density[63679] = 0.563507
-density[63822] = 0.000415
-density[63956] = 0.000129
-density[64080] = 0.680743
-density[64224] = -0.000381
-density[64290] = -0.000128
-density[64407] = 0.019282
-density[64503] = 0.739680
-density[64624] = -0.000176
-density[64793] = 0.024418
-density[64895] = 0.691985
-density[65025] = -0.000097
-density[65141] = 0.000018
-density[65224] = 0.605572
-density[65318] = 0.235711
-density[65414] = -0.000380
-density[65483] = -0.000224
-density[65613] = 0.650524
-density[65696] = 0.395971
-density[65809] = 0.000127
-density[65925] = 0.000944
-density[66019] = 0.789556
-density[66151] = -0.000452
-density[66331] = 0.020736
-density[66399] = 0.786362
-density[66498] = 0.007139
-density[66587] = -0.000134
-density[66657] = -0.000472
-density[66731] = 0.167431
-density[66832] = 0.610157
-density[66952] = -0.000271
-density[67000] = -0.000031
-density[67115] = 0.155314
-density[67251] = 0.124929
-density[67337] = -0.000259
-density[67409] = -0.000365
-density[67504] = 0.234636
-density[67629] = 0.256158
-density[67713] = -0.000066
-density[67824] = -0.000406
-density[67927] = 0.739680
-density[68057] = 0.000740
-density[68160] = 0.000090
-density[68312] = 0.745969
-density[68395] = 0.358529
-density[68477] = -0.000411
-density[68581] = -0.000503
-density[68727] = 0.800370
-density[68871] = 0.000273
-density[68989] = 0.000012
-density[69075] = 0.674212
-density[69140] = 0.662044
-density[69272] = 0.000347
-density[69349] = -0.000498
-density[69384] = 0.000401
-density[69494] = 0.812106
-density[69634] = -0.000533
-density[69740] = 0.000051
-density[69810] = 0.181926
-density[69934] = 0.401631
-density[70101] = -0.000092
-density[70167] = 0.000960
-density[70339] = 0.054448
-density[70460] = -0.000432
-density[70594] = 0.486168
-density[70716] = 0.151620
-density[70801] = -0.000038
-density[70928] = 0.000933
-density[71037] = 0.834099
-density[71104] = 0.109168
-density[71181] = 0.000250
-density[71295] = -0.000166
-density[71413] = 0.847753
-density[71494] = 0.057147
-density[71581] = 0.000288
-density[71642] = -0.000245
-density[71780] = 0.789023
-density[71872] = 0.140802
-density[71990] = -0.000357
-density[72136] = 0.522306
-density[72211] = 0.783817
-density[72279] = 0.002401
-density[72427] = -0.000339
-density[72545] = 0.765231
-density[72693] = -0.000082
-density[72756] = -0.000245
-density[72833] = -0.000329
-density[72952] = 0.870600
-density[73066] = 0.000371
-density[73172] = -0.000135
-density[73236] = 0.000787
-density[73345] = 0.889999
-density[73434] = 0.002487
-density[73557] = -0.000134
-density[73655] = 0.115037
-density[73749] = 0.790060
-density[73905] = 0.000171
-density[74010] = 0.000969
-density[74171] = 0.380205
-density[74242] = -0.000278
-density[74323] = -0.000379
-density[74448] = 0.545768
-density[74534] = 0.643335
-density[74576] = 0.044355
-density[74628] = -0.000172
-density[74677] = 0.000279
-density[74816] = 0.218008
-density[74950] = 0.179489
-density[75069] = -0.000450
-density[75163] = 0.000948
-density[75224] = 0.582892
-density[75375] = 0.000517
-density[75453] = -0.000453
-density[75643] = 0.830225
-density[75711] = 0.377162
-density[75788] = 0.000106
-density[75879] = -0.000391
-density[76033] = 0.864873
-density[76162] = -0.000407
-density[76266] = -0.000299
-density[76345] = 0.057848
-density[76461] = 0.613171
-density[76506] = 0.017867
-density[76622] = -0.000384
-density[76688] = -0.000004
-density[76811] = 0.847753
-density[76909] = 0.000978
-density[77005] = -0.000436
-density[77170] = 0.787679
-density[77269] = 0.056346
-density[77422] = -0.000182
-density[77519] = 0.387477
-density[77662] = 0.013781
-density[77728] = 0.000293
-density[77833] = -0.000358
-density[77923] = 0.605271
-density[78021] = 0.360056
-density[78117] = -0.000188
-density[78201] = -0.000150
-density[78294] = 0.479956
-density[78392] = 0.565291
-density[78476] = -0.000353
-density[78577] = -0.000200
-density[78685] = 0.550032
-density[78769] = 0.619588
-density[78910] = 0.000190
-density[79029] = 0.006022
-density[79135] = 0.789892
-density[79240] = -0.000294
-density[79344] = -0.000375
-density[79451] = 0.499887
-density[79572] = 0.123804
-density[79651] = 0.000273
-density[79757] = -0.000216
-density[79883] = 0.799046
-density[79958] = 0.107553
-density[80071] = -0.000303
-density[80149] = -0.000325
-density[80251] = 0.772644
-density[80341] = 0.131997
-density[80437] = 0.000348
-density[80515] = -0.000528
-density[80608] = 0.514354
-density[80679] = 0.760484
-density[80807] = 0.000297
-density[80939] = 0.000913
-density[81067] = 0.725356
-density[81171] = -0.000288
-density[81293] = 0.000138
-density[81387] = 0.576607
-density[81501] = 0.065160
-density[81596] = -0.000121
-density[81706] = 0.000499
-density[81765] = 0.524306
-density[81892] = 0.024878
-density[82000] = -0.000236
-density[82095] = 0.000944
-density[82272] = 0.052545
-density[82388] = 0.000189
-density[82529] = 0.415959
-density[82643] = 0.243591
-density[82827] = -0.000524
-density[82917] = 0.463869
-density[83021] = 0.387459
-density[83158] = 0.000208
-density[83271] = 0.016921
-density[83350] = 0.785548
-density[83557] = 0.000146
-density[83642] = 0.000816
-density[83763] = 0.654539
-density[83857] = -0.000188
-density[83933] = 0.000032
-density[84143] = 0.689491
-density[84257] = 0.000074
-density[84357] = 0.000214
-density[84519] = 0.741311
-density[84641] = 0.000134
-density[84760] = 0.000121
-density[84849] = 0.521451
-density[85011] = -0.000162
-density[85092] = -0.000438
-density[85249] = 0.603449
-density[85380] = 0.000630
-density[85509] = -0.000251
-density[85579] = 0.007220
-density[85658] = 0.732346
-density[85713] = 0.375832
-density[85849] = -0.000194
-density[85963] = 0.005150
-density[86037] = 0.701237
-density[86196] = 0.000228
-density[86302] = 0.000054
-density[86374] = 0.213962
-density[86465] = 0.567398
-density[86552] = -0.000335
-density[86641] = 0.000252
-density[86739] = 0.016216
-density[86806] = 0.670938
-density[86926] = -0.000058
-density[87038] = 0.000252
-density[87163] = 0.516017
-density[87252] = 0.345411
-density[87400] = -0.000044
-density[87503] = 0.003394
-density[87577] = 0.650493
-density[87690] = 0.000371
-density[87777] = 0.000261
-density[87874] = 0.000937
-density[88014] = 0.458665
-density[88133] = 0.000363
-density[88224] = -0.000012
-density[88350] = 0.636273
-density[88453] = 0.000995
-density[88623] = -0.000389
-density[88716] = 0.566956
-density[88838] = 0.000990
-density[88949] = 0.000074
-density[89039] = 0.000834
-density[89112] = 0.590507
-density[89255] = 0.000044
-density[89319] = -0.000012
-density[89415] = 0.000897
-density[89565] = 0.210790
-density[89648] = -0.000526
-density[89761] = -0.000537
-density[89852] = 0.335988
-density[89923] = 0.549686
-density[90063] = -0.000292
-density[90203] = 0.005256
-density[90299] = 0.571102
-density[90419] = -0.000514
-density[90513] = -0.000285
-density[90593] = 0.013459
-density[90735] = 0.035193
-density[90888] = -0.000116
-density[90990] = 0.068639
-density[91070] = 0.557387
-density[91173] = -0.000387
-density[91276] = 0.000281
-density[91358] = 0.003479
-density[91462] = 0.519378
-density[91542] = -0.000060
-density[91672] = -0.000349
-density[91804] = 0.542238
-density[91921] = 0.000316
-density[92024] = -0.000267
-density[92089] = -0.000463
-density[92193] = 0.545487
-density[92275] = 0.023942
-density[92420] = 0.000201
-density[92546] = 0.209355
-density[92637] = 0.223229
-density[92772] = -0.000442
-density[92817] = 0.000260
-density[92909] = 0.019280
-density[92988] = 0.534021
-density[93073] = 0.000524
-density[93199] = -0.000212
-density[93335] = 0.428278
-density[93414] = 0.113254
-density[93554] = -0.000338
-density[93660] = 0.000931
-density[93799] = 0.104067
-density[93894] = -0.000208
-density[93963] = -0.000022
-density[94112] = 0.451077
-density[94194] = 0.032555
-density[94263] = -0.000432
-density[94337] = -0.000407
-density[94438] = 0.001022
-density[94502] = 0.463031
-density[94658] = 0.000305
-density[94752] = -0.000328
-density[94883] = 0.418909
-density[94994] = 0.000686
-density[95101] = 0.000201
-density[95224] = 0.019939
-density[95298] = 0.443725
-density[95348] = 0.026334
-density[95434] = -0.000340
-density[95553] = -0.000132
-density[95659] = 0.413750
-density[95784] = -0.000421
-density[95900] = 0.000283
-density[96005] = 0.058523
-density[96106] = 0.077154
-density[96245] = -0.000097
-density[96323] = -0.000052
-density[96369] = 0.001707
-density[96474] = 0.213962
-density[96656] = 0.000217
-density[96747] = 0.000860
-density[96864] = 0.150680
-density[96998] = 0.000217
-density[97072] = 0.000240
-density[97139] = 0.001194
-density[97203] = 0.340657
-density[97304] = 0.000221
-density[97401] = -0.000314
-density[97528] = 0.002418
-density[97629] = 0.163893
-density[97810] = -0.000008
-density[97896] = 0.000774
-density[97971] = 0.286040
-density[98087] = -0.000109
-density[98175] = -0.000122
-density[98251] = -0.000083
-density[98346] = 0.210660
-density[98416] = 0.039071
-density[98556] = -0.000360
-density[98710] = 0.063797
-density[98800] = 0.037911
-density[98926] = -0.000375
-density[99055] = 0.000913
-density[99131] = 0.233935
-density[99267] = -0.000317
-density[99334] = -0.000367
-density[99471] = 0.020817
-density[99550] = 0.119434
-density[99748] = -0.000392
-density[99902] = 0.195263
-density[99969] = 0.003097
-density[100064] = -0.000251
-density[100187] = -0.000406
-density[100262] = 0.086237
-density[100376] = 0.000497
-density[100451] = -0.000397
-density[100576] = -0.000147
-density[100676] = 0.161733
-density[100753] = 0.000992
-density[100843] = 0.000265
-density[100935] = -0.000342
-density[101054] = 0.137704
-density[101181] = -0.000045
-density[101310] = -0.000010
-density[101390] = 0.003330
-density[101475] = 0.065885
-density[101536] = -0.000066
-density[101649] = -0.000124
-density[101777] = 0.003802
-density[101859] = 0.060748
-density[101934] = -0.000386
-density[102039] = 0.000214
-density[102135] = 0.000261
-density[102256] = 0.023520
-density[102352] = 0.000107
-density[102486] = 0.000001
-density[102603] = 0.089799
-density[102678] = 0.000779
-density[102763] = 0.000058
-density[102846] = -0.000315
-density[102973] = 0.066115
-density[103075] = -0.000056
-density[103194] = 0.000248
-density[103265] = -0.000159
-density[103344] = 0.032152
-density[103448] = 0.000596
-density[103553] = -0.000065
-density[103652] = -0.000275
-density[103806] = 0.003129
-density[103957] = -0.000315
-density[104035] = -0.000048
-density[104073] = 0.000947
-density[104188] = 0.003870
-density[104257] = -0.000172
-density[104358] = -0.000448
-density[104431] = -0.000346
-density[104587] = 0.000851
-density[104675] = 0.000196
-density[104758] = -0.000395
-density[104837] = 0.000282
-density[104929] = 0.028057
-density[105010] = -0.000469
-density[105126] = -0.000225
-density[105260] = 0.005883
-density[105340] = 0.002745
-density[105462] = -0.000196
-density[105573] = 0.000094
-density[105699] = 0.019571
-density[105797] = -0.000478
-density[105944] = 0.000155
-density[106016] = 0.000777
-density[106170] = -0.000064
-density[106312] = 0.000194
-density[106391] = 0.000962
-density[106492] = 0.001822
-density[106628] = 0.000137
-density[106760] = -0.000068
-density[106872] = 0.002567
-density[106999] = -0.000056
-density[107044] = -0.000270
-density[107151] = 0.000057
-density[107297] = -0.000067
-density[107444] = -0.000328
-density[107507] = -0.000045
-density[107600] = 0.009184
-density[107688] = 0.000000
-density[107802] = -0.000037
-density[107893] = -0.000054
-density[107996] = 0.007541
-density[108089] = -0.000204
-density[108183] = -0.000153
-density[108354] = 0.002564
-density[108450] = -0.000064
-density[108533] = 0.000272
-density[108669] = -0.000363
-density[108791] = 0.001187
-density[108880] = 0.000156
-density[109010] = 0.000300
-density[109101] = 0.000978
-density[109188] = 0.000863
-density[109309] = -0.000413
-density[109403] = -0.000385
-density[109572] = 0.000898
-density[109661] = -0.000385
-density[109761] = 0.000137
-density[109849] = -0.000059
-density[110016] = 0.000130
-density[110121] = 0.000205
-density[110214] = -0.000416
-density[110298] = 0.001337
-density[110388] = -0.000474
-density[110494] = -0.000052
-density[110615] = 0.000017
-density[110785] = 0.000122
-density[110854] = 0.000172
-density[110966] = -0.000516
-density[111043] = 0.000917
-density[111197] = -0.000381
-density[111280] = -0.000160
-density[111404] = 0.000130
-density[111557] = -0.000182
-density[111717] = -0.000369
-density[111823] = 0.000899
-density[111920] = -0.000414
-density[112095] = 0.000325
-density[112203] = 0.000991
-density[112316] = 0.000001
-density[112408] = 0.000338
-density[112560] = -0.000040
-density[112634] = 0.000997
-density[112775] = 0.000087
-density[112906] = 0.000127
-density[113035] = 0.000506
-density[113128] = 0.000341
-density[113251] = 0.000340
-density[113344] = 0.000364
-density[113459] = -0.000464
-density[113561] = 0.000345
-density[113681] = 0.000071
-density[113778] = 0.000967
-density[113863] = -0.000410
-density[113936] = -0.000277
-density[114046] = 0.000157
-density[114214] = -0.000041
-density[114280] = 0.000333
-density[114335] = -0.000157
-density[114485] = 0.000010
-density[114619] = 0.000012
-density[114715] = 0.000327
-density[114806] = -0.000369
-density[114930] = 0.000746
-density[115026] = 0.000157
-density[115106] = -0.000212
-density[115217] = -0.000279
-density[115307] = 0.000666
-density[115446] = -0.000222
-density[115516] = 0.000339
-density[115651] = -0.000043
-density[115731] = -0.000055
-density[115822] = 0.000023
-density[115938] = -0.000035
-density[116013] = -0.000478
-density[116110] = -0.000058
-density[116265] = 0.000360
-density[116373] = -0.000491
-density[116536] = -0.000032
-density[116635] = 0.000319
-density[116695] = -0.000367
-density[116860] = 0.000029
-density[116956] = -0.000223
-density[117060] = 0.000338
-density[117198] = -0.000010
-density[117299] = -0.000240
-density[117410] = -0.000135
-density[117543] = 0.000092
-density[117637] = -0.000060
-density[117713] = 0.000131
-density[117813] = -0.000066
-density[117930] = 0.000087
-density[118023] = -0.000033
-density[118103] = 0.000223
-density[118150] = -0.000466
-density[118254] = -0.000159
-density[118348] = -0.000111
-density[118503] = 0.000219
-density[118569] = 0.000158
-density[118707] = -0.000004
-density[118808] = -0.000112
-density[118909] = 0.000267
-density[119007] = -0.000040
-density[119085] = 0.000023
-density[119203] = -0.000438
-density[119282] = -0.000321
-density[119382] = -0.000386
-density[119478] = 0.000067
-density[119581] = -0.000343
-density[119658] = 0.000376
-density[119754] = -0.000093
-density[119829] = -0.000007
-density[119933] = -0.000006
-density[120022] = 0.000229
-density[120115] = -0.000343
-density[120221] = 0.000308
-density[120366] = -0.000125
-density[120443] = 0.000118
-density[120555] = -0.000451
-density[120662] = -0.000443
-density[120758] = 0.000106
-density[120842] = -0.000278
-density[120971] = 0.000356
-density[121097] = -0.000221
-density[121275] = 0.000225
-density[121430] = -0.000410
-density[121539] = -0.000519
-density[121635] = 0.000158
-density[121727] = -0.000118
-density[121841] = -0.000365
-density[121933] = 0.000119
-density[122026] = -0.000092
-density[122094] = -0.000110
-density[122202] = -0.000308
-density[122321] = 0.000303
-density[122437] = -0.000367
-density[122547] = -0.000105
-density[122679] = -0.000042
-density[122794] = -0.000140
-density[122893] = -0.000249
-density[123024] = -0.000463
-density[123124] = -0.000410
-density[123206] = -0.000124
-density[123309] = 0.000204
-density[123423] = -0.000129
-density[123536] = 0.000225
-density[123680] = -0.000095
-density[123752] = -0.000166
-density[123798] = -0.000242
-density[123957] = -0.000183
-density[124085] = 0.000295
-density[124233] = 0.000101
-density[124332] = -0.000036
-density[124439] = -0.000100
-density[124557] = -0.000149
-density[124720] = 0.000324
-density[124822] = -0.000361
-density[124939] = -0.000065
-density[125029] = 0.000234
-density[125118] = 0.000202
-density[125195] = 0.000255
-density[125314] = 0.000005
-density[125448] = -0.000425
-density[125557] = -0.000229
-density[125630] = 0.000248
-density[125736] = -0.000035
-density[125831] = -0.000418
-density[125908] = -0.000321
-density[126034] = -0.000365
-density[126126] = -0.000399
-density[126233] = -0.000364
-density[126353] = 0.000243
-density[126499] = -0.000083
-density[126589] = 0.000264
-density[126687] = 0.000296
-density[126782] = -0.000279
-density[126852] = 0.000061
-density[126949] = 0.000329
-density[127120] = -0.000250
-density[127238] = -0.000037
-density[127320] = -0.000391
-density[127402] = -0.000217
-density[127614] = -0.000230
-density[127712] = 0.000144
-density[127796] = 0.000249
-density[127924] = 0.000348
-density[128010] = -0.000304
-density[128109] = -0.000165
-density[128210] = -0.000255
-density[128336] = 0.000094
-density[128477] = 0.000030
-density[128626] = -0.000210
-density[128765] = -0.000528
-density[128857] = -0.000208
-density[128997] = -0.000269
-density[129119] = 0.000304
-density[129200] = -0.000084
-density[129293] = -0.000006
-density[129399] = -0.000128
-density[129504] = 0.000266
-density[129632] = 0.000346
-density[129734] = -0.000055
-density[129869] = -0.000263
-density[129956] = -0.000187
-density[130133] = 0.000292
-density[130245] = 0.000363
-density[130321] = -0.000198
-density[130380] = -0.000348
-density[130442] = -0.000258
-density[130593] = -0.000451
-density[130709] = -0.000033
-density[130779] = 0.000261
-density[130865] = 0.000251
-density[130957] = -0.000344
-density[131024] = 0.000148
-density[131110] = 0.000221
-density[131183] = -0.000388
-density[131328] = -0.000200
-density[131411] = 0.000157
-density[131582] = 0.000052
-density[131690] = 0.000210
-density[131778] = -0.000387
-density[131869] = 0.000304
-density[131939] = 0.000066
-density[132002] = 0.000337
-density[132126] = 0.000261
-density[132263] = 0.000259
-density[132361] = -0.000220
-density[132436] = 0.000107
-density[132516] = 0.000123
-density[132675] = -0.000393
-density[132822] = -0.000159
-density[132890] = -0.000384
-density[132981] = -0.000373
-density[133053] = -0.000373
-density[133130] = -0.000041
-density[133225] = -0.000258
-density[133405] = -0.000019
-density[133511] = -0.000302
-density[133571] = 0.000250
-density[133642] = -0.000233
-density[133731] = 0.000332
-density[133843] = 0.000332
-density[133994] = -0.000027
-density[134107] = 0.000010
-density[134211] = -0.000169
-density[134341] = 0.000210
-density[134464] = 0.000016
-density[134573] = -0.000385
-density[134682] = -0.000320
-density[134792] = 0.000358
-density[134864] = -0.000083
-density[134974] = -0.000116
-density[135151] = 0.000065
-density[135258] = -0.000392
-density[135396] = -0.000392
-density[135500] = -0.000244
-density[135586] = 0.000173
-density[135738] = 0.000012
-density[135867] = -0.000367
-density[135979] = -0.000395
-density[136056] = 0.000362
-density[136155] = -0.000284
-density[136288] = 0.000249
-density[136347] = -0.000190
-density[136481] = 0.000027
-density[136607] = 0.000302
-density[136721] = 0.000259
-density[136868] = 0.000168
-density[136940] = 0.000220
-density[137056] = 0.000232
-density[137156] = -0.000094
-density[137235] = 0.000328
-density[137354] = 0.000234
-density[137439] = 0.000142
-density[137498] = 0.000223
-density[137624] = 0.000347
-density[137763] = 0.000234
-density[137892] = -0.000182
-density[138073] = -0.000383
-density[138136] = -0.000232
-density[138253] = 0.000101
-density[138325] = -0.000434
-density[138385] = 0.000127
-density[138520] = -0.000192
-density[138626] = -0.000107
-density[138733] = 0.000134
-density[138814] = -0.000026
-density[138899] = -0.000372
-density[138996] = -0.000029
-density[139095] = -0.000389
-density[139162] = -0.000061
-density[139311] = 0.000206
-density[139422] = 0.000037
-density[139536] = -0.000366
-density[139637] = -0.000425
-density[139755] = -0.000021
-density[139903] = -0.000049
-density[139953] = -0.000289
-density[140067] = 0.000062
-density[140210] = -0.000186
-density[140339] = -0.000390
-density[140437] = -0.000212
-density[140508] = -0.000229
-density[140592] = -0.000118
-density[140694] = -0.000329
-density[140757] = 0.000096
-density[140898] = 0.000213
-density[140968] = 0.000142
-density[141148] = 0.000269
-density[141224] = -0.000205
-density[141343] = -0.000009
-density[141470] = -0.000176
-density[141572] = 0.000187
-density[141644] = -0.000234
-density[141759] = 0.000028
-density[141916] = 0.000179
-density[142026] = -0.000249
-density[142179] = 0.000250
-density[142251] = 0.000041
-density[142369] = -0.000019
-density[142485] = 0.000091
-density[142579] = -0.000284
-density[142718] = 0.000248
-density[142831] = 0.000276
-density[142998] = 0.000196
-density[143088] = -0.000242
-density[143179] = -0.000247
-density[143260] = -0.000186
-density[143342] = 0.000240
-density[143418] = 0.000273
-density[143493] = -0.000236
-density[143570] = 0.000339
-density[143721] = -0.000065
-density[143797] = 0.000220
-density[143890] = 0.000135
-density[144002] = -0.000178
-density[144179] = 0.000090
-density[144312] = -0.000358
-density[144417] = -0.000037
-density[144582] = -0.000155
-density[144655] = 0.000068
-density[144779] = 0.000017
-density[144856] = 0.000239
-density[144908] = -0.000228
-density[145002] = 0.000024
-density[145089] = 0.000234
-density[145177] = -0.000310
-density[145265] = -0.000356
-density[145358] = -0.000434
-density[145451] = 0.000368
-density[145599] = -0.000372
-density[145714] = -0.000450
-density[145833] = 0.000329
-density[145951] = -0.000194
-density[146055] = 0.000197
-density[146178] = -0.000367
-density[146261] = 0.000045
-density[146329] = 0.000158
-density[146406] = 0.000325
-density[146490] = -0.000368
-density[146546] = 0.000027
-density[146670] = 0.000232
-density[146775] = 0.000091
-density[146876] = -0.000228
-density[146967] = -0.000027
-density[147064] = -0.000261
-density[147208] = -0.000246
-density[147327] = -0.000295
-density[147414] = -0.000159
-density[147524] = 0.000124
-density[147656] = 0.000103
-density[147746] = 0.000151
-density[147880] = -0.000327
-density[147965] = 0.000108
-density[148048] = 0.000220
-density[148154] = 0.000168
-ExpandDensity...
-ExpandSymmetry: Script succeeded with output written to mpDPFT_rbfInterpolation.dat
-Getn7: FreeRAM3 = 2.3683e+09
-EndTimer for GetDensity: 3179.253906 seconds
-StartTimer for EnforceConstraints:
-EnforceConstraints unnecessary, TmpAbundances = 14.52316490068816 
-EndTimer for EnforceConstraints: 0.001427 seconds
-Skip Noise
-StartTimer for StoreMovieData:
-EndTimer for StoreMovieData: 0.003475 seconds
-InitializePulayMixer: Required (Free) RAM = 4.743e+07 (2.36e+09) bytes
+    Start with muVec = 6 6  -> TmpAbundances = 18.00219245194993 18.00219245194993  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 5.701277589792817 6  -> TmpAbundances = 16.25124506804703 18.00219245194993  [Abundances = 15 15 ] 
+   Find muVecMIN[s=0]: 4.89481143691582 6  -> TmpAbundances = 11.98141328355288 18.00219245194993  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 4.89481143691582 5.596766923561502  -> TmpAbundances = 11.98141328355288 15.65966326241161  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 4.89481143691582 4.540324932573031  -> TmpAbundances = 11.98141328355288 10.30572510344358  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 4.89481143691582 4.540324932573031 
+                     muVecMAX = 5.701277589792817 5.596766923561502 
+ Bisectional search for muVec[s=0]: 5.298044513354318 5.068545928067266  -> TmpAbundances = 14.03784085192332 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.499661051573567 5.068545928067266  -> TmpAbundances = 15.12253255280237 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.398852782463942 5.068545928067266  -> TmpAbundances = 14.57477823931512 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.449256917018754 5.068545928067266  -> TmpAbundances = 14.84769764306833 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.47445898429616 5.068545928067266  -> TmpAbundances = 14.98470898217505 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.487060017934864 5.068545928067266  -> TmpAbundances = 15.05362076748863 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.480759501115513 5.068545928067266  -> TmpAbundances = 15.01916487483179 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.477609242705837 5.068545928067266  -> TmpAbundances = 15.00193692850345 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.476034113500999 5.068545928067266  -> TmpAbundances = 14.99332295533932 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.476821678103418 5.068545928067266  -> TmpAbundances = 14.99762994192144 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 5.477215460404627 5.068545928067266  -> TmpAbundances = 14.99978343521252 10.30572510344358  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.068545928067266  -> TmpAbundances = 14.99978343521252 12.84214873634469  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.332656425814384  -> TmpAbundances = 14.99978343521252 14.22161576876827  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.464711674687942  -> TmpAbundances = 14.99978343521252 14.93166910484742  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.530739299124722  -> TmpAbundances = 14.99978343521252 15.29308739090772  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.497725486906332  -> TmpAbundances = 14.99978343521252 15.11194745156118  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.481218580797137  -> TmpAbundances = 14.99978343521252 15.02167546256375  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.472965127742539  -> TmpAbundances = 14.99978343521252 14.97653946806498  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.477091854269838  -> TmpAbundances = 14.99978343521252 14.99910746531438  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.479155217533487  -> TmpAbundances = 14.99978343521252 15.01039146393896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.478123535901663  -> TmpAbundances = 14.99978343521252 15.00474946462671  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.477607695085751  -> TmpAbundances = 14.99978343521252 15.00192846497051  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.477349774677794  -> TmpAbundances = 14.99978343521252 15.00051796514246  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 5.477215460404627 5.477220814473815  -> TmpAbundances = 14.99978343521252 14.99981271522837  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -2.430000
+                             muVecSearchCount  = 26
+                              TmpAbundances    = 14.99978343521252 14.99981271522837 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001289602039786786
+                              Previous muVec   = 6 6 
+                              Final muVec      = 5.477215460404627 5.477220814473815 
+InitializePulayMixer: Required (Free) RAM = 6.022e+06 (1.638e+09) bytes
 
- ***** Initialization complete;  Timing = 3180.000000 *****
+ ***** Initialization complete;  Timing = 0.000000 *****
 
- ***** skip self-consistent loop ****
+
+ S E L F C O N S I S T E N T   L O O P ...
+
+UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.000000; CurrentV = 7.908852
+Species1, central values: InitV = 0.000000; PreviousV = 0.000000; CurrentV = 8.196427
+    Start with muVec = 5.477215460404627 5.477220814473815  -> TmpAbundances = 0.04201708093941123 0.0449749949124048  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 5.959412160909852 5.477220814473815  -> TmpAbundances = 0.9701952895488124 0.0449749949124048  [Abundances = 15 15 ] 
+   Find muVecMAX[s=0]: 7.189079927845167 5.477220814473815  -> TmpAbundances = 6.842751200746011 0.0449749949124048  [Abundances = 15 15 ] 
+   Find muVecMAX[s=0]: 9.033581578248141 5.477220814473815  -> TmpAbundances = 21.6054050983857 0.0449749949124048  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 9.033581578248141 6.092055298951818  -> TmpAbundances = 21.6054050983857 1.379487770972883  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 9.033581578248141 7.622326541238583  -> TmpAbundances = 21.6054050983857 10.20321014902289  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 9.033581578248141 9.917733404668731  -> TmpAbundances = 21.6054050983857 30.2570057844896  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.189079927845167 7.622326541238583 
+                     muVecMAX = 9.033581578248141 9.917733404668731 
+ Bisectional search for muVec[s=0]: 8.111330753046655 8.770029972953656  -> TmpAbundances = 13.72195340232252 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.572456165647399 8.770029972953656  -> TmpAbundances = 17.55664131962004 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.341893459347027 8.770029972953656  -> TmpAbundances = 15.6160841060853 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.226612106196841 8.770029972953656  -> TmpAbundances = 14.66168286967529 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.284252782771933 8.770029972953656  -> TmpAbundances = 15.13690388130148 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.255432444484388 8.770029972953656  -> TmpAbundances = 14.89880008071363 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.26984261362816 8.770029972953656  -> TmpAbundances = 15.01754576158541 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.262637529056274 8.770029972953656  -> TmpAbundances = 14.9580909102343 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.266240071342217 8.770029972953656  -> TmpAbundances = 14.98778463120308 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.268041342485189 8.770029972953656  -> TmpAbundances = 15.00266222896078 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.267140706913704 8.770029972953656  -> TmpAbundances = 14.99522046264847 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.267591024699446 8.770029972953656  -> TmpAbundances = 14.9989413458046 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.267816183592316 8.770029972953656  -> TmpAbundances = 15.00080178738269 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.267703604145881 8.770029972953656  -> TmpAbundances = 14.99987156659365 30.2570057844896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.770029972953656  -> TmpAbundances = 14.99987156659365 19.53826484562731  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.19617825709612  -> TmpAbundances = 14.99987156659365 14.68877650113857  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.483104115024888  -> TmpAbundances = 14.99987156659365 17.07553568615355  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.339641186060504  -> TmpAbundances = 14.99987156659365 15.87477132991984  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.267909721578313  -> TmpAbundances = 14.99987156659365 15.27909138761678  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.232043989337217  -> TmpAbundances = 14.99987156659365 14.98385807440476  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.249976855457765  -> TmpAbundances = 14.99987156659365 15.13139940990212  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.24101042239749  -> TmpAbundances = 14.99987156659365 15.05762874215345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.236527205867354  -> TmpAbundances = 14.99987156659365 15.02074340827911  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.234285597602286  -> TmpAbundances = 14.99987156659365 15.00230074134198  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.233164793469751  -> TmpAbundances = 14.99987156659365 14.99307940787337  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.233725195536017  -> TmpAbundances = 14.99987156659365 14.99769007460765  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.267703604145881 8.234005396569151  -> TmpAbundances = 14.99987156659365 14.99999540797478  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -1.968300
+                             muVecSearchCount  = 31
+                              TmpAbundances    = 14.99987156659365 14.99999540797478 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001125794464353902
+                              Previous muVec   = 5.477215460404627 5.477220814473815 
+                              Final muVec      = 8.267703604145881 8.234005396569151 
+ ***** SCcount = 0(0/3);  Timing = 0.000000;  CC = 1.2345679 *****
+
+
+ Intercept: Etot = 189.3084993160039
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.1
+(SCcount=1)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 7.908852; CurrentV = 6.533561
+Species1, central values: InitV = 0.000000; PreviousV = 8.196427; CurrentV = 5.781144
+    Start with muVec = 8.267703604145881 8.234005396569151  -> TmpAbundances = 15.33463207143744 15.18546724957907  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.112753904862074 8.234005396569151  -> TmpAbundances = 6.865281636766347 15.18546724957907  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.112753904862074 7.289276638561045  -> TmpAbundances = 6.865281636766347 8.169050223167087  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.112753904862074 7.289276638561045 
+                     muVecMAX = 8.267703604145881 8.234005396569151 
+ Bisectional search for muVec[s=0]: 7.690228754503977 7.761641017565098  -> TmpAbundances = 10.87806716528381 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.978966179324929 7.761641017565098  -> TmpAbundances = 13.05893851771644 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.123334891735405 7.761641017565098  -> TmpAbundances = 14.18625479957776 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.195519247940643 7.761641017565098  -> TmpAbundances = 14.75692581643836 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.231611426043262 7.761641017565098  -> TmpAbundances = 15.04426147209824 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.213565336991952 7.761641017565098  -> TmpAbundances = 14.9001755271424 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.222588381517607 7.761641017565098  -> TmpAbundances = 14.97211843742039 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.227099903780434 7.761641017565098  -> TmpAbundances = 15.00816160684004 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.224844142649021 7.761641017565098  -> TmpAbundances = 14.99012901721609 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.225972023214727 7.761641017565098  -> TmpAbundances = 14.99914429619355 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.226535963497579 7.761641017565098  -> TmpAbundances = 15.00365193568222 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.226253993356153 7.761641017565098  -> TmpAbundances = 15.00139811593784 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.22611300828544 7.761641017565098  -> TmpAbundances = 15.0002712060657 8.169050223167087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 7.761641017565098  -> TmpAbundances = 15.0002712060657 11.53238837388476  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 7.997823207067125  -> TmpAbundances = 15.0002712060657 13.3293835497832  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.115914301818139  -> TmpAbundances = 15.0002712060657 14.25096249200827  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.174959849193645  -> TmpAbundances = 15.0002712060657 14.71746633259165  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.204482622881397  -> TmpAbundances = 15.0002712060657 14.95096943231108  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.219244009725273  -> TmpAbundances = 15.0002712060657 15.06797186182804  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.211863316303335  -> TmpAbundances = 15.0002712060657 15.00940666016937  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.208172969592365  -> TmpAbundances = 15.0002712060657 14.98018644373918  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.210018142947849  -> TmpAbundances = 15.0002712060657 14.99479644964344  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.210940729625591  -> TmpAbundances = 15.0002712060657 15.00210145259553  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.21047943628672  -> TmpAbundances = 15.0002712060657 14.99844895111949  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.22611300828544 8.210710082956155  -> TmpAbundances = 15.0002712060657 15.00027520185749  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -2.381643
+                             muVecSearchCount  = 25
+                              TmpAbundances    = 15.0002712060657 15.00027520185749 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001409850707130289
+                              Previous muVec   = 8.267703604145881 8.234005396569151 
+                              Final muVec      = 8.22611300828544 8.210710082956155 
+ ***** SCcount = 1(0/3);  Timing = 1.000000;  CC = 0.021946879 *****
+
+
+ Intercept: Etot = 170.3157686812853
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.09607894391523232
+(SCcount=2)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.533561; CurrentV = 5.178808
+Species1, central values: InitV = 0.000000; PreviousV = 5.781144; CurrentV = 5.352651
+    Start with muVec = 8.22611300828544 8.210710082956155  -> TmpAbundances = 15.18448036494258 15.13510412111979  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.466031339348272 8.210710082956155  -> TmpAbundances = 9.546757815231189 15.13510412111979  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.466031339348272 7.612831683003067  -> TmpAbundances = 9.546757815231189 10.6527447755082  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.466031339348272 7.612831683003067 
+                     muVecMAX = 8.22611300828544 8.210710082956155 
+ Bisectional search for muVec[s=0]: 7.846072173816856 7.911770882979611  -> TmpAbundances = 12.26406656675352 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.036092591051148 7.911770882979611  -> TmpAbundances = 13.70167943627669 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.131102799668295 7.911770882979611  -> TmpAbundances = 14.43827340324093 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.178607903976868 7.911770882979611  -> TmpAbundances = 14.81023535301622 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.202360456131155 7.911770882979611  -> TmpAbundances = 14.99713499479677 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.214236732208299 7.911770882979611  -> TmpAbundances = 15.09073854602005 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.208298594169726 7.911770882979611  -> TmpAbundances = 15.043916653866 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.205329525150439 7.911770882979611  -> TmpAbundances = 15.02052582433138 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.203844990640796 7.911770882979611  -> TmpAbundances = 15.00883040956407 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.203102723385975 7.911770882979611  -> TmpAbundances = 15.00298270218042 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.202731589758564 7.911770882979611  -> TmpAbundances = 15.0000588484886 10.6527447755082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 7.911770882979611  -> TmpAbundances = 15.0000588484886 12.83026276609822  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.061240482967882  -> TmpAbundances = 15.0000588484886 13.97045274875638  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.135975282962018  -> TmpAbundances = 15.0000588484886 14.5496105956931  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.173342682959087  -> TmpAbundances = 15.0000588484886 14.84119733034462  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.192026382957621  -> TmpAbundances = 15.0000588484886 14.98797346686267  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.201368232956888  -> TmpAbundances = 15.0000588484886 15.06146205461815  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.196697307957255  -> TmpAbundances = 15.0000588484886 15.02470985651971  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.194361845457438  -> TmpAbundances = 15.0000588484886 15.00634166169117  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.193194114207529  -> TmpAbundances = 15.0000588484886 14.9971575642769  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.193777979832483  -> TmpAbundances = 15.0000588484886 15.00174961298405  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.193486047020006  -> TmpAbundances = 15.0000588484886 14.99945358863048  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.193632013426244  -> TmpAbundances = 15.0000588484886 15.00060160080729  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.202731589758564 8.193559030223124  -> TmpAbundances = 15.0000588484886 15.00002759471888  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -2.881788
+                             muVecSearchCount  = 24
+                              TmpAbundances    = 15.0000588484886 15.00002759471888 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 7.298320312010276e-05
+                              Previous muVec   = 8.22611300828544 8.210710082956155 
+                              Final muVec      = 8.202731589758564 8.193559030223124 
+ ***** SCcount = 2(0/3);  Timing = 0.000000;  CC = 0.0038732692 *****
+
+
+ Intercept: Etot = 168.3604662601077
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.09231163463866358
+(SCcount=3)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 5.178808; CurrentV = 4.494195
+Species1, central values: InitV = 0.000000; PreviousV = 5.352651; CurrentV = 4.797897
+    Start with muVec = 8.202731589758564 8.193559030223124  -> TmpAbundances = 15.02631479087335 15.04055517518482  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.743095775178697 8.193559030223124  -> TmpAbundances = 11.5610993916702 15.04055517518482  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.743095775178697 7.849388656409999  -> TmpAbundances = 11.5610993916702 12.42409010039969  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.743095775178697 7.849388656409999 
+                     muVecMAX = 8.202731589758564 8.193559030223124 
+ Bisectional search for muVec[s=0]: 7.97291368246863 8.021473843316562  -> TmpAbundances = 13.25458616044535 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.087822636113597 8.021473843316562  -> TmpAbundances = 14.13333738945422 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.14527711293608 8.021473843316562  -> TmpAbundances = 14.57825482450271 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.174004351347321 8.021473843316562  -> TmpAbundances = 14.80167261249762 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.188367970552942 8.021473843316562  -> TmpAbundances = 14.91383610390096 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.195549780155753 8.021473843316562  -> TmpAbundances = 14.9700243251962 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.199140684957158 8.021473843316562  -> TmpAbundances = 14.99816791109449 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.200936137357861 8.021473843316562  -> TmpAbundances = 15.01224135098399 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.200038411157509 8.021473843316562  -> TmpAbundances = 15.00520463103926 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.199589548057332 8.021473843316562  -> TmpAbundances = 15.00168627106686 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.199365116507245 8.021473843316562  -> TmpAbundances = 14.99992709108069 12.42409010039969  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.021473843316562  -> TmpAbundances = 14.99992709108069 13.71151263902047  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.107516436769844  -> TmpAbundances = 14.99992709108069 14.37259110832203  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.150537733496485  -> TmpAbundances = 14.99992709108069 14.70582263850379  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.172048381859806  -> TmpAbundances = 14.99992709108069 14.87287229723839  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.182803706041467  -> TmpAbundances = 14.99992709108069 14.95668126741227  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.188181368132298  -> TmpAbundances = 14.99992709108069 14.99859818912278  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.190870199177713  -> TmpAbundances = 14.99992709108069 15.0195672859716  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.189525783655005  -> TmpAbundances = 14.99992709108069 15.0090827375472  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.188853575893653  -> TmpAbundances = 14.99992709108069 15.00384046333501  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.188517472012975  -> TmpAbundances = 14.99992709108069 15.00121932622887  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.199365116507245 8.188349420072637  -> TmpAbundances = 14.99992709108069 14.99990875767583  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -3.486964
+                             muVecSearchCount  = 22
+                              TmpAbundances    = 14.99992709108069 14.99990875767583 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001680519403386427
+                              Previous muVec   = 8.202731589758564 8.193559030223124 
+                              Final muVec      = 8.199365116507245 8.188349420072637 
+ ***** SCcount = 3(0/3);  Timing = 0.000000;  CC = 0.0017942946 *****
+
+
+ Intercept: Etot = 168.1918936059735
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.08869204367171575
+(SCcount=4)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.494195; CurrentV = 4.366704
+Species1, central values: InitV = 0.000000; PreviousV = 4.797897; CurrentV = 4.623980
+    Start with muVec = 8.199365116507245 8.188349420072637  -> TmpAbundances = 15.03639868114469 15.03373143834509  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.948516787612093 8.188349420072637  -> TmpAbundances = 13.11520094820956 15.03373143834509  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.948516787612093 8.011586791219543  -> TmpAbundances = 13.11520094820956 13.6749723281122  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.948516787612093 8.011586791219543 
+                     muVecMAX = 8.199365116507245 8.188349420072637 
+ Bisectional search for muVec[s=0]: 8.073940952059669 8.09996810564609  -> TmpAbundances = 14.06557631184069 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.136653034283457 8.09996810564609  -> TmpAbundances = 14.54933806144017 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.16800907539535 8.09996810564609  -> TmpAbundances = 14.79230938534387 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.183687095951296 8.09996810564609  -> TmpAbundances = 14.91417177198968 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.191526106229269 8.09996810564609  -> TmpAbundances = 14.97523123302278 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.195445611368255 8.09996810564609  -> TmpAbundances = 15.00581067287091 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.193485858798763 8.09996810564609  -> TmpAbundances = 14.9905186977374 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.194465735083508 8.09996810564609  -> TmpAbundances = 14.99816468530416 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.194955673225881 8.09996810564609  -> TmpAbundances = 15.00198767908753 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.194710704154694 8.09996810564609  -> TmpAbundances = 15.00007618219585 13.6749723281122  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.09996810564609  -> TmpAbundances = 15.00007618219585 14.34958225367638  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.144158762859362  -> TmpAbundances = 15.00007618219585 14.69091172597664  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.166254091465998  -> TmpAbundances = 15.00007618219585 14.86202396239584  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.177301755769316  -> TmpAbundances = 15.00007618219585 14.94777852364411  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.182825587920973  -> TmpAbundances = 15.00007618219585 14.99072776920235  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.185587503996803  -> TmpAbundances = 15.00007618219585 15.01222487498874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.184206545958888  -> TmpAbundances = 15.00007618219585 15.00147366191469  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.18351606693993  -> TmpAbundances = 15.00007618219585 14.99610032315194  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.183861306449408  -> TmpAbundances = 15.00007618219585 14.99878660012674  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.194710704154694 8.184033926204147  -> TmpAbundances = 15.00007618219585 15.00012976028042  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -4.219226
+                             muVecSearchCount  = 20
+                              TmpAbundances    = 15.00007618219585 15.00012976028042 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.000172619754739145
+                              Previous muVec   = 8.199365116507245 8.188349420072637 
+                              Final muVec      = 8.194710704154694 8.184033926204147 
+ ***** SCcount = 4(0/3);  Timing = 0.000000;  CC = 0.0016960371 *****
+
+
+ Intercept: Etot = 168.0534751365591
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.08521437889662115
+(SCcount=5)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.366704; CurrentV = 4.293736
+Species1, central values: InitV = 0.000000; PreviousV = 4.623980; CurrentV = 4.339755
+    Start with muVec = 8.194710704154694 8.184033926204147  -> TmpAbundances = 15.03685059613024 15.01188985111311  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.074166281910534 8.184033926204147  -> TmpAbundances = 14.10447011920081 15.01188985111311  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.074166281910534 8.105085720546999  -> TmpAbundances = 14.10447011920081 14.40113860789771  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.074166281910534 8.105085720546999 
+                     muVecMAX = 8.194710704154694 8.184033926204147 
+ Bisectional search for muVec[s=0]: 8.134438493032615 8.144559823375573  -> TmpAbundances = 14.56908269734586 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.164574598593655 8.144559823375573  -> TmpAbundances = 14.80260350472239 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179642651374174 8.144559823375573  -> TmpAbundances = 14.91951915193419 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.187176677764434 8.144559823375573  -> TmpAbundances = 14.97813778107943 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.190943690959564 8.144559823375573  -> TmpAbundances = 15.00747962824878 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.189060184361999 8.144559823375573  -> TmpAbundances = 14.99280468499427 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.190001937660782 8.144559823375573  -> TmpAbundances = 15.00014070800795 14.40113860789771  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.144559823375573  -> TmpAbundances = 15.00014070800795 14.70574916390853  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.16429687478986  -> TmpAbundances = 15.00014070800795 14.85869642909396  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.174165400497003  -> TmpAbundances = 15.00014070800795 14.93525593692766  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.179099663350573  -> TmpAbundances = 15.00014070800795 14.97356224687222  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.181566794777359  -> TmpAbundances = 15.00014070800795 14.99272604899265  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.182800360490752  -> TmpAbundances = 15.00014070800795 15.00230795005288  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.182183577634056  -> TmpAbundances = 15.00014070800795 14.99751699952271  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.190001937660782 8.182491969062404  -> TmpAbundances = 15.00014070800795 14.99991247478779  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -5.105263
+                             muVecSearchCount  = 15
+                              TmpAbundances    = 15.00014070800795 14.99991247478779 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0003083914283479317
+                              Previous muVec   = 8.194710704154694 8.184033926204147 
+                              Final muVec      = 8.190001937660782 8.182491969062404 
+ ***** SCcount = 5(0/3);  Timing = 0.000000;  CC = 0.0016016063 *****
+
+
+ Intercept: Etot = 168.0838174652897
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.08187307530779819
+(SCcount=6)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.293736; CurrentV = 4.437788
+Species1, central values: InitV = 0.000000; PreviousV = 4.339755; CurrentV = 4.622614
+    Start with muVec = 8.190001937660782 8.182491969062404  -> TmpAbundances = 15.0726651183702 14.99020153256782  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.140331689305114 8.182491969062404  -> TmpAbundances = 14.68756026910507 14.99020153256782  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 8.140331689305114 8.212275703261968  -> TmpAbundances = 14.68756026910507 15.22190670655391  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.140331689305114 8.182491969062404 
+                     muVecMAX = 8.190001937660782 8.212275703261968 
+ Bisectional search for muVec[s=0]: 8.165166813482948 8.197383836162185  -> TmpAbundances = 14.87979049586127 15.22190670655391  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.177584375571865 8.197383836162185  -> TmpAbundances = 14.97616322020958 15.22190670655391  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.183793156616323 8.197383836162185  -> TmpAbundances = 15.02440090242749 15.22190670655391  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.180688766094093 8.197383836162185  -> TmpAbundances = 15.00027658882127 15.22190670655391  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.197383836162185  -> TmpAbundances = 15.00027658882127 15.10598773498703  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.189937902612295  -> TmpAbundances = 15.00027658882127 15.04808452686561  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.186214935837349  -> TmpAbundances = 15.00027658882127 15.01913292280494  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.184353452449876  -> TmpAbundances = 15.00027658882127 15.00466071171838  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.18342271075614  -> TmpAbundances = 15.00027658882127 14.99743104026658  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.183888081603008  -> TmpAbundances = 15.00027658882127 15.00104587599249  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.183655396179574  -> TmpAbundances = 15.00027658882127 14.99923845812954  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.180688766094093 8.183771738891291  -> TmpAbundances = 15.00027658882127 15.000142167061  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -6.177369
+                             muVecSearchCount  = 12
+                              TmpAbundances    = 15.00027658882127 15.000142167061 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001163427117170102
+                              Previous muVec   = 8.190001937660782 8.182491969062404 
+                              Final muVec      = 8.180688766094093 8.183771738891291 
+ ***** SCcount = 6(0/3);  Timing = 0.000000;  CC = 0.0012939731 *****
+
+
+ Intercept: Etot = 168.0079925406499
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.07866278610665535
+(SCcount=7)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.437788; CurrentV = 4.663546
+Species1, central values: InitV = 0.000000; PreviousV = 4.622614; CurrentV = 4.797727
+    Start with muVec = 8.180688766094093 8.183771738891291  -> TmpAbundances = 15.00679994725787 14.95006916897313  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.163706611662327 8.183771738891291  -> TmpAbundances = 14.875261798718 14.95006916897313  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 8.163706611662327 8.192931343243934  -> TmpAbundances = 14.875261798718 15.02118007626594  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.163706611662327 8.183771738891291 
+                     muVecMAX = 8.180688766094093 8.192931343243934 
+ Bisectional search for muVec[s=0]: 8.17219768887821 8.188351541067613  -> TmpAbundances = 14.94096811189286 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.176443227486152 8.188351541067613  -> TmpAbundances = 14.97387841695174 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.178565996790123 8.188351541067613  -> TmpAbundances = 14.9903391821048 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.17962738144211 8.188351541067613  -> TmpAbundances = 14.99856956468137 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.180158073768103 8.188351541067613  -> TmpAbundances = 15.0026847559696 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179892727605107 8.188351541067613  -> TmpAbundances = 15.00062716032546 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179760054523609 8.188351541067613  -> TmpAbundances = 14.9995983625034 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179826391064358 8.188351541067613  -> TmpAbundances = 15.00011276141445 15.02118007626594  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.188351541067613  -> TmpAbundances = 15.00011276141445 14.98562320118793  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.190641442155773  -> TmpAbundances = 15.00011276141445 15.00340021729528  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.189496491611692  -> TmpAbundances = 15.00011276141445 14.99451170924159  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.190068966883732  -> TmpAbundances = 15.00011276141445 14.99895596326843  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.190355204519753  -> TmpAbundances = 15.00011276141445 15.00117809028184  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179826391064358 8.190212085701742  -> TmpAbundances = 15.00011276141445 15.00006702677513  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -6.115595
+                             muVecSearchCount  = 14
+                              TmpAbundances    = 15.00011276141445 15.00006702677513 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 6.633654074938988e-05
+                              Previous muVec   = 8.180688766094093 8.183771738891291 
+                              Final muVec      = 8.179826391064358 8.190212085701742 
+ ***** SCcount = 7(0/3);  Timing = 1.000000;  CC = 0.0012571922 *****
+
+
+ Intercept: Etot = 168.016476618787
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.07557837414557256
+(SCcount=8)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.663546; CurrentV = 4.788006
+Species1, central values: InitV = 0.000000; PreviousV = 4.797727; CurrentV = 4.676214
+    Start with muVec = 8.179826391064358 8.190212085701742  -> TmpAbundances = 14.95377252313757 15.00832022590959  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 8.197888770980773 8.190212085701742  -> TmpAbundances = 15.09404068668548 15.00832022590959  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.197888770980773 8.180400727691392  -> TmpAbundances = 15.09404068668548 14.93211321682303  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.179826391064358 8.180400727691392 
+                     muVecMAX = 8.197888770980773 8.190212085701742 
+ Bisectional search for muVec[s=0]: 8.188857581022566 8.185306406696567  -> TmpAbundances = 15.0238723566464 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.184341986043462 8.185306406696567  -> TmpAbundances = 14.98881677931472 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.186599783533014 8.185306406696567  -> TmpAbundances = 15.00634456798054 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185470884788238 8.185306406696567  -> TmpAbundances = 14.99758067364765 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.186035334160625 8.185306406696567  -> TmpAbundances = 15.0019626208141 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185753109474431 8.185306406696567  -> TmpAbundances = 14.99977164723088 14.93211321682303  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.185306406696567  -> TmpAbundances = 14.99977164723088 14.97020164477424  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.187759246199153  -> TmpAbundances = 14.99977164723088 14.98925659445723  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.188985665950447  -> TmpAbundances = 14.99977164723088 14.99878841018341  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.189598875826094  -> TmpAbundances = 14.99977164723088 15.0035543180465  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.18929227088827  -> TmpAbundances = 14.99977164723088 15.00117136411496  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.185753109474431 8.189138968419357  -> TmpAbundances = 14.99977164723088 14.99997988714915  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -7.399870
+                             muVecSearchCount  = 12
+                              TmpAbundances    = 14.99977164723088 14.99997988714915 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001533024689130968
+                              Previous muVec   = 8.179826391064358 8.190212085701742 
+                              Final muVec      = 8.185753109474431 8.189138968419357 
+ ***** SCcount = 8(0/3);  Timing = 0.000000;  CC = 0.0012857758 *****
+
+
+ Intercept: Etot = 167.9093276047559
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.0726149037073691
+(SCcount=9)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.788006; CurrentV = 5.038556
+Species1, central values: InitV = 0.000000; PreviousV = 4.676214; CurrentV = 4.697174
+    Start with muVec = 8.185753109474431 8.189138968419357  -> TmpAbundances = 14.98634441036509 14.99792396245689  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 8.190757325097557 8.189138968419357  -> TmpAbundances = 15.0251824763703 14.99792396245689  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 8.190757325097557 8.191527567996252  -> TmpAbundances = 15.0251824763703 15.01647775701345  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.185753109474431 8.189138968419357 
+                     muVecMAX = 8.190757325097557 8.191527567996252 
+ Bisectional search for muVec[s=0]: 8.188255217285995 8.190333268207805  -> TmpAbundances = 15.00575767963015 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.187004163380214 8.190333268207805  -> TmpAbundances = 14.99604859567927 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.187629690333104 8.190333268207805  -> TmpAbundances = 15.00090193637546 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.18731692685666 8.190333268207805  -> TmpAbundances = 14.99847526602739 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.187473308594882 8.190333268207805  -> TmpAbundances = 14.9996886012014 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.187551499463993 8.190333268207805  -> TmpAbundances = 15.00029526878847 15.01647775701345  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.187551499463993 8.190333268207805  -> TmpAbundances = 15.00029526878847 15.0072008597352  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.187551499463993 8.189736118313581  -> TmpAbundances = 15.00029526878847 15.00256241109608  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.187551499463993 8.18943754336647  -> TmpAbundances = 15.00029526878847 15.00024318677647  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -8.953842
+                             muVecSearchCount  = 9
+                              TmpAbundances    = 15.00029526878847 15.00024318677647 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 7.819086911098339e-05
+                              Previous muVec   = 8.185753109474431 8.189138968419357 
+                              Final muVec      = 8.187551499463993 8.18943754336647 
+ ***** SCcount = 9(0/3);  Timing = 0.000000;  CC = 0.0010721498 *****
+
+
+ Intercept: Etot = 167.8935595370821
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.0697676326071031
+(SCcount=10)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 5.038556; CurrentV = 5.002398
+Species1, central values: InitV = 0.000000; PreviousV = 4.697174; CurrentV = 4.565856
+    Start with muVec = 8.187551499463993 8.18943754336647  -> TmpAbundances = 14.96166474825097 15.02300757288849  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 8.188609655383146 8.18943754336647  -> TmpAbundances = 14.96988732324022 15.02300757288849  [Abundances = 15 15 ] 
+   Find muVecMAX[s=0]: 8.193790971612444 8.18943754336647  -> TmpAbundances = 15.0101568569498 15.02300757288849  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.193790971612444 8.18684628848062  -> TmpAbundances = 15.0101568569498 15.0028796237501  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.193790971612444 8.175244778345951  -> TmpAbundances = 15.0101568569498 14.9128516297253  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.188609655383146 8.175244778345951 
+                     muVecMAX = 8.193790971612444 8.18684628848062 
+ Bisectional search for muVec[s=0]: 8.191200313497795 8.181045533413286  -> TmpAbundances = 14.99002209009504 14.9128516297253  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.192495642555119 8.181045533413286  -> TmpAbundances = 15.00008947352238 14.9128516297253  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.192495642555119 8.181045533413286  -> TmpAbundances = 15.00008947352238 14.95782141523611  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.192495642555119 8.183945910946953  -> TmpAbundances = 15.00008947352238 14.98035051949313  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.192495642555119 8.185396099713786  -> TmpAbundances = 15.00008947352238 14.99161507162163  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.192495642555119 8.186121194097204  -> TmpAbundances = 15.00008947352238 14.99724734768587  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.192495642555119 8.186483741288914  -> TmpAbundances = 15.00008947352238 15.00006348571801  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -7.252612
+                             muVecSearchCount  = 9
+                              TmpAbundances    = 15.00008947352238 15.00006348571801 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0003625471917096945
+                              Previous muVec   = 8.187551499463993 8.18943754336647 
+                              Final muVec      = 8.192495642555119 8.186483741288914 
+ ***** SCcount = 10(0/3);  Timing = 0.000000;  CC = 0.0010223283 *****
+
+
+ Intercept: Etot = 167.7457260719549
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.06703200460356394
+.........(SCcount=20)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 4.083988; CurrentV = 4.212520
+Species1, central values: InitV = 0.000000; PreviousV = 4.888040; CurrentV = 4.713696
+    Start with muVec = 8.187174957442027 8.177811284045953  -> TmpAbundances = 15.01110659695415 14.97674601929718  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.176316571735073 8.177811284045953  -> TmpAbundances = 14.92678853158554 14.97674601929718  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 8.176316571735073 8.183402823540792  -> TmpAbundances = 14.92678853158554 15.02012967536444  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.176316571735073 8.177811284045953 
+                     muVecMAX = 8.187174957442027 8.183402823540792 
+ Bisectional search for muVec[s=0]: 8.18174576458855 8.180607053793373  -> TmpAbundances = 14.96893657426972 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.184460361015288 8.180607053793373  -> TmpAbundances = 14.99001319509894 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185817659228658 8.180607053793373  -> TmpAbundances = 15.00055655763301 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185139010121972 8.180607053793373  -> TmpAbundances = 14.99528470072224 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185478334675315 8.180607053793373  -> TmpAbundances = 14.99792045353388 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.185647996951985 8.180607053793373  -> TmpAbundances = 14.99923832993971 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.18573282809032 8.180607053793373  -> TmpAbundances = 14.9998972681426 15.02012967536444  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18573282809032 8.180607053793373  -> TmpAbundances = 14.9998972681426 14.99843784733082  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18573282809032 8.182004938667083  -> TmpAbundances = 14.9998972681426 15.0092837613476  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18573282809032 8.181305996230229  -> TmpAbundances = 14.9998972681426 15.00386080433921  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18573282809032 8.180956525011801  -> TmpAbundances = 14.9998972681426 15.00114932583504  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18573282809032 8.180781789402587  -> TmpAbundances = 14.9998972681426 14.9997935865829  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -6.559133
+                             muVecSearchCount  = 12
+                              TmpAbundances    = 14.9998972681426 14.9997935865829 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 8.483113833435141e-05
+                              Previous muVec   = 8.187174957442027 8.177811284045953 
+                              Final muVec      = 8.18573282809032 8.180781789402587 
+ ***** SCcount = 20(0/3);  Timing = 0.000000;  CC = 0.00072152771 *****
+
+
+ Intercept: Etot = 167.5512995599726
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.04493289641172216
+.........(SCcount=30)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 3.520883; CurrentV = 3.350206
+Species1, central values: InitV = 0.000000; PreviousV = 5.562191; CurrentV = 5.514760
+    Start with muVec = 8.184951508904527 8.194082721267741  -> TmpAbundances = 14.96108097130467 14.99385965647477  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 8.190352825221829 8.194082721267741  -> TmpAbundances = 15.00301260218175 14.99385965647477  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 8.190352825221829 8.20532969017898  -> TmpAbundances = 15.00301260218175 15.08114543785116  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.184951508904527 8.194082721267741 
+                     muVecMAX = 8.190352825221829 8.20532969017898 
+ Bisectional search for muVec[s=0]: 8.187652167063177 8.199706205723359  -> TmpAbundances = 14.98204678674319 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.189002496142503 8.199706205723359  -> TmpAbundances = 14.99252969446249 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.189677660682166 8.199706205723359  -> TmpAbundances = 14.99777114832212 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.190015242951997 8.199706205723359  -> TmpAbundances = 15.00039187525195 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.189846451817083 8.199706205723359  -> TmpAbundances = 14.99908151178705 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.18993084738454 8.199706205723359  -> TmpAbundances = 14.99973669351947 15.08114543785116  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.199706205723359  -> TmpAbundances = 14.99973669351947 15.03749116721473  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.19689446349555  -> TmpAbundances = 14.99973669351947 15.01567541184477  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.195488592381645  -> TmpAbundances = 14.99973669351947 15.00476753415975  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.194785656824692  -> TmpAbundances = 14.99973669351947 14.99931359531726  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.195137124603168  -> TmpAbundances = 14.99973669351947 15.00204056473848  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.19496139071393  -> TmpAbundances = 14.99973669351947 15.00067708002788  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.18993084738454 8.19487352376931  -> TmpAbundances = 14.99973669351947 14.99999533767257  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -7.250176
+                             muVecSearchCount  = 13
+                              TmpAbundances    = 14.99973669351947 14.99999533767257 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 8.439556745720722e-05
+                              Previous muVec   = 8.184951508904527 8.194082721267741 
+                              Final muVec      = 8.18993084738454 8.19487352376931 
+ ***** SCcount = 30(0/3);  Timing = 0.000000;  CC = 0.0011531683 *****
+
+
+ Intercept: Etot = 167.2031183649768
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.03011942119122021
+.........(SCcount=40)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 1.780012; CurrentV = 1.581800
+Species1, central values: InitV = 0.000000; PreviousV = 7.298246; CurrentV = 7.371818
+    Start with muVec = 8.178960054172382 8.170903681125264  -> TmpAbundances = 14.99727914739225 15.04437431364478  [Abundances = 15 15 ]
+   Find muVecMAX[s=0]: 8.189831717029794 8.170903681125264  -> TmpAbundances = 15.07983374242285 15.04437431364478  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.189831717029794 8.165303168652276  -> TmpAbundances = 15.07983374242285 15.00263659951732  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.189831717029794 8.142093871084299  -> TmpAbundances = 15.07983374242285 14.8303019294702  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.178960054172382 8.142093871084299 
+                     muVecMAX = 8.189831717029794 8.165303168652276 
+ Bisectional search for muVec[s=0]: 8.184395885601088 8.153698519868287  -> TmpAbundances = 15.03854532950537 14.8303019294702  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.181677969886735 8.153698519868287  -> TmpAbundances = 15.01790497509442 14.8303019294702  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.180319012029559 8.153698519868287  -> TmpAbundances = 15.00758938883478 14.8303019294702  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179639533100971 8.153698519868287  -> TmpAbundances = 15.00243393656566 14.8303019294702  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.179299793636677 8.153698519868287  -> TmpAbundances = 14.99985654197895 14.8303019294702  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.153698519868287  -> TmpAbundances = 14.99985654197895 14.91627830288961  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.159500844260283  -> TmpAbundances = 14.99985654197895 14.95943879016843  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.162402006456279  -> TmpAbundances = 14.99985654197895 14.98103769484288  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.163852587554278  -> TmpAbundances = 14.99985654197895 14.99183714718013  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.164577878103277  -> TmpAbundances = 14.99985654197895 14.9972368733487  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.179299793636677 8.164940523377776  -> TmpAbundances = 14.99985654197895 14.99993673643302  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -6.556929
+                             muVecSearchCount  = 12
+                              TmpAbundances    = 14.99985654197895 14.99993673643302 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0003397394642945528
+                              Previous muVec   = 8.178960054172382 8.170903681125264 
+                              Final muVec      = 8.179299793636677 8.164940523377776 
+ ***** SCcount = 40(0/3);  Timing = 0.000000;  CC = 0.0013962854 *****
+
+
+ Intercept: Etot = 167.0219810631482
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.02018965179946554
+.........(SCcount=50)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.444967; CurrentV = 0.398979
+Species1, central values: InitV = 0.000000; PreviousV = 9.568125; CurrentV = 9.707327
+    Start with muVec = 8.144807118740065 8.098134014757873  -> TmpAbundances = 15.03995093333597 15.04371499234214  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.124412560897177 8.098134014757873  -> TmpAbundances = 14.89625563167034 15.04371499234214  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.124412560897177 8.086994101767448  -> TmpAbundances = 14.89625563167034 14.96806990830449  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.124412560897177 8.086994101767448 
+                     muVecMAX = 8.144807118740065 8.098134014757873 
+ Bisectional search for muVec[s=0]: 8.134609839818621 8.09256405826266  -> TmpAbundances = 14.96797767640204 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.139708479279342 8.09256405826266  -> TmpAbundances = 15.00395305955463 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.137159159548983 8.09256405826266  -> TmpAbundances = 14.98595901264011 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.138433819414162 8.09256405826266  -> TmpAbundances = 14.9949535911093 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.139071149346751 8.09256405826266  -> TmpAbundances = 14.99945332533196 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.139389814313045 8.09256405826266  -> TmpAbundances = 15.0017031924433 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.139230481829898 8.09256405826266  -> TmpAbundances = 15.0005782588876 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.139150815588325 8.09256405826266  -> TmpAbundances = 15.00001579210979 14.96806990830449  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.09256405826266  -> TmpAbundances = 15.00001579210979 15.00582904227371  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.089779080015054  -> TmpAbundances = 15.00001579210979 14.98693448658696  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.091171569138858  -> TmpAbundances = 15.00001579210979 14.99637934659768  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.091867813700759  -> TmpAbundances = 15.00001579210979 15.00110419443566  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.091519691419808  -> TmpAbundances = 15.00001579210979 14.9987417705167  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.139150815588325 8.091693752560284  -> TmpAbundances = 15.00001579210979 14.99992298247621  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -5.929969
+                             muVecSearchCount  = 14
+                              TmpAbundances    = 15.00001579210979 14.99992298247621 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 7.966624157340618e-05
+                              Previous muVec   = 8.144807118740065 8.098134014757873 
+                              Final muVec      = 8.139150815588325 8.091693752560284 
+ ***** SCcount = 50(0/3);  Timing = 0.000000;  CC = 0.00065526845 *****
+
+
+ Intercept: Etot = 166.678100168856
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.01353352832366127
+.........(SCcount=60)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.219216; CurrentV = 0.215215
+Species1, central values: InitV = 0.000000; PreviousV = 10.192637; CurrentV = 10.222800
+    Start with muVec = 8.096166812598252 8.041384162678121  -> TmpAbundances = 15.03527205745439 15.01978986514197  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.085381227556194 8.041384162678121  -> TmpAbundances = 14.96369292239905 15.01978986514197  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.085381227556194 8.035858918241264  -> TmpAbundances = 14.96369292239905 14.98548124937534  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.085381227556194 8.035858918241264 
+                     muVecMAX = 8.096166812598252 8.041384162678121 
+ Bisectional search for muVec[s=0]: 8.090774020077223 8.038621540459692  -> TmpAbundances = 14.99943808246717 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.093470416337738 8.038621540459692  -> TmpAbundances = 15.01734262734414 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.09212221820748 8.038621540459692  -> TmpAbundances = 15.00839019012634 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.091448119142353 8.038621540459692  -> TmpAbundances = 15.00391397151745 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.091111069609788 8.038621540459692  -> TmpAbundances = 15.00167586221302 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.090942544843506 8.038621540459692  -> TmpAbundances = 15.00055680756082 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.090858282460363 8.038621540459692  -> TmpAbundances = 14.99999728023471 14.98548124937534  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.038621540459692  -> TmpAbundances = 14.99999728023471 15.0026229765033  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.037240229350477  -> TmpAbundances = 14.99999728023471 14.99404911935509  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.037930884905084  -> TmpAbundances = 14.99999728023471 14.99833604792921  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.038276212682387  -> TmpAbundances = 14.99999728023471 15.00047951221624  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.038103548793735  -> TmpAbundances = 14.99999728023471 14.99940778007268  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.090858282460363 8.038189880738061  -> TmpAbundances = 14.99999728023471 14.99994364614446  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -6.554726
+                             muVecSearchCount  = 13
+                              TmpAbundances    = 14.99999728023471 14.99994364614446 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 8.426238314207524e-05
+                              Previous muVec   = 8.096166812598252 8.041384162678121 
+                              Final muVec      = 8.090858282460363 8.038189880738061 
+ ***** SCcount = 60(0/3);  Timing = 0.000000;  CC = 0.00036807576 *****
+
+
+ Intercept: Etot = 166.3016966522978
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.009071795328941252
+.........(SCcount=70)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.207552; CurrentV = 0.209069
+Species1, central values: InitV = 0.000000; PreviousV = 10.447632; CurrentV = 10.455183
+    Start with muVec = 8.068621333970661 8.013927377163917  -> TmpAbundances = 15.01036562111058 15.02840757112409  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.063270523583387 8.013927377163917  -> TmpAbundances = 14.97623491936055 15.02840757112409  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.063270523583387 8.011370983970703  -> TmpAbundances = 14.97623491936055 15.01349753079383  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.063270523583387 7.999934845027648  -> TmpAbundances = 14.97623491936055 14.94732688011737  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.063270523583387 7.999934845027648 
+                     muVecMAX = 8.068621333970661 8.011370983970703 
+ Bisectional search for muVec[s=0]: 8.065945928777024 8.005652914499176  -> TmpAbundances = 14.9932861786243 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.067283631373844 8.005652914499176  -> TmpAbundances = 15.00182588610814 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.066614780075433 8.005652914499176  -> TmpAbundances = 14.99755601860691 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.066949205724638 8.005652914499176  -> TmpAbundances = 14.99969095235752 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.06711641854924 8.005652914499176  -> TmpAbundances = 15.00075841923283 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.06703281213694 8.005652914499176  -> TmpAbundances = 15.00022468579519 14.94732688011737  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.005652914499176  -> TmpAbundances = 15.00022468579519 14.98029820028314  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.00851194923494  -> TmpAbundances = 15.00022468579519 14.99686814680071  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.009941466602822  -> TmpAbundances = 15.00022468579519 15.00517434660413  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.009226707918881  -> TmpAbundances = 15.00022468579519 15.00101884656224  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.00886932857691  -> TmpAbundances = 15.00022468579519 14.99894263897954  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.06703281213694 8.009048018247896  -> TmpAbundances = 15.00022468579519 14.99998057284596  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -7.245305
+                             muVecSearchCount  = 13
+                              TmpAbundances    = 15.00022468579519 14.99998057284596 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 8.360641229998578e-05
+                              Previous muVec   = 8.068621333970661 8.013927377163917 
+                              Final muVec      = 8.06703281213694 8.009048018247896 
+ ***** SCcount = 70(0/3);  Timing = 0.000000;  CC = 0.00036606997 *****
+
+
+ Intercept: Etot = 165.9442209568851
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.006081006262521798
+.........(SCcount=80)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.248059; CurrentV = 0.258159
+Species1, central values: InitV = 0.000000; PreviousV = 10.461823; CurrentV = 10.483035
+    Start with muVec = 8.056622999246361 7.97127574622308  -> TmpAbundances = 15.01709098393684 15.01473734163052  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.045866192958808 7.97127574622308  -> TmpAbundances = 14.95206985033508 15.01473734163052  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.045866192958808 7.965785255408934  -> TmpAbundances = 14.95206985033508 14.98469367290708  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.045866192958808 7.965785255408934 
+                     muVecMAX = 8.056622999246361 7.97127574622308 
+ Bisectional search for muVec[s=0]: 8.051244596102585 7.968530500816007  -> TmpAbundances = 14.98453135253191 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.053933797674473 7.968530500816007  -> TmpAbundances = 15.00079492232466 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.05258919688853 7.968530500816007  -> TmpAbundances = 14.99266292758505 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.0532614972815 7.968530500816007  -> TmpAbundances = 14.99672892495484 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.053597647477986 7.968530500816007  -> TmpAbundances = 14.99876192363974 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.053765722576228 7.968530500816007  -> TmpAbundances = 14.99977842298218 14.98469367290708  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.053765722576228 7.968530500816007  -> TmpAbundances = 14.99977842298218 14.99970521542905  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -8.008640
+                             muVecSearchCount  = 7
+                              TmpAbundances    = 14.99977842298218 14.99970521542905 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001680750982426815
+                              Previous muVec   = 8.056622999246361 7.97127574622308 
+                              Final muVec      = 8.053765722576228 7.968530500816007 
+ ***** SCcount = 80(0/3);  Timing = 0.000000;  CC = 0.00023790499 *****
+
+
+ Intercept: Etot = 165.5543030138964
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.004076220397836621
+.........(SCcount=90)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.343933; CurrentV = 0.352971
+Species1, central values: InitV = 0.000000; PreviousV = 10.334091; CurrentV = 10.344114
+    Start with muVec = 8.028257481970725 7.96076217806059  -> TmpAbundances = 15.01386974546982 15.00114460397268  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.025890065395371 7.96076217806059  -> TmpAbundances = 15.0001235851157 15.00114460397268  [Abundances = 15 15 ] 
+   Find muVecMIN[s=0]: 8.01521576696644 7.96076217806059  -> TmpAbundances = 14.93844010222554 15.00114460397268  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.01521576696644 7.955469899418481  -> TmpAbundances = 14.93844010222554 14.9725333166874  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.01521576696644 7.955469899418481 
+                     muVecMAX = 8.025890065395371 7.96076217806059 
+ Bisectional search for muVec[s=0]: 8.020552916180906 7.958116038739536  -> TmpAbundances = 14.96921757843416 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.023221490788139 7.958116038739536  -> TmpAbundances = 14.98466175400586 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.024555778091756 7.958116038739536  -> TmpAbundances = 14.99239019932526 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.025222921743564 7.958116038739536  -> TmpAbundances = 14.99625689222052 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.025556493569468 7.958116038739536  -> TmpAbundances = 14.99819023866813 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.02572327948242 7.958116038739536  -> TmpAbundances = 14.99915691189193 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.025806672438897 7.958116038739536  -> TmpAbundances = 14.99964024850384 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.025848368917135 7.958116038739536  -> TmpAbundances = 14.99988191680978 14.9725333166874  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.025848368917135 7.958116038739536  -> TmpAbundances = 14.99988191680978 14.98683545900486  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.025848368917135 7.959439108400063  -> TmpAbundances = 14.99988191680978 14.99398909435469  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.025848368917135 7.960100643230327  -> TmpAbundances = 14.99988191680978 14.99756591202962  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.025848368917135 7.960431410645459  -> TmpAbundances = 14.99988191680978 14.9993547328222  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.025848368917135 7.960596794353025  -> TmpAbundances = 14.99988191680978 15.00024966839744  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -8.047634
+                             muVecSearchCount  = 14
+                              TmpAbundances    = 14.99988191680978 15.00024966839744 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 4.169647823815126e-05
+                              Previous muVec   = 8.028257481970725 7.96076217806059 
+                              Final muVec      = 8.025848368917135 7.960596794353025 
+ ***** SCcount = 90(0/3);  Timing = 0.000000;  CC = 0.00014525558 *****
+
+
+ Intercept: Etot = 165.2223093984981
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.002732372244729256
+.........(SCcount=100)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 0.424126; CurrentV = 0.432265
+Species1, central values: InitV = 0.000000; PreviousV = 10.221563; CurrentV = 10.210616
+    Start with muVec = 8.007688282260634 7.958860780768285  -> TmpAbundances = 15.00758467684419 15.00342550226704  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 8.006685474205725 7.958860780768285  -> TmpAbundances = 15.00196314470252 15.00342550226704  [Abundances = 15 15 ] 
+   Find muVecMIN[s=0]: 8.001759674551792 7.958860780768285  -> TmpAbundances = 14.9744201606231 15.00342550226704  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 8.001759674551792 7.95641289866438  -> TmpAbundances = 14.9744201606231 14.99019009286557  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 8.001759674551792 7.95641289866438 
+                     muVecMAX = 8.006685474205725 7.958860780768285 
+ Bisectional search for muVec[s=0]: 8.004222574378758 7.957636839716333  -> TmpAbundances = 14.98817327510498 14.99019009286557  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.005454024292241 7.957636839716333  -> TmpAbundances = 14.995062856842 14.99019009286557  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.006069749248983 7.957636839716333  -> TmpAbundances = 14.9985115194211 14.99019009286557  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 8.006377611727354 7.957636839716333  -> TmpAbundances = 15.00023733206184 14.99019009286557  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.006377611727354 7.957636839716333  -> TmpAbundances = 15.00023733206184 14.99680445809597  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 8.006377611727354 7.958248810242309  -> TmpAbundances = 15.00023733206184 15.00011335841007  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -8.895500
+                             muVecSearchCount  = 7
+                              TmpAbundances    = 15.00023733206184 15.00011335841007 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0003078624783707795
+                              Previous muVec   = 8.007688282260634 7.958860780768285 
+                              Final muVec      = 8.006377611727354 7.958248810242309 
+ ***** SCcount = 100(0/3);  Timing = 0.000000;  CC = 0.0001277845 *****
+
+
+ Intercept: Etot = 164.8977803857771
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 0.001831563888873418
+...................................................................................................(SCcount=200)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 1.603231; CurrentV = 1.631329
+Species1, central values: InitV = 0.000000; PreviousV = 7.704736; CurrentV = 7.645784
+    Start with muVec = 7.930854925494577 7.923672480790219  -> TmpAbundances = 15.01102904244115 14.99538740216626  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.929079382644632 7.923672480790219  -> TmpAbundances = 15.00152634286795 14.99538740216626  [Abundances = 15 15 ] 
+   Find muVecMIN[s=0]: 7.920850136773806 7.923672480790219  -> TmpAbundances = 14.95772140535211 14.99538740216626  [Abundances = 15 15 ] 
+   Find muVecMAX[s=1]: 7.920850136773806 7.927783377386922  -> TmpAbundances = 14.95772140535211 15.01704544127785  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.920850136773806 7.923672480790219 
+                     muVecMAX = 7.929079382644632 7.927783377386922 
+ Bisectional search for muVec[s=0]: 7.924964759709219 7.92572792908857  -> TmpAbundances = 14.97957826120198 15.01704544127785  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.927022071176926 7.92572792908857  -> TmpAbundances = 14.99054530976974 15.01704544127785  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.928050726910779 7.92572792908857  -> TmpAbundances = 14.99603433152678 15.01704544127785  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.928565054777707 7.92572792908857  -> TmpAbundances = 14.99877884240527 15.01704544127785  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.92882221871117 7.92572792908857  -> TmpAbundances = 15.00015191405591 15.01704544127785  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.92882221871117 7.92572792908857  -> TmpAbundances = 15.00015191405591 15.00621012479896  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.92882221871117 7.924700204939394  -> TmpAbundances = 15.00015191405591 15.00079861046333  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.92882221871117 7.924186342864806  -> TmpAbundances = 15.00015191405591 14.99809293341102  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.92882221871117 7.924443273902099  -> TmpAbundances = 15.00015191405591 14.99944577193718  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.92882221871117 7.924571739420746  -> TmpAbundances = 15.00015191405591 15.00012219120025  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -8.320366
+                             muVecSearchCount  = 11
+                              TmpAbundances    = 15.00015191405591 15.00012219120025 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 0.0001284655186468697
+                              Previous muVec   = 7.930854925494577 7.923672480790219 
+                              Final muVec      = 7.92882221871117 7.924571739420746 
+ ***** SCcount = 200(0/3);  Timing = 0.000000;  CC = 0.00010109109 *****
+
+
+ Intercept: Etot = 163.1070126434973
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 3.354626279025119e-05
+...................................................................................................(SCcount=300)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.019747; CurrentV = 6.055015
+Species1, central values: InitV = 0.000000; PreviousV = 2.217087; CurrentV = 2.192782
+    Start with muVec = 7.863656701366169 7.849389782117196  -> TmpAbundances = 15.00136747891762 15.00220219695925  [Abundances = 15 15 ]
+   Find muVecMIN[s=0]: 7.862953808053952 7.849389782117196  -> TmpAbundances = 14.99783428473468 15.00220219695925  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.862953808053952 7.849113579844449  -> TmpAbundances = 14.99783428473468 15.0009261661241  [Abundances = 15 15 ] 
+   Find muVecMIN[s=1]: 7.862953808053952 7.847573234471563  -> TmpAbundances = 14.99783428473468 14.99381351360239  [Abundances = 15 15 ] 
+   [mu-ranges found] muVecMIN = 7.862953808053952 7.847573234471563 
+                     muVecMAX = 7.863656701366169 7.849113579844449 
+ Bisectional search for muVec[s=0]: 7.863305254710061 7.848343407158006  -> TmpAbundances = 14.99960088182616 14.99381351360239  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.863480978038115 7.848343407158006  -> TmpAbundances = 15.00048418037191 14.99381351360239  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=0]: 7.863393116374088 7.848343407158006  -> TmpAbundances = 15.00004253109907 14.99381351360239  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.863393116374088 7.848343407158006  -> TmpAbundances = 15.00004253109907 14.99736803430087  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.863393116374088 7.848728493501227  -> TmpAbundances = 15.00004253109907 14.99914710021249  [Abundances = 15 15 ]
+ Bisectional search for muVec[s=1]: 7.863393116374088 7.848921036672838  -> TmpAbundances = 15.00004253109907 15.0000366331683  [Abundances = 15 15 ]
+EnforceConstraints: [Success] DeltamuModifier  = -9.229332
+                             muVecSearchCount  = 7
+                              TmpAbundances    = 15.00004253109907 15.0000366331683 
+                              TargetAbundances = 15 15 
+                              Minimal Deltamu  = 8.786166402785511e-05
+                              Previous muVec   = 7.863656701366169 7.849389782117196 
+                              Final muVec      = 7.863393116374088 7.848921036672838 
+ ***** SCcount = 300(0/3);  Timing = 0.000000;  CC = 3.3789138e-05 *****
+
+
+ Intercept: Etot = 160.8894824088536
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 6.14421235332821e-07
+...................................................................................................(SCcount=400)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 7.114208; CurrentV = 7.112164
+Species1, central values: InitV = 0.000000; PreviousV = 1.553725; CurrentV = 1.554738
+    Start with muVec = 7.854147570555188 7.834508164405396  -> TmpAbundances = 15.00011973273812 15.00021941475479  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.854147570555188 7.834508164405396 
+                     muVecMAX = 7.854147570555188 7.834508164405396 
+EnforceConstraints: [Success] DeltamuModifier  = -11.670420
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 15.00011973273812 15.00021941475479 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.854147570555188 7.834508164405396 
+                              Final muVec      = 7.854147570555188 7.834508164405396 
+ ***** SCcount = 400(0/3);  Timing = 0.000000;  CC = 1.5588984e-06 *****
+
+
+ Intercept: Etot = 160.5904235241429
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 1.125351747192591e-08
+...................................................................................................(SCcount=500)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.781964; CurrentV = 6.778722
+Species1, central values: InitV = 0.000000; PreviousV = 1.729369; CurrentV = 1.731121
+    Start with muVec = 7.85301371140839 7.834623361060429  -> TmpAbundances = 15.00029090860211 15.00007728672153  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.85301371140839 7.834623361060429 
+                     muVecMAX = 7.85301371140839 7.834623361060429 
+EnforceConstraints: [Success] DeltamuModifier  = -10.768818
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 15.00029090860211 15.00007728672153 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.85301371140839 7.834623361060429 
+                              Final muVec      = 7.85301371140839 7.834623361060429 
+ ***** SCcount = 500(0/3);  Timing = 0.000000;  CC = 8.4042419e-08 *****
+
+
+ Intercept: Etot = 160.5759944142491
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 2.061153622438558e-10
+...................................................................................................(SCcount=600)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.514945; CurrentV = 6.512744
+Species1, central values: InitV = 0.000000; PreviousV = 1.877534; CurrentV = 1.878791
+    Start with muVec = 7.852370132209932 7.835034120899785  -> TmpAbundances = 15.00028535870755 14.99983478580481  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.852370132209932 7.835034120899785 
+                     muVecMAX = 7.852370132209932 7.835034120899785 
+EnforceConstraints: [Success] DeltamuModifier  = -10.037242
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 15.00028535870755 14.99983478580481 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.852370132209932 7.835034120899785 
+                              Final muVec      = 7.852370132209932 7.835034120899785 
+ ***** SCcount = 600(0/3);  Timing = 0.000000;  CC = 2.0464664e-08 *****
+
+
+ Intercept: Etot = 160.5611974914671
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 3.775134544279098e-12
+...................................................................................................(SCcount=700)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.324342; CurrentV = 6.322659
+Species1, central values: InitV = 0.000000; PreviousV = 1.988239; CurrentV = 1.989201
+    Start with muVec = 7.851759213579641 7.835330422528948  -> TmpAbundances = 14.99986845820026 15.00005876191625  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.851759213579641 7.835330422528948 
+                     muVecMAX = 7.851759213579641 7.835330422528948 
+EnforceConstraints: [Success] DeltamuModifier  = -11.666499
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 14.99986845820026 15.00005876191625 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.851759213579641 7.835330422528948 
+                              Final muVec      = 7.851759213579641 7.835330422528948 
+ ***** SCcount = 700(0/3);  Timing = 0.000000;  CC = 1.1204075e-08 *****
+
+
+ Intercept: Etot = 160.5538935833637
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 6.914400106940204e-14
+...................................................................................................(SCcount=800)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.173494; CurrentV = 6.172140
+Species1, central values: InitV = 0.000000; PreviousV = 2.078893; CurrentV = 2.079716
+    Start with muVec = 7.851305120057155 7.835600749095891  -> TmpAbundances = 15.00011381904724 14.99993440495749  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.851305120057155 7.835600749095891 
+                     muVecMAX = 7.851305120057155 7.835600749095891 
+EnforceConstraints: [Success] DeltamuModifier  = -9.985252
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 15.00011381904724 14.99993440495749 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.851305120057155 7.835600749095891 
+                              Final muVec      = 7.851305120057155 7.835600749095891 
+ ***** SCcount = 800(0/3);  Timing = 0.000000;  CC = 7.0485135e-09 *****
+
+
+ Intercept: Etot = 160.5507350513209
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 1.266416554909418e-15
+...................................................................................................(SCcount=900)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 6.049974; CurrentV = 6.048920
+Species1, central values: InitV = 0.000000; PreviousV = 2.155057; CurrentV = 2.155752
+    Start with muVec = 7.850901598205229 7.835916391299254  -> TmpAbundances = 14.9998785975524 15.00010628985967  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.850901598205229 7.835916391299254 
+                     muVecMAX = 7.850901598205229 7.835916391299254 
+EnforceConstraints: [Success] DeltamuModifier  = -11.723303
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 14.9998785975524 15.00010628985967 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.850901598205229 7.835916391299254 
+                              Final muVec      = 7.850901598205229 7.835916391299254 
+ ***** SCcount = 900(0/3);  Timing = 0.000000;  CC = 4.7572697e-09 *****
+
+
+ Intercept: Etot = 160.5472284237898
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 2.31952283024357e-17
+...................................................................................................(SCcount=1000)UpdateV: incrementalV = 1.000000/1.0
+Species0, central values: InitV = 0.000000; PreviousV = 5.951702; CurrentV = 5.950828
+Species1, central values: InitV = 0.000000; PreviousV = 2.217110; CurrentV = 2.217666
+    Start with muVec = 7.850719877193699 7.836185485706064  -> TmpAbundances = 15.00004809565755 15.00022733605724  [Abundances = 15 15 ]
+   [mu-ranges found] muVecMIN = 7.850719877193699 7.836185485706064 
+                     muVecMAX = 7.850719877193699 7.836185485706064 
+EnforceConstraints: [Success] DeltamuModifier  = -11.375109
+                             muVecSearchCount  = 0
+                              TmpAbundances    = 15.00004809565755 15.00022733605724 
+                              TargetAbundances = 15 15 
+                              Previous muVec   = 7.850719877193699 7.836185485706064 
+                              Final muVec      = 7.850719877193699 7.836185485706064 
+ ***** SCcount = 1000(0/3);  Timing = 0.000000;  CC = 2.9862936e-09 *****
+
+
+ Intercept: Etot = 160.5478184521488
+
+Linear mixing enabled
+InjectSchedule: ImposeNoise of magnitude 4.248354255291589e-19
+
+ Loop Time = 41.000000
+
+
+ Warning!!! SC loop not converged (CC=2.986293633791632e-09) 
+
 
  O U T P U T ...
 
-StartTimer for ExportData:
-FreeRAM1 = 2.3603e+09
-.......... GetDispersalEnergy to be implemented for this system ..............
-FreeRAM3 = 2.3603e+09
-FreeRAM4 = 2.3603e+09
+FreeRAM1 = 1.7733e+09
+FreeRAM3 = 1.7733e+09
+FreeRAM4 = 1.7733e+09
  ***** prepare export ****
  ***** get field stats ****
  ***** get FieldInterpolations ****
  ***** get CutInterpolations ****
  ***** get consumption ****
-FreeRAM5 = 2.3541e+09
+FreeRAM5 = 1.7733e+09
  ***** export Den ****
-FreeRAM7 = 2.3541e+09
+FreeRAM7 = 1.7735e+09
  ***** export V ****
-FreeRAM8 = 2.3541e+09
+FreeRAM8 = 1.7735e+09
  ***** export ContourData ****
-FreeRAM9 = 2.3291e+09
+FreeRAM9 = 1.7728e+09
  ***** export CutData ****
- ***** export Triangulation Data ****
-FreeRAM10 = 2.3291e+09
-threads = 12\\**** InputParameters from mpDPFT.input ****\\System 0\\Symmetry 4\\TaskType 0\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 2\\Units 1\\edge 16\\steps 384\\S 1\\Abundances 15\\RelAcc 0\\InternalAcc 0.01\\K 0\\Resources\\DensityExpression 11\\mpp 0.5\\Mpp 1 1 1e-06\\tauVec 1\\tVec 1\\TVec 1\\Environments 1\\stretchfactor 1\\Wall 0\\Noise 0\\InterpolVQ 0\\Interactions 0\\incrementalV 1\\muVec 5.5\\DeltamuModifier -3\\Mixer 0 10 -1\\thetaVec 0.3\\SCcriterion 1e-12\\maxSCcount 0\\method 1\\DelFieldMethod 5\\MovieQ 1\\Schedule 0\\EkinTypes 0\\alpha 0\\beta 0\\gamma 0\\gammaH 0\\degeneracy 1\\regularize 0\\RegularizationThreshold 0.375\\Print 2\\\newpage 
-**** HardCodedParameters ****\\Deltax 0.0416667\\k0 -75.3982\\U 1\\KD.ExportCleanDensity 100\\KD.UseTriangulation 0\\KD.UpdateTriangulation 1\\KD.IntermediateCleanUp 0\\KD.ReevaluateTriangulation 100\\KD.NumChecks 100\\FocalDensitySteps 128\\KD.MergerRatioThreshold 0.1\\KD.RemovalFraction 0.6\\KD.RetainSurplusFraction 0.1\\Symmetry 4\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 50\\MaxIteration 4\\SmearingExtent 0.25 = 6*Deltax\\ConvolutionSigma -0.03125\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronPP 2\\AllElectronParam 17.4593\\libxcPolarization 1\\OutPrecision 16\\OutCut -8 0 8 0 \\MonitorFlag 0\\\newpage 
-**** FieldStats ****\\DenMin = -0.000546318 \\DenMax = 0.903203 \\EnvMin = 1.97215226305253e-31 \\EnvMax = 64 \\VMin = 1.97215226305253e-31 \\VMax = 64 \\**** Final Output Variables ****\\FinalAbundances              = 14.52316490068816 \\TargetAbundances             = 15 \\RelativeAbundances           = 1 \\muVec                        = 5.5 \\DeltamuModifier              = -3\\Linear/Pulay-Mixings         = 0/0\\AuxilliaryEkin[s=0]          = 25.64874997676748 0 0 0 \\AuxilliaryEint[s=0]          = 0 0 0 0 \\DispersalEnergies            = 0 \\AlternativeDispersalEnergies = 0 \\EnvironmentalEnergies        = 26.59676402250891 \\InteractionEnergies          = 0 \\TotalEnergy                  = 26.59676402250891\\FigureOfMerit                = 0\\SCiterations                 = -1/0\\ConvergenceCheck             = 0\\ComputationalTime            = 3180\\\newpage 
+ ***** export MovieData ****
+FreeRAM10 = 1.7728e+09
+threads = 12\\**** InputParameters from mpDPFT.input ****\\System 0\\Symmetry 0\\TaskType 0\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 2\\Units 1\\edge 16\\steps 96\\S 2\\Abundances 15 15\\RelAcc 1e-05\\InternalAcc 1\\K 0\\Resources\\DensityExpression 6\\mpp 0.5 0.5\\Mpp 1 1 1e-06\\tauVec 1 1\\tVec 1 1\\TVec 1 1\\Environments 1 1\\stretchfactor 1\\Wall 0\\Noise 0.1\\InterpolVQ 0\\Interactions 1\\incrementalV 1\\muVec 6 6\\DeltamuModifier -3\\Mixer 0 10 -1\\thetaVec 0.3 0.3\\SCcriterion 1e-12\\maxSCcount 1000\\method 2\\DelFieldMethod 2\\MovieQ 1\\Schedule 4\\EkinTypes 0\\alpha 0\\beta 8\\gamma 0\\gammaH 0\\degeneracy 1\\regularize 0\\RegularizationThreshold 0.375\\Print 0\\\newpage 
+**** HardCodedParameters ****\\Deltax 0.166667\\k0 -18.8496\\U 1\\Symmetry 0\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 50\\MaxIteration 4\\SmearingExtent 1 = 6*Deltax\\ConvolutionSigma -0.5\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronPP 2\\AllElectronParam 4.1081\\libxcPolarization 1\\OutPrecision 16\\OutCut -8 0 8 0 \\MonitorFlag 0\\\newpage 
+**** FieldStats ****\\DenMin = -0.006534391681710011 -0.004296996311567112 \\DenMax = 1.227658909794183 1.246337818368617 \\EnvMin = 1.97215226305253e-31 1.97215226305253e-31 \\EnvMax = 64 64 \\VMin = 0.5211828788454904 0.3308671985258725 \\VMax = 63.9987995027036 64.00039366299447 \\**** Final Output Variables ****\\FinalAbundances              = 15.00004809565755 15.00022733605724 \\TargetAbundances             = 15 15 \\RelativeAbundances           = 0.5 0.5 \\NetMagnetization             = 0.9076212919164142 0.9526916037818398 0.7695469765480362 0.9978262365818454 0.4568622713489687 0.8861884515307343 \\muVec                        = 7.850719877193699 7.836185485706064 \\DeltamuModifier              = -11.3751\\Linear/Pulay-Mixings         = 1001/0\\AuxilliaryEkin[s=0]          = 33.73445355704338 0 0 0 \\AuxilliaryEkin[s=1]          = 34.92416681389341 0 0 0 \\AuxilliaryEint[s=0]          = 0 0 0 0 \\AuxilliaryEint[s=1]          = 0 0 0 0 \\DispersalEnergies            = 34.84113773902206 36.03479304085307 \\AlternativeDispersalEnergies = 0 0 \\EnvironmentalEnergies        = 42.13595101448197 39.46033439173114 \\InteractionEnergies          = 8.075673871238775 \\TotalEnergy                  = 160.547890057327\\FigureOfMerit                = 0\\SCiterations                 = 1000/1000\\ConvergenceCheck             = 2.98629e-09\\ComputationalTime            = 41\\\newpage 
 
  ***** produce plot and movie shells ****
-FreeRAM11 = 2.3291e+09
-EndTimer for ExportData: 0.340599 seconds
- TotalRunTime = 3180.000000;  0 Error(s);  0 Warning(s)
+FreeRAM11 = 1.7728e+09
+ TotalRunTime = 41.000000;  0 Error(s);  1 Warning(s)
  EndOfControlFile

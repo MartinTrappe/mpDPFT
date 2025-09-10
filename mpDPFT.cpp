@@ -928,7 +928,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = 128;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = data.steps/4;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -4265,7 +4265,8 @@ void Getn7(int s, datastruct &data){
         }
 		#pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
 		for(int c=0;c<data.KD.CoarseGridSize;c++){
-      //if (c<7000 || c>9000)
+      //cout << "c is "<< c <<endl;
+      //if (!( (c>=0 && c<=384) || (c >= 39270 && c<=39654) || (c>= 55440 && c<= 55824) || (c>=74305 && c<=74689) || ( c>= 92785 && c<= 93169) || ( c>=103295 && c<=103679) || (c>=147840 && c<=148224) ))
       //  continue;
       int FocalIndex = data.KD.CoarseIndices[c];
       //cout << c << " " << FocalIndex << endl;
@@ -4307,17 +4308,18 @@ void Getn7(int s, datastruct &data){
         else tmpfield[j] = GetID(tauThreshold,s,FocalIndex,Norm(rVec),FocalIndex,Norm(rVec),data);
       }
       // Remove small KD values
+      
       KDmin = *std::min_element(tmpKD.begin(), tmpKD.end());
       KDmax = *std::max_element(tmpKD.begin(), tmpKD.end());
       //cout << KDmax << " is larger than " << KDmin << endl;
       for(int i=0; i<data.GridSize; i++){
         double dist2 = Norm2(VecDiff(rVec,data.VecAt[i]));
-        if (tmpKD[i] < 1.e-2 && POW(4.*PI*dist2,data.DIM) < 0.1){
+        if (tmpKD[i] < 1.e-3 && POW(4.*PI*dist2,data.DIM) < 1.e-2){
           tmpfield[i] = 0.;
         }
       }
       data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
-      if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
+      //if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
     }
 	}
   
