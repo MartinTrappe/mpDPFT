@@ -4268,9 +4268,6 @@ void Getn7(int s, datastruct &data){
 
 		#pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
 		for(int c=0;c<data.KD.CoarseGridSize;c++){
-
-      if(omp_get_thread_num()==0 && c<10){ //PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
-      //cout << "c is "<< c <<endl;
       //if (!( (c>=0 && c<=384) || (c >= 39270 && c<=39654) || (c>= 55440 && c<= 55824) || (c>=74305 && c<=74689) || ( c>= 92785 && c<= 93169) || ( c>=103295 && c<=103679) || (c>=147840 && c<=148224) ))
       //  continue;
       int FocalIndex = data.KD.CoarseIndices[c];
@@ -4323,6 +4320,7 @@ void Getn7(int s, datastruct &data){
       }
 
       data.Den[s][FocalIndex] = data.degeneracy*Integrate(1,data.method, data.DIM, tmpfield, data.frame);
+      if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
     }
 
 	}
