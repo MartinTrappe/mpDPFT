@@ -31,7 +31,7 @@
 0. 10. -1.		//Mixer				--- vector<double> of Mixer parameters. [0]: 0.: linear --- 1.: Pulay --- 2.: Pulay2, [1]: Pulay scope, [2] Pulay metric weight (automatic if <0.)
 0.3 0.3			//thetaVec			--- S-component vector<double> of species-specific admixtures for self-consistent loop
 1.0e-12			//SCcriterion			--- criterion for breaking self-consistent loop
-1000			//maxSCcount			--- maximum number of self-consistent iterations; put 0 for noninteracting systems
+10000			//maxSCcount			--- maximum number of self-consistent iterations; put 0 for noninteracting systems
 2			//method			--- integration method --- 1: Riemann --- 2: BooleRule
 2			//DelFieldMethod		--- method of differentiation --- 0: one-sided difference --- 1: cubic spline --- 2: monotone cubic spline --- 3: Akima spline --- 4: FFT
 1			//MovieQ			--- 1: Make movie of densities along OutCut

@@ -46,9 +46,9 @@ HEADERS = stdafx.h statistics.h specialfunctions.h solvers.h optimization.h lina
 
 .PHONY: all clean
 
-all: mpDPFT
+all: mpDPFT_michael
 
-mpDPFT: $(OBJS)
+mpDPFT_michael: $(OBJS)
 	@echo "Linking mpDPFT..."
 	@time $(CC) $(OBJS) -o $@ $(LDFLAGS)
 
@@ -64,6 +64,6 @@ DEPFILES = $(OBJS:.o=.d)
 
 .PHONY: clean
 clean:
-	rm -f mpDPFT \
+	rm -f mpDPFT_michael \
 	       $(OBJS) \
 	       $(OBJS:.o=.d)

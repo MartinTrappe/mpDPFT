@@ -4149,6 +4149,7 @@ double HG1F2(const double a1,const double b1,const double b2,const double x){
 
 
 void Getn7(int s, datastruct &data){
+
   	struct KDintegrationParams KDip;
 	//BEGIN USER INPUT
 	int METHOD = 3;//0: brute-force integration --- 1: bisection --- 2: accumulative bisection --- 3: Plugin_KD (Alex & Tri) --- 4: new bisection (MIT)
@@ -4187,7 +4188,7 @@ void Getn7(int s, datastruct &data){
 	vector<vector<struct ComputeKD>> COMPUTEKD;
 
 	DelField(data.V[s], s, data.DelFieldMethod, data);
-    cout << "Getn7 derivatives computed" << endl;
+    cout << "Getn7 derivatives computed " << sizeof(data) << endl;
 
     double ABSERR;
 
@@ -4258,13 +4259,17 @@ void Getn7(int s, datastruct &data){
 		MatrixToFile(data.TestMat,"TestMat.dat",16);
 	}
 	else if(METHOD>=3){//with KD
+	
       	double prefactorA = 8./data.U, prefactorB = 4./pow(3.*data.U*data.U,1./3.);
         if(data.KD.UseTriangulation){
           	COMPUTEKD.clear();
             COMPUTEKD.resize(data.KD.CoarseGridSize);//points where the density is calculated
         }
+
 		#pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
 		for(int c=0;c<data.KD.CoarseGridSize;c++){
+
+      if(omp_get_thread_num()==0 && c<10){ //PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
       //cout << "c is "<< c <<endl;
       //if (!( (c>=0 && c<=384) || (c >= 39270 && c<=39654) || (c>= 55440 && c<= 55824) || (c>=74305 && c<=74689) || ( c>= 92785 && c<= 93169) || ( c>=103295 && c<=103679) || (c>=147840 && c<=148224) ))
       //  continue;
@@ -4290,7 +4295,6 @@ void Getn7(int s, datastruct &data){
             }
             else {
                 KDval = KD(data.DIM,A,B,ABSERR2,data.InternalAcc,KDip);
-                //cout << "A: "<< A<< " B: "<<B<<" KD: "<<KDval <<endl;
             }
                         if(!std::isfinite(KDval)){ PRINT("Getn7: KDval error: !std::isfinite(KDval) " + to_string(c) + " " + to_string(j),data); usleep(10000000); }
           }
@@ -4311,16 +4315,16 @@ void Getn7(int s, datastruct &data){
       
       KDmin = *std::min_element(tmpKD.begin(), tmpKD.end());
       KDmax = *std::max_element(tmpKD.begin(), tmpKD.end());
-      //cout << KDmax << " is larger than " << KDmin << endl;
       for(int i=0; i<data.GridSize; i++){
         double dist2 = Norm2(VecDiff(rVec,data.VecAt[i]));
         if (tmpKD[i] < 1.e-3 && POW(4.*PI*dist2,data.DIM) < 1.e-2){
           tmpfield[i] = 0.;
         }
       }
-      data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
-      //if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
+
+      data.Den[s][FocalIndex] = data.degeneracy*Integrate(1,data.method, data.DIM, tmpfield, data.frame);
     }
+
 	}
   
 	data.FocalSpecies = s;
@@ -4355,7 +4359,6 @@ void Getn7(int s, datastruct &data){
         if(data.KD.IntermediateCleanUp) CleanUpTriangulation(data);
 	}
 
-	PRINT("Getn7: FreeRAM3 = " + to_string_with_precision((double)getFreeRAM(data),5),data);
 }
 
 void GetSCOdensity(int s, datastruct &data){
