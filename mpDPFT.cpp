@@ -928,7 +928,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = data.steps/4;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = data.steps;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -4320,7 +4320,7 @@ void Getn7(int s, datastruct &data){
       }
 
       data.Den[s][FocalIndex] = data.degeneracy*Integrate(1,data.method, data.DIM, tmpfield, data.frame);
-      if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
+      //if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
     }
 
 	}
@@ -4356,6 +4356,7 @@ void Getn7(int s, datastruct &data){
         PRINT(data.KD.TriangulationReport,data);
         if(data.KD.IntermediateCleanUp) CleanUpTriangulation(data);
 	}
+  PRINT("Getn7 FreeRAM = " + to_string_with_precision((double)getFreeRAM(data),8),data);
 
 }
 

@@ -6,7 +6,7 @@
 2			//DIM				--- dimension
 1			//Units				--- {Energy,Length}. 0: default --- 1: {HO units} (with hbar=m=omega=1) --- 2: {eV,Angstrom} (with m=m_e)
 16.			//edge				--- physical edge length of cubic integration grid (centred @origin)
-96			//steps				--- #steps in each cartesian direction
+48			//steps				--- #steps in each cartesian direction
 2			//S				--- #species
 15. 15.			//Abundances			--- S-component vector<double> of target abundances
 1.0e-5			//RelAcc			--- relative target accuracy for Abundances (fixed-mu calculation if <MP)
@@ -31,7 +31,7 @@
 0. 10. -1.		//Mixer				--- vector<double> of Mixer parameters. [0]: 0.: linear --- 1.: Pulay --- 2.: Pulay2, [1]: Pulay scope, [2] Pulay metric weight (automatic if <0.)
 0.3 0.3			//thetaVec			--- S-component vector<double> of species-specific admixtures for self-consistent loop
 1.0e-12			//SCcriterion			--- criterion for breaking self-consistent loop
-10000			//maxSCcount			--- maximum number of self-consistent iterations; put 0 for noninteracting systems
+1000			//maxSCcount			--- maximum number of self-consistent iterations; put 0 for noninteracting systems
 2			//method			--- integration method --- 1: Riemann --- 2: BooleRule
 2			//DelFieldMethod		--- method of differentiation --- 0: one-sided difference --- 1: cubic spline --- 2: monotone cubic spline --- 3: Akima spline --- 4: FFT
 1			//MovieQ			--- 1: Make movie of densities along OutCut
