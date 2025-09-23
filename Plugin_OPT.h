@@ -24,13 +24,218 @@
 #include "alglibinternal.h"
 #include "sys/types.h"
 #include "sys/sysinfo.h"
+#include <deque>
 #include <Eigen/Dense>
 #include <Eigen/QR>
+
+
+// ——— SimpleGP Surrogate Model: header-only RBF (squared‐exponential) Gaussian Process using Eigen ———
+class SimpleGP {
+public:
+  // Constructor: set RBF kernel length‐scale ℓ, signal variance σ_f², and noise variance σ_n².
+  //   length_scale: controls how quickly k(x,x') decays with distance ‖x-x'‖.
+  //   signal_var:   prior variance on f(x).  Should roughly match Var(y) of your training data.
+  //   noise_var:    “nugget” term added to the diagonal, for numerical stability or measurement noise.
+  SimpleGP(double length_scale = 0.5,
+           double signal_var  = 1.0,
+           double noise_var   = 1e-6)
+    : length_scale_(length_scale)
+    , signal_var_(signal_var)//, signal_var_(sqrt(signal_var))//
+    , noise_var_(noise_var)
+  {}
+
+  // ——— Train GP on (X_data, y_data) pairs ———
+  // X_data: a deque of Eigen::VectorXd, each an input vector x_i ∈ ℝ^D
+  // y_data: a deque of double, the corresponding observed f(x_i)
+  void train(const std::deque<Eigen::VectorXd>& X_data,
+             const std::deque<double>&        y_data)
+  {
+    int n = (int)X_data.size();
+    if (n == 0) return;               // nothing to train on
+    X_ = X_data;  // copy input vectors
+    y_ = y_data;  // copy output values
+
+    // 1) Build the covariance matrix K_ of size n×n:
+    //    K_[i,j] = σ_f² * exp(-0.5 * ‖X_i - X_j‖² / ℓ²)
+    K_.resize(n, n);
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        double d2 = (X_[i] - X_[j]).squaredNorm();   // squared Euclidean distance
+        K_(i,j) = signal_var_ * std::exp(-0.5 * d2 / (length_scale_ * length_scale_));
+      }
+    }
+    // 2) Add small noise variance σ_n² to the diagonal: K_ ← K_ + σ_n² I
+    //    This ensures K_ is numerically positive definite for the Cholesky decomposition later.
+    K_.diagonal().array() += noise_var_;
+
+    // 3) Copy y_data into an Eigen vector yvec
+    Eigen::VectorXd yvec(n);
+    for (int i = 0; i < n; ++i) {
+      yvec(i) = y_[i];
+    }
+
+    // 4) Compute & store the Cholesky factorization of K_:
+    llt_.compute(K_);
+    alpha_ = llt_.solve(yvec);
+    // Now, alpha_ holds the coefficients so that f_pred(x) = k(x)^T α_
+  }
+
+  // ——— Predictive mean at a new input xVec (std::vector<double> version) ———
+  // Performs:  k_* = [k(X_i, x)]_{i=1..n},  then return k_*ᵀ α_.
+  double predictGP(const std::vector<double>& xVec) const {
+    // Map the std::vector<double> into an Eigen::VectorXd without copying:
+    Eigen::Map<const Eigen::VectorXd> x(
+        xVec.data(),
+        static_cast<int>(xVec.size())
+    );
+
+    int n = (int)X_.size();
+    if (n == 0) return 0.0;  // no training data ⇒ return zero (prior mean)
+
+    // Build k = [k(X_i, x)]:
+    //   k[i] = σ_f² * exp(-0.5 * ‖X_i - x‖² / ℓ²)
+    Eigen::VectorXd k(n);
+    for (int i = 0; i < n; ++i) {
+      double d2 = (X_[i] - x).squaredNorm();
+      k(i) = signal_var_ * std::exp(-0.5 * d2 / (length_scale_ * length_scale_));
+    }
+
+    // Predictive mean = k^T α_
+    return k.dot(alpha_);
+  }
+
+  // ——— Predictive variance σ²(x) at a new input xVec ———
+  // Computes σ²(x) = k(x,x) - k_*ᵀ [K + σ_n²I]^{-1} k_*.
+  double variance(const std::vector<double>& xVec) const {
+    // Map input vector to Eigen form
+    Eigen::Map<const Eigen::VectorXd> x(
+        xVec.data(),
+        static_cast<int>(xVec.size())
+    );
+    int n = static_cast<int>(X_.size());
+    if (n == 0) return 0.0;  // no data ⇒ zero predictive variance
+
+    // 1) Compute k_* vector of size n:  k[i] = k(X_i, x)
+    Eigen::VectorXd k(n);
+    for (int i = 0; i < n; ++i) {
+      double d2 = (X_[i] - x).squaredNorm();
+      k(i) = signal_var_ * std::exp(-0.5 * d2 / (length_scale_ * length_scale_));
+    }
+
+    // 2) Solve v = [K + σ_n² I]^{-1} k   (reuse Cholesky decomposition)
+    Eigen::VectorXd v = llt_.solve(k);
+
+    // 3) k(x,x) = σ_f² (because distance = 0 ⇒ exp(0) = 1)
+    double kxx = signal_var_;
+
+    // Return σ²(x) = k(x,x) - k_*ᵀ v
+    return kxx - k.dot(v);
+  }
+
+ private:
+   std::deque<Eigen::VectorXd> X_;
+   std::deque<double>          y_;
+
+   // The n×n kernel matrix K = [k(X_i, X_j)] + σ_n² I
+   Eigen::MatrixXd             K_;
+   // Store the Cholesky factorization of K_ so we can reuse it
+   Eigen::LLT<Eigen::MatrixXd> llt_;
+
+   // Vector α whose entries satisfy  K α = y
+   Eigen::VectorXd             alpha_;
+
+   // Hyperparameters (ℓ, σ_f², σ_n²)
+   double                      length_scale_, signal_var_, noise_var_;
+
+};
+
+
+
+// ——— Rolling history of (mean, f(mean)) for training the GP ———
+class HistoryManager {
+public:
+  // Constructor
+  HistoryManager(size_t max_history = 50)
+    : _max_history(max_history) {}
+
+  // Or add a setter if you want to change later:
+  void setMaxHistory(size_t max_history) { _max_history = max_history; }
+
+  // Add a new (vector v, fitness f) to history.
+  bool add(const std::vector<double>& v, double f) {
+    Eigen::Map<const Eigen::VectorXd> m(v.data(), v.size());
+
+    // ======= Duplicate Check ========
+    for (const auto& h : _H) {
+        if ((h - m).norm() < 1e-12) { // tolerance for floating point
+            return false; // Already in history — do not add
+        }
+    }
+
+    // ======= Max-Fitness Check ========
+    if (_F.size() >= _max_history) {
+        auto max_fitness = *std::max_element(_F.begin(), _F.end());
+        if (f > max_fitness) {
+            return false; // f is worse (larger) than worst in history — do not add
+        }
+    }
+
+    // ======= Push if Not Duplicate ========
+    if (_H.size() >= _max_history) {
+        _H.pop_front();
+        _F.pop_front();
+    }
+    _H.push_back(m);
+    _F.push_back(f);
+    return true;
+  }
+
+std::string printFitness() const {
+    // copy into a vector and sort
+    std::vector<double> sortedF(_F.begin(), _F.end());
+    std::sort(sortedF.begin(), sortedF.end());
+
+    std::ostringstream oss;
+    size_t n = sortedF.size();
+
+    if (n <= 6) {
+        // print all values
+        for (double v : sortedF) {
+            oss << v << '\n';
+        }
+    } else {
+        // first 3 (smallest)
+        for (size_t i = 0; i < 3; ++i) {
+            oss << sortedF[i] << '\n';
+        }
+        oss << "...\n...\n...\n";
+        // last 3 (largest)
+        for (size_t i = n - 3; i < n; ++i) {
+            oss << sortedF[i] << '\n';
+        }
+    }
+
+    return oss.str();
+}
+
+
+  const std::deque<Eigen::VectorXd>& pts()   const { return _H; }
+  const std::deque<double>&           fitness() const { return _F; }
+  size_t                              size()    const { return _H.size(); }
+
+private:
+  std::deque<Eigen::VectorXd> _H;
+  std::deque<double>          _F;
+  size_t _max_history;
+};
+
+
 
 using namespace std;
 using namespace std::chrono;
 using namespace alglib;
 using namespace Eigen;
+
 
 struct MemberShipStruct
 {
@@ -196,6 +401,10 @@ struct CMAstruct
     int ResetSchedule;
     vector<int> popRanking;
     double CrossTalk;
+    vector<HistoryManager> historyGP;
+    vector<SimpleGP> gp;
+    vector<double> fAtMean;
+    vector<vector<double>> Randx;
 };
 
 struct GAOstruct//MIT
@@ -447,11 +656,16 @@ struct OPTstruct//MIT
   PCARBFstruct pci; // for usage of PCA-based RBF-interpolated objective function
   exDFTstruct ex; // 1p-exact DFT data  
   mt19937_64 MTGEN;
+  uniform_real_distribution<double> RN;
   uniform_real_distribution<double> RNpos;
   normal_distribution<> RNnormal;
+  double RNnormalSigma = 1.0;
   int ActiveOptimizer;
   int TestMode = 0;
   int function; // Code of the objective function
+  double minimum = 0.;//storage for known minimum
+  double minimumAcc = 1.0e-8;
+  vector<int> MinFound;
   int D; // Search space dimension  
   double epsf = 1.;// absolute accuracy criterion for function
   double nb_eval = 0.; // Total number evaluations
@@ -523,7 +737,7 @@ struct OPTstruct//MIT
   vector<vector<vector<double>>> ALlambda2;
   vector<double> PenaltyMethod = {0.5,-1.,0.,0.};//(int)PenaltyMethod[0] --- 0: fixed quadratic penalty method --- 1: Augmented Lagrangian Method (Vanilla) --- 2: Augmented Lagrangian Method (MIT) --- PenaltyMethod[1] --- PenaltyScale, initial value for ALmu --- PenaltyMethod[2] --- initial value for all ALlambda --- PenaltyMethod[3] --- percentage of increase of ALmu after each iteration
   double anneal = -1.;//add decaying noise to the objective function, in lieu of standard annealing --- <=0.: don't --- >0.: percentage of spread for the initial amplitude
-  int AnnealType;
+  int AnnealType = -1;
   bool Rand = false;
   vector<double> RandShift;
   MatrixXd RandMat;
@@ -535,6 +749,20 @@ struct OPTstruct//MIT
   double DivideAndConquer = 0.;//~0(no divisions)...100(quickly towards block size of 1)
   vector<int> FrozenVarsMask;
   int NumFrozenVars = -1;
+  double surrogate = 0.;
+  double thresholdGP = 0.8;
+  double trustfactorGP = 0.;
+  double trustradiusGP = 0.;
+  size_t MaxHistoryGP = 50;
+  int retrainStrideGP = 10;
+  double LengthScaleFactorGP = 1.0;
+  double SurrogateDecay = 0.;
+  double TotalNumSurrogatePermits = 0.;
+  vector<vector<bool>> SurrogateQ;
+  vector<double> SurrogateQuality;
+  vector<double> SurrogateMedianDist;
+  bool SigmoidConstrainedQ = false;
+  double SigmoidScale = 1.;
 };
 
 void CGD(OPTstruct &opt);
@@ -591,6 +819,7 @@ void UpdateCovarianceCMA(OPTstruct &opt);
 MatrixXd GetInvSqrt(MatrixXd &A, int p, bool validate, bool &terminateQ, OPTstruct &opt);
 void UpdateStepSizeCMA(OPTstruct &opt);
 void UpdateCMA(OPTstruct &opt);
+double compute_length_scale_from_X(const std::deque<Eigen::VectorXd>& HX, OPTstruct &opt);
 void ResetCMA(OPTstruct &opt);
 void resetCMA(int p, OPTstruct &opt);
 
@@ -605,6 +834,7 @@ double SineEnvelope(vector<double> &x, OPTstruct &opt);
 double Rana(vector<double> &x, OPTstruct &opt);
 double UnconstrainedRana(vector<double> &x, OPTstruct &opt);
 double UnconstrainedEggholder(vector<double> &x, OPTstruct &opt);
+double InvertedGaussian(vector<double> &x, OPTstruct &opt);
 double MutuallyUnbiasedBases(vector<double> &x, OPTstruct &opt);
 double NYFunction(vector<double> &x, OPTstruct &opt);
 double QuantumCircuitIA(vector<double> &x, bool finalQ, OPTstruct &opt);
@@ -620,8 +850,7 @@ bool ConvergedQ(int n_exec, OPTstruct &opt);
 bool PostProcess(OPTstruct &opt);
 bool VarianceConvergedQ(OPTstruct &opt);
 bool UpdateSearchSpace(OPTstruct &opt);
-void InitRandomNumGenerator(OPTstruct &opt);
-void SetDefaultOPTparams(OPTstruct &opt);
+void InitRandomNumGenerator(OPTstruct &opt, bool fixedQ);
 void RandomizeOptLocation(OPTstruct &opt);
 void GetFreeIndices(OPTstruct &opt);
 void SetDefaultSearchSpace(OPTstruct &opt);
@@ -670,6 +899,11 @@ bool EqualityConstraintBoundedVariables(vector<double> &y, OPTstruct &opt);
 double alea( double a, double b, OPTstruct &opt );
 int alea_integer( int a, int b, OPTstruct &opt );
 inline double randSign(OPTstruct &opt){ if(alea(0.,1.,opt)<0.5) return -1.; else return 1.; }
+inline vector<double> GetRandx(OPTstruct &opt){
+  vector<double> vec(opt.D);
+  for(int d=0;d<opt.D;d++) vec[d] = alea(opt.SearchSpaceLowerVec[d],opt.SearchSpaceUpperVec[d],opt);
+  return vec;
+}
 inline void GetMemberShip(double delta, double phi, double deltamax, MemberShipStruct &ms){
   double delta1 = 0.2*deltamax, delta2 = 0.4*deltamax, delta3 = 0.6*deltamax;
   
@@ -700,7 +934,7 @@ inline void MatrixXdToStdMat(const MatrixXd& EigenMat, vector<vector<double>> &S
     for(int i=0;i<n;++i) for(int j=0;j<m;++j) StdMat[i][j] = EigenMat(i,j);
 }
 
+void SetDefaultOPTparams(OPTstruct &opt);
+void UpdateOPTparams(OPTstruct &opt);
+
 double Anneal(double f, int s, OPTstruct &opt);
-
-
-

@@ -224,8 +224,8 @@ void SetDefaultCMAparams(OPTstruct &opt){
 	opt.cma.PopulationDecayRate = 1.7;
 	opt.cma.muRatio = 0.5;
 	opt.cma.VarianceCheck = min(min(10*opt.D,100*(int)sqrt((double)opt.D)),(int)(0.2*(double)opt.cma.generationMax));
-	opt.stallCheck = max(10*opt.D,opt.cma.VarianceCheck);
-	if(opt.anneal>0. || opt.homotopy>1) opt.stallCheck = opt.cma.generationMax;
+	opt.stallCheck = (int)(0.1*(double)opt.cma.generationMax);//max(10*opt.D,opt.cma.VarianceCheck);
+	if(opt.anneal>0. || opt.homotopy==2) opt.stallCheck = opt.cma.generationMax;
 	opt.cma.WeightScenario = 2;
 	opt.cma.InitStepSizeFactor = 0.3;
 	opt.cma.ResetSchedule = 0;
@@ -242,6 +242,7 @@ void InitializePopulationSizeCMA(OPTstruct &opt){
 
 void CMA(OPTstruct &opt){//Hansen2016, appendix A for WeightScenario==2
 	OPTprint("\n ***** Enter CMA() ... *****",opt);
+	UpdateOPTparams(opt);
 	InitializeCMA(opt);
 	
 	while(!ManualOPTbreakQ(opt)){
@@ -266,7 +267,7 @@ void InitializeCMA(OPTstruct &opt){
 	
 	opt.cma.generation = 1;
 	opt.cma.stall = 0;
-	opt.cma.report.resize(3,"");
+	opt.cma.report.resize(1,"");
 	
 	//fix number of runs (populations)
 	if(opt.threads>1){
@@ -289,6 +290,16 @@ void InitializeCMA(OPTstruct &opt){
 	if(opt.cma.PickRandomParamsQ) PickParamsCMA(opt);
 	
 	InitializePopulationSizeCMA(opt);
+
+	opt.cma.historyGP = vector<HistoryManager>(opt.cma.runs); for(int p=0;p<opt.cma.runs;p++) opt.cma.historyGP[p].setMaxHistory(opt.MaxHistoryGP);
+	opt.cma.gp = vector<SimpleGP>(opt.cma.runs, SimpleGP(1.0, 1.0, 1e-2));
+	opt.SurrogateQ = vector<vector<bool>>(opt.cma.runs,vector<bool>(opt.cma.populationSize,false));
+	opt.SurrogateQuality = vector<double>(opt.cma.runs,0.);
+	opt.SurrogateMedianDist = vector<double>(opt.cma.runs,opt.SearchSpaceExtent);
+	opt.cma.fAtMean = vector<double>(opt.cma.runs,1.0e+300);
+	opt.cma.Randx = vector<vector<double>>(opt.cma.runs,GetRandx(opt));
+
+	opt.MinFound = vector<int>(opt.cma.runs,0);
 	
 	opt.cma.mean = vector<vector<double>>(opt.cma.runs,opt.SearchSpaceCentre);
 	opt.cma.meanOld = vector<vector<double>>(opt.cma.runs,opt.SearchSpaceCentre);
@@ -333,7 +344,7 @@ void InitializeCMA(OPTstruct &opt){
 	OPTprint("       homotopy                          = " + to_string(opt.homotopy),opt);
 	OPTprint("       DivideAndConquer                  = " + to_string(opt.DivideAndConquer),opt);
 	OPTprint("       BreakBadRuns                      = " + to_string(opt.BreakBadRuns),opt);
-	OPTprint("              below StdDevThreshold      = " + to_string(sqrt((double)opt.cma.VarianceCheck)*opt.epsf),opt);
+	OPTprint("              below StdDevThreshold      = " + to_string_with_precision(sqrt((double)opt.cma.VarianceCheck)*opt.epsf,12),opt);
 	OPTprint("       ReportX                           = " + to_string(opt.ReportX),opt);
 	OPTprint("       epsf                              = " + to_string_with_precision(opt.epsf,4),opt);
 	OPTprint("       printQ                            = " + to_string(opt.printQ),opt);
@@ -409,10 +420,10 @@ void UpdatePopulationSizeWeightParametersCMA(OPTstruct &opt){
 		double mueffm = 0.;
 		opt.cma.mueff = 0.;
 		//set up preliminary convex shape of weights
-		double crossing = (double)opt.cma.mu/(double)opt.cma.populationSize;
+		//double crossing = (double)opt.cma.mu/(double)opt.cma.populationSize;
+		double crossing = 0.5;
 		for(int c=0;c<opt.cma.populationSize;c++){
 			opt.cma.weights.push_back(log(crossing*((double)opt.cma.populationSize+1.))-log(1.+(double)c));
-			//OPTprint(to_string(opt.cma.weights[c]),opt);
 			if(c<opt.cma.mu){
 				RawPosWeightSum += opt.cma.weights[c];
 				opt.cma.mueff += opt.cma.weights[c]*opt.cma.weights[c];
@@ -453,7 +464,7 @@ void UpdatePopulationSizeWeightParametersCMA(OPTstruct &opt){
 	opt.cma.cc.clear(); opt.cma.cc.resize(opt.cma.runs);
 	for(int p=0;p<opt.cma.runs;p++) opt.cma.cc[p] = ccCMA(p,opt);
 
-	OPTprint(" ----- CMA weight-related parameters ----- ",opt);
+	OPTprint("\n UpdatePopulationSizeWeightParametersCMA:",opt);
 	OPTprint("       mu (#parents)                     = " + to_string(opt.cma.mu),opt);
 	OPTprint("       mueff                             = " + to_string_with_precision(opt.cma.mueff,4),opt);
 	OPTprint("       c1                                = " + to_string_with_precision(opt.cma.c1,4),opt);
@@ -470,6 +481,8 @@ void UpdatePopulationSizeWeightParametersCMA(OPTstruct &opt){
 }
 
 void SampleCMA(OPTstruct &opt){
+	vector<int> NumSurrogateEvals(opt.cma.runs,0);
+	vector<vector<bool>> TmpSurrogateQ = vector<vector<bool>>(opt.cma.runs,vector<bool>(opt.cma.populationSize,false));
 	#pragma omp parallel for schedule(dynamic) if(opt.threads>1)
 	for(int p=0;p<opt.cma.runs;p++){
 		if(opt.cma.AbortQ[p]==0){
@@ -477,17 +490,49 @@ void SampleCMA(OPTstruct &opt){
 			SampleMultivariateNormalCMA(p,opt);
 			ConstrainCMA(p,opt);
 			double bestf = 1.0e+300, worstf = -bestf;
+			int count = 0;
+			int maxNumSurrogates = opt.cma.populationSize/2;//default
+			if(opt.surrogate>0.) maxNumSurrogates = min(opt.cma.populationSize-1,(int)(opt.surrogate*(double)opt.cma.populationSize));
+			//Evaluate surrogate model
+			vector<double> Surr_f(opt.cma.populationSize);
+			if( opt.cma.generation>1 && (opt.surrogate>0. || opt.homotopy==3) && opt.SurrogateQuality[p]>opt.thresholdGP ){
+				for(int c=0;c<opt.cma.populationSize;c++) Surr_f[c] = opt.cma.gp[p].predictGP(opt.cma.pop[p][c]);//collect all surrogate values
+				//sort surrogate values in DESCENDING order -> use surrogate only if bad f values are expected
+				for(auto c: sort_indices_reverse(Surr_f)){
+					if(++count>maxNumSurrogates) break;
+					//check if GP uncertainty of fitness small enough...
+					double currentSpread = *max_element(opt.cma.f[p].begin(),opt.cma.f[p].end())-*min_element(opt.cma.f[p].begin(),opt.cma.f[p].end());
+					if(sqrt(opt.cma.gp[p].variance(opt.cma.pop[p][c]))<opt.trustfactorGP*currentSpread){
+						//check if chromosome is within trust‐region (within trust radius of at least one stored mean)...
+						Eigen::Map<const Eigen::VectorXd> X(opt.cma.pop[p][c].data(),static_cast<int>(opt.cma.pop[p][c].size()));
+        				for (auto& m : opt.cma.historyGP[p].pts()) {
+	            			if ((m - X).norm() <= opt.trustradiusGP) {
+    	            			TmpSurrogateQ[p][c] = true;//...if all checks out, then allow usage of surrogate
+        	        			break;
+            				}
+        				}
+					}
+				}
+			}
 			for(int c=0;c<opt.cma.populationSize;c++){
-				opt.cma.f[p][c] = GetFuncVal(p*opt.cma.populationSize+c, opt.cma.pop[p][c], opt.function, opt);
+				if(opt.surrogate>0. && TmpSurrogateQ[p][c]){//surrogate IS used for chromosome c
+					opt.cma.f[p][c] = Surr_f[c];
+					NumSurrogateEvals[p]++;
+				}
+				else{
+					if(opt.surrogate>0.) TmpSurrogateQ[p][c] = false;//surrogate IS NOT used for chromosome c
+					opt.cma.f[p][c] = GetFuncVal(p*opt.cma.populationSize+c, opt.cma.pop[p][c], opt.function, opt);
+				}
 				if(opt.cma.f[p][c]>worstf) worstf = opt.cma.f[p][c];
 				if(opt.cma.f[p][c]<bestf) bestf = opt.cma.f[p][c];
 				if(worstf-bestf>opt.cma.spread[p]) opt.cma.spread[p] = worstf-bestf;
 			}
 			RepairCMA(p,opt);
 			//sort all chromosomes
-			int count = 0;
+			count = 0;
 			for(auto c: sort_indices(opt.cma.f[p])){
 				opt.cma.pop2[p][count] = opt.cma.pop[p][c];//assign new (and ordered with ascending f) chromosomes to pop2
+				opt.SurrogateQ[p][count] = TmpSurrogateQ[p][c];//same for surrogate model
 				if((int)opt.PenaltyMethod[0]>0){
 					for(int i=0;i<opt.NumEC+opt.NumIC;i++){
 						opt.ALlambda2[i][p][count] = opt.ALlambda[i][p][c];
@@ -506,27 +551,35 @@ void SampleCMA(OPTstruct &opt){
 			//elitism: retain best chromosomes
 			if(opt.cma.elitism && opt.cma.generation>1){
 				if(opt.cma.f[p][0]>opt.cma.bestfVec[p]){
-					double test = GetFuncVal(p*opt.cma.populationSize+0, opt.cma.bestxVec[p], opt.function, opt);//recalculate (important if (e.g.) penalties are generation-dependent)
+					double test = GetFuncVal(p*opt.cma.populationSize+0, opt.cma.bestxVec[p], opt.function, opt);//recalculate (important if (e.g.) penalties are generation-dependent or if homotopy or surrogates are used)
 					if(test<opt.cma.f[p][0]){
 						opt.cma.f[p][0] = test;
 						opt.cma.pop2[p][0] = opt.cma.bestxVec[p];
 					}
 				}
-				double fAtMean = GetFuncVal(p*opt.cma.populationSize+0, opt.cma.mean[p], opt.function, opt);
-				if(opt.cma.f[p][0]>fAtMean){
-					opt.cma.f[p][0] = fAtMean;
-					opt.cma.pop2[p][0] = opt.cma.mean[p];
-				}			
+			}
+			//store the objective function value at the mean position of the population
+			opt.cma.fAtMean[p] = GetFuncVal(p*opt.cma.populationSize+0, opt.cma.mean[p], opt.function, opt);
+			if(opt.cma.generation>(int)(0.1*opt.cma.generationMax) && opt.cma.f[p][0]>opt.cma.fAtMean[p]){
+				opt.cma.f[p][0] = opt.cma.fAtMean[p];
+				opt.cma.pop2[p][0] = opt.cma.mean[p];
 			}
 			//collect best result from each population
 			opt.cma.bestfVec[p] = opt.cma.f[p][0];
 			opt.cma.bestxVec[p] = opt.cma.pop2[p][0];
+			if(RelDiff(opt.cma.f[p][0],opt.minimum)<opt.minimumAcc) opt.MinFound[p] = 1; else opt.MinFound[p] = 0;
 		}
 	}
+	//swap to continue operating on pop, not pop2
 	opt.cma.pop2.swap(opt.cma.pop);
 	//if(opt.cma.generation==1) MatrixToFile(opt.cma.pop[0],"Samples.dat",16);
 	int aborted = 0; for(int n : opt.cma.AbortQ) if(n>0) aborted++;
-	opt.nb_eval += (double)((opt.cma.runs-aborted)*opt.cma.populationSize);
+	double totalNumSurrogateEvals = (double)accumulate(NumSurrogateEvals.begin(),NumSurrogateEvals.end(),0);
+	opt.TotalNumSurrogatePermits += totalNumSurrogateEvals;
+	if(opt.homotopy==3){
+		for(int p=0;p<opt.cma.runs;p++) for(int c=0;c<opt.cma.populationSize;c++) if(opt.SurrogateQ[p][c]) opt.TotalNumSurrogatePermits += 1.;
+	}
+	opt.nb_eval += (double)((opt.cma.runs-aborted)*opt.cma.populationSize) - totalNumSurrogateEvals;
 }
 
 void SampleMultivariateNormalCMA(int p, OPTstruct &opt){//sample d-dimensional points around the d-dimensional mean 
@@ -545,6 +598,15 @@ void SampleMultivariateNormalCMA(int p, OPTstruct &opt){//sample d-dimensional p
 		for(int c=0;c<opt.cma.populationSize;++c){
 			opt.cma.pop[p][c][d] = opt.cma.mean[p][d] + Samples(d,c);
 			if(opt.anneal>0. && opt.AnnealType==0) opt.cma.pop[p][c][d] += Anneal(0.,p*opt.cma.populationSize+c,opt);
+			if(!std::isfinite(opt.cma.pop[p][c][d])){
+				opt.cma.pop[p][c][d] = opt.cma.mean[p][d];
+				#pragma omp critical
+				{
+					OPTprint("SampleMultivariateNormalCMA: Warning !!! non-finite sampling -> reset to mean",opt);
+					cout << "SampleMultivariateNormalCMA: " << opt.cma.stepSize[p] << " " << opt.cma.B[p].squaredNorm() << " " << opt.cma.D[p].squaredNorm() << endl;
+					//usleep(100000);
+				}
+			}
 		}
 	}
 
@@ -617,6 +679,7 @@ void CMAKeepInBox(int p, int c, OPTstruct &opt){
 }
 
 void RepairCMA(int p, OPTstruct &opt){
+	//ToDo: If you must handle box constraints, consider reflection or resampling rather than a penalty that depends on the current spread.
 	//box constraint penalty --- 2: smooth (useful if optimizer may be on boundary) --- 3: sharp (useful if optimizer likely not on boundary)
 	if(opt.cma.Constraints>=2 && opt.cma.Constraints<=4){
 		//penalize all populations, but monitor total penalty only for the best population
@@ -642,11 +705,11 @@ void RepairCMA(int p, OPTstruct &opt){
 			if(p==opt.cma.bestp) opt.cma.TotalPenalty += penalty;
 			opt.cma.f[p][c] += penalty;
 		}
-		
 	}
 }
 
 void ReportCMA(OPTstruct &opt){
+	int printQorig = opt.printQ;
 	if(opt.printQ>-2){//determine whether the report will be printed
     	int gen = opt.cma.generation;
 		double expon = floor(log10((double)gen));
@@ -659,8 +722,7 @@ void ReportCMA(OPTstruct &opt){
     	}
     	if(opt.printQ==-1){ cout << "."; cout.flush(); }
 	}
-    
-    //OPTprint("\n\n ***** begin CMA report *****",opt);
+
 	double bestfOld = opt.currentBestf;
 	opt.cma.bestfVecSorted.clear(); opt.cma.bestfVecSorted.resize(0);
 	int count = 0;
@@ -697,35 +759,35 @@ void ReportCMA(OPTstruct &opt){
 	if( opt.cma.generation>opt.cma.VarianceCheck && RelDiff(opt.OldVariance,opt.CurrentVariance)<1.0e-12 /* && RelDiff(Mean,MeanOld)<1.0e-12*/){
 		opt.cma.stall++;
 		if(opt.cma.stall==opt.stallCheck){
-			opt.cma.report[1] += "\n ||||| CMA has been stalling for " + to_string(opt.stallCheck) + " generations -> exit @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax);
+			opt.cma.report.push_back(" ||||| CMA has been stalling for " + to_string(opt.stallCheck) + " generations -> exit @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax));
 			opt.cma.exit = true;
 		}
 	}
 	
 	if(opt.NewbestFoundQ || opt.printQ==1 || varianceConvergedQ){
 		if(varianceConvergedQ){
-			opt.cma.report[1] += "\n ||||| Variance converged @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax);
+			opt.cma.report.push_back("||||| Variance converged @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax));
 			opt.cma.exit = true;
 		}
 		if(opt.NewbestFoundQ) opt.NewbestFoundQ = false;//reset for next generation
 	}
 	
 	if(opt.cma.generation==opt.cma.generationMax){
-		opt.cma.report[1] += "\n ##### Warning: Exit @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax);
+		opt.cma.report.push_back(" ##### Warning: Exit @ CMA-generation = " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax));
 		opt.cma.exit = true;
 	}
-	else if(opt.homotopy>1) opt.cma.exit = false;
+	else if(opt.homotopy==2) opt.cma.exit = false;
 
 	if(opt.cma.elitism) if( opt.cma.bestf - opt.cma.bestfVec[opt.cma.bestp] > 1.0e-12 ) OPTprint("ReportCMA: Warning !!! bestf lost?",opt);
 	
 	for(int p=0;p<opt.cma.runs;p++){
 		if(opt.cma.AbortQ[p]==1){
-			//opt.cma.report[1] += "\n   ||| run # " + to_string(p+1) + " terminated @ f=" + to_string_with_precision(opt.currentBestf,16);
+			//opt.cma.report.push_back(" ||| run # " + to_string(p+1) + " terminated @ f=" + to_string_with_precision(opt.currentBestf,16));
 			opt.cma.AbortQ[p] = 2;
 		}
 	}	
 	
-	opt.cma.report[2] += opt.report;
+	opt.cma.report.push_back(opt.report);
 	opt.report = "";
 
 	OPTprint("\n generation " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax),opt);
@@ -752,6 +814,7 @@ void ReportCMA(OPTstruct &opt){
 		OPTprint("       CurrentVariance (global history)  = " + cv,opt);
 		OPTprint("       VarianceThreshold                 = " + to_string_with_precision(opt.VarianceThreshold,4),opt);
 		OPTprint("       # FuncEvals                       = " + to_string_with_precision(opt.nb_eval,2),opt);
+		OPTprint("       # TargetEncounters                = " + to_string(accumulate(opt.MinFound.begin(),opt.MinFound.end(),0)),opt);
 		OPTprint(" ----- CMA stats of best population (p=" + to_string(opt.cma.bestp) + ") ----- ",opt);
 		OPTprint("       MeanFromAllWeights                = " + to_string(opt.cma.MeanFromAllWeights[opt.cma.bestp]),opt);
 		OPTprint("       betac                             = " + to_string(opt.cma.betac[opt.cma.bestp]),opt);
@@ -799,6 +862,7 @@ void ReportCMA(OPTstruct &opt){
 		}
 	}
 	
+	opt.printQ = printQorig;
 }
 
 void UpdateMeanCMA(OPTstruct &opt){
@@ -906,7 +970,10 @@ void UpdateCovarianceCMA(OPTstruct &opt){
 			for(int i=0;i<opt.D;i++){
 				if(opt.cma.AbortQ[p]==0) for(int j=i+1;j<opt.D;j++){
 					if(!std::isfinite(opt.cma.CovInvSqrt[p](i,j))){
-						OPTprint("UpdateCovarianceCMA: Warning !!! CovInvSqrt not finite",opt);
+						#pragma omp critical
+						{
+							OPTprint("UpdateCovarianceCMA: Warning !!! CovInvSqrt not finite",opt);
+						}
 						if(opt.BreakBadRuns>0) opt.cma.AbortQ[p] = 1;
 					}
 				}
@@ -919,7 +986,10 @@ MatrixXd GetInvSqrt(MatrixXd &A, int p, bool validate, bool &success, OPTstruct 
 	
     SelfAdjointEigenSolver<MatrixXd> solver(A);
     if(solver.info() != Eigen::Success){
-		OPTprint("GetInvSqrt: Warning !!! Eigenvalue decomposition failed",opt);
+		// #pragma omp critical
+		// {
+		// 	OPTprint("GetInvSqrt: Warning !!! Eigenvalue decomposition failed",opt);
+		// }
 		success = false;
 		return MatrixXd::Identity(A.rows(),A.rows());
 	}
@@ -928,13 +998,17 @@ MatrixXd GetInvSqrt(MatrixXd &A, int p, bool validate, bool &success, OPTstruct 
 	vector<double> diag(0);
 	for(int i=0;i<A.rows();i++){
 		diag.push_back(InvSqrtEigenVals(i,i));//EigenValues
-		opt.cma.D[p](i,i) = sqrt(diag[i]);//sqrt of EigenValues
-		InvSqrtEigenVals(i,i) = 1./opt.cma.D[p](i,i);//inverse of sqrt of EigenValues
+		opt.cma.D[p](i,i) = sqrt(abs(diag[i]));//sqrt of EigenValues
+		if(!(std::isfinite(opt.cma.D[p](i,i)))) opt.cma.D[p](i,i) = 1.0e-12*opt.RN(opt.MTGEN);
+		if(opt.cma.D[p](i,i)!=0.) InvSqrtEigenVals(i,i) = 1./opt.cma.D[p](i,i);//inverse of sqrt of EigenValues
 	}
 	if(ABS(*max_element(diag.begin(),diag.end()))>1.0e-16){
 		double InverseConditionNumber = *min_element(diag.begin(),diag.end()) / *max_element(diag.begin(),diag.end());
 		if(!(std::isfinite(InverseConditionNumber)) || InverseConditionNumber<1.0e-14){
-			//OPTprint("GetInvSqrt: Warning !!! Covariance matrix is ill-conditioned: InverseConditionNumber = " + to_string_with_precision(InverseConditionNumber,3),opt);
+			// #pragma omp critical
+			// {
+			// 	OPTprint("GetInvSqrt: Warning !!! Covariance matrix is ill-conditioned: InverseConditionNumber = " + to_string_with_precision(InverseConditionNumber,3),opt);
+			// }
 			success = false;
 			return MatrixXd::Identity(A.rows(),A.rows());		
 		}
@@ -948,7 +1022,10 @@ MatrixXd GetInvSqrt(MatrixXd &A, int p, bool validate, bool &success, OPTstruct 
 		cout << TestMat << endl;
 		double TestVal = TestMat.squaredNorm();
 		if(TestVal>1.0e-8){
-			OPTprint("GetInvSqrt validation failed: TestVal = " + to_string_with_precision(TestVal,16) + " (not 0)",opt);
+			// #pragma omp critical
+			// {
+			// 	OPTprint("GetInvSqrt validation failed: TestVal = " + to_string_with_precision(TestVal,16) + " (not 0)",opt);
+			// }
 			success = false;
 		}
 	}	
@@ -976,23 +1053,27 @@ void UpdateCMA(OPTstruct &opt){
 					double mean = accumulate(opt.cma.history[p].begin(),opt.cma.history[p].end(),0.)/((double)N), StdDev = 0.;
 					for(int h=0;h<N;h++) StdDev += (opt.cma.history[p][h]-mean)*(opt.cma.history[p][h]-mean);
 					StdDev = sqrt(StdDev/((double)N));
-					if(StdDev<StdDevThreshold && opt.homotopy<=1){
+					if(StdDev<StdDevThreshold && opt.homotopy!=2){
 						opt.cma.AbortQ[p] = 1;
-						opt.cma.report[2] += "  >>>>> BreakBadRun p = " + to_string(p) + " @ generation = " + to_string(opt.cma.generation) + " since " + to_string(StdDev) + " < " + to_string(StdDevThreshold) + " (StdDevThreshold)";
+						// #pragma omp critical
+						// {
+						// 	opt.cma.report.push_back(" >>>>> BreakBadRun p = " + to_string(p) + " @ generation = " + to_string(opt.cma.generation) + " since " + to_string_with_precision(StdDev,16) + " < " + to_string_with_precision(StdDevThreshold,16) + " (StdDevThreshold)");
+						// }
 					}
 				}
 			}
 		}
 	}
 	
-	//shrink populations
+	//shrink populations. Make absolutely sure that any global quantities (like opt.cma.WeightScenario, opt.cma.mueff, opt.cma.csigma, …) that depend on popSize get recomputed before any of the per-run loops whenever popSize changes.
 	if(opt.cma.PopulationDecayRate>0. && opt.varianceUpdatedQ){
 		double c = log10(opt.CurrentVariance), t = log10(opt.VarianceThreshold);
-		opt.cma.NewPopulationSize = max(4,min(opt.cma.InitialPopulationSize,(int)((double)opt.cma.InitialPopulationSize*(1.-opt.cma.PopulationDecayRate*c/t))));
+		//opt.cma.NewPopulationSize = max(4,min(opt.cma.InitialPopulationSize,(int)((double)opt.cma.InitialPopulationSize*(1.-opt.cma.PopulationDecayRate*c/t))));
+		opt.cma.NewPopulationSize = min(opt.cma.populationSize,max(4,(int)((double)opt.cma.InitialPopulationSize*(1.-opt.cma.PopulationDecayRate*c/t))));
 		if(opt.cma.generation%opt.cma.VarianceCheck==0 && opt.cma.NewPopulationSize<(int)(0.9*(double)opt.cma.populationSize)){
 			opt.cma.populationSize = opt.cma.NewPopulationSize;
 			UpdatePopulationSizeWeightParametersCMA(opt);
-			opt.cma.report[2] += "  >>>>> ShrinkPopulation @ generation = " + to_string(opt.cma.generation) + ": NewPopulationSize = " + to_string(opt.cma.populationSize);
+			opt.cma.report.push_back("  >>>>> ShrinkPopulation @ generation = " + to_string(opt.cma.generation) + ": NewPopulationSize = " + to_string(opt.cma.populationSize));
 			#pragma omp parallel for schedule(dynamic) if(opt.threads>1)
 			for(int p=0;p<opt.cma.runs;p++){
 				if(opt.cma.AbortQ[p]==0){
@@ -1011,6 +1092,76 @@ void UpdateCMA(OPTstruct &opt){
 			}
 		}
 	}
+
+	if(opt.surrogate>0. || opt.homotopy==3){
+		//Periodically retrain surrogate model
+		bool retrainedQ = false;
+  		if(opt.cma.generation < 20 || opt.cma.generation % opt.retrainStrideGP == 0) {
+			retrainedQ = true;
+			#pragma omp parallel for schedule(dynamic) if(opt.threads>1)
+    		for (int p = 0; p < opt.cma.runs; ++p) {
+      			if(opt.cma.AbortQ[p]==0){
+					// collect one point from run p (mean or best):
+					bool newQ = false;
+					for(int c=0;c<opt.cma.populationSize;c++){
+						if(!opt.SurrogateQ[p][c] || opt.homotopy==3){//try to add (true) points to history...
+							if(opt.cma.historyGP[p].add(opt.cma.pop[p][c], opt.cma.f[p][c])) newQ = true;
+						}
+					}
+        			if(newQ){//retrain GP for population p
+						// 0) Choose as length scale the median distance of pts
+    					opt.SurrogateMedianDist[p] = compute_length_scale_from_X(opt.cma.historyGP[p].pts(),opt);
+
+						// 1) Gather history‐of‐pts and true f‐values:
+						const auto& F = opt.cma.historyGP[p].fitness();
+						int n = (int)F.size();
+						if (n < 2) {// Too few points; just retrain with the old hyperparameters:
+    						opt.cma.gp[p].train(opt.cma.historyGP[p].pts(), opt.cma.historyGP[p].fitness());
+						}
+						else {
+    						// 2) Compute sample variance of those f‐values:
+    						double sum = 0.0;
+    						for (double v : F) sum += v;
+    						double mean_f = sum / (double)n;
+
+    						double sqsum = 0.0;
+    						for (double v : F) sqsum += (v - mean_f)*(v - mean_f);
+							double sample_var = sqsum / (double)(n - 1);
+    						if (sample_var < 1.0e-12) sample_var = 1.0e-12;
+
+    						// 3) Choose noise_var (can stay fixed or be retuned more rarely):
+    						double noise_var = sample_var * 1.0e-4;
+
+	    					// 4) Reconstruct the GP with the new hyperparameters:
+    						opt.cma.gp[p] = SimpleGP(opt.SurrogateMedianDist[p], sample_var, noise_var);
+
+    						// 5) Now train on the existing history:
+    						opt.cma.gp[p].train(opt.cma.historyGP[p].pts(), opt.cma.historyGP[p].fitness());
+						}
+					}
+				}
+
+				//Surrogate Model Quality: between 0 (worst quality) and 1 (best quality)
+				opt.SurrogateQuality[p] = 1.-max(0.,min(1.,RelDiff(opt.cma.gp[p].predictGP(opt.cma.mean[p]),opt.cma.fAtMean[p])));
+    		}
+  		}
+  		//Report
+		if(/*retrainedQ ||*/ opt.cma.generation % (int)(0.02*(double)opt.cma.generationMax) == 0){
+			int P = opt.cma.bestp;
+			double GP_estimate = opt.cma.gp[P].predictGP(opt.cma.mean[P]);
+			OPTprint("\n $$$$$ GP report --- historyGP (size=" + to_string((int)opt.cma.historyGP[P].pts().size()) + ")\n" + opt.cma.historyGP[P].printFitness() + " for run " + to_string(P) + " @ opt.cma.generation " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax) + ":\n" +\
+			"                    TotalNumSurrogatePermits = " + to_string_with_precision(opt.TotalNumSurrogatePermits,2) + "\n" +\
+			"                       TotalNumFunctionEvals = " + to_string_with_precision(opt.nb_eval,2) + "\n" +\
+			"  median distance of pts (SearchSpaceExtent) = " + to_string_with_precision(opt.SurrogateMedianDist[P],2) + " (" + to_string_with_precision(opt.SearchSpaceExtent,2) + ")\n" +\
+			"                           test point (mean) = " + vec_to_str_with_precision(opt.cma.mean[P],6) + "\n" +\
+			"                          -> f (GP-estimate) = " + to_string(GP_estimate) + "\n" +\
+			"                                 vs f (true) = " + to_string(opt.cma.fAtMean[P]) + "\n" +\
+			"                               -> GP-quality = " + to_string(opt.SurrogateQuality[P]) + " in [0...1]"
+			,opt);
+			if(opt.cma.f[P].size()<=6) OPTprint("       ...fitness values (@bestp): " + vec_to_str_with_precision(opt.cma.f[P],12) + "\n",opt);
+			else OPTprint("       ...fitness values (@bestp): " + partial_vec_to_str_with_precision(opt.cma.f[P],0,3,12) + " .......... " + partial_vec_to_str_with_precision(opt.cma.f[P],opt.cma.f[P].size()-4,opt.cma.f[P].size()-1,12) + "\n",opt);
+		}
+	}
 	
 	//prepare next generation
 	bool b = UpdateSearchSpace(opt);
@@ -1018,6 +1169,39 @@ void UpdateCMA(OPTstruct &opt){
 	Freeze(opt);
 	opt.cma.generation++;
 	for(int p=0;p<opt.cma.runs;p++) opt.cma.penaltyFactor[p] = 1.0e+3 * (double)opt.cma.generation/(double)opt.cma.generationMax * opt.cma.InitPenaltyFactor[p];
+	//InitRandomNumGenerator(opt,false); //OPTprint("UpdateCMA: ATTENTION --- Re-initializing random number generator",opt);
+}
+
+double compute_length_scale_from_X(const std::deque<Eigen::VectorXd>& HX, OPTstruct &opt) {
+    int n = static_cast<int>(HX.size());
+    if (n < 2) {
+        // Fallback: if fewer than 2 points, we cannot form distances.
+        // You could return a default here, e.g. 1.0 or
+        // half the problem’s box‐width, or any other safe heuristic.
+        return 0.5*opt.SearchSpaceExtent;
+    }
+
+    // Number of pairwise distances i<j:
+    int64_t N = (int64_t)n * (n - 1) / 2;
+    std::vector<double> distances;
+    distances.reserve(static_cast<size_t>(N));
+
+    // 1) Build the list of pairwise Euclidean distances
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            double d = (HX[i] - HX[j]).norm();
+            distances.push_back(d);
+        }
+    }
+
+    // 2) Find the median in O(N) average time via nth_element.
+    //    Let k = floor(N/2).
+    int64_t k = N / 2;
+    std::nth_element(distances.begin(), distances.begin() + k, distances.end());
+    double median = distances[k];
+
+    // 3) Optionally, scale the median by a factor (e.g. 1.0 means “use the raw median”).
+    return opt.LengthScaleFactorGP * median;
 }
 
 void ResetCMA(OPTstruct &opt){
@@ -1025,18 +1209,13 @@ void ResetCMA(OPTstruct &opt){
 
 	}
 	else if(opt.cma.ResetSchedule==-1){//abort worst runs successively
-		int g = (int)((double)opt.cma.generationMax/(double)opt.cma.runs);
-		vector<int> gVec(0);
-		for(int i=1;i<=opt.cma.runs;i++) gVec.push_back(i*g);
-		int k = WhichIntegerElementQ(opt.cma.generation,gVec);
+		double t = (double)opt.cma.generation/(double)opt.cma.generationMax;
+		int k = (int)(t*(double)opt.cma.runs);
 		while(k>0){
 			int p = opt.cma.popRanking[opt.cma.runs-k];
 			if(opt.cma.AbortQ[p]==0){
 				opt.cma.AbortQ[p] = 1;
-				int tmp = opt.printQ;
-				opt.printQ = 2;
-				OPTprint("||||| Population " + to_string(p) + " (with f = " + to_string_with_precision(opt.cma.bestfVec[p],16) + ") has been aborted on schedule @ generation " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax) + "\n",opt);
-				opt.printQ = tmp;
+				//OPTprint("||||| Population " + to_string(p) + " (with f = " + to_string_with_precision(opt.cma.bestfVec[p],16) + ") has been aborted on schedule @ generation " + to_string(opt.cma.generation) + "/" + to_string(opt.cma.generationMax) + "\n",opt);
 			}
 			k--;
 		}
@@ -1069,7 +1248,7 @@ void ResetCMA(OPTstruct &opt){
 				cout << opt.cma.runs-1-k << " " << pIndices[k] << " " << replacedf[k] << endl;
 				resetCMA(pIndices[k],opt);
 			}
-			opt.cma.report[1] += "\n ||||| The " + to_string(r) + " worst CMA populations (" + vec_to_str_with_precision(replacedf,6) + ") had been reset for generation " + to_string(opt.cma.generation+1) + "/" + to_string(opt.cma.generationMax);
+			opt.cma.report.push_back(" ||||| The " + to_string(r) + " worst CMA populations (" + vec_to_str_with_precision(replacedf,6) + ") had been reset for generation " + to_string(opt.cma.generation+1) + "/" + to_string(opt.cma.generationMax));
 		}
 	}
 }
@@ -1667,7 +1846,8 @@ void UpdateGAO(OPTstruct &opt){
 
 void ShrinkPopulationsGAO(OPTstruct &opt){
   double c = log10(opt.CurrentVariance), t = log10(opt.VarianceThreshold);
-  int NewPopulationSize = max(4,min(opt.gao.InitialPopulationSize,(int)((double)opt.gao.InitialPopulationSize*(1.-opt.gao.PopulationDecayRate*c/t))));
+  //int NewPopulationSize = max(4,min(opt.gao.InitialPopulationSize,(int)((double)opt.gao.InitialPopulationSize*(1.-opt.gao.PopulationDecayRate*c/t))));
+  int NewPopulationSize = min(opt.cma.populationSize,max(4,(int)((double)opt.gao.InitialPopulationSize*(1.-opt.gao.PopulationDecayRate*c/t))));
   if(opt.gao.generation%opt.gao.VarianceCheck==0 && NewPopulationSize<(int)(0.9*(double)opt.gao.populationSize)){
 	opt.gao.populationSize = NewPopulationSize;
     opt.gao.report[2] = "  >>>>> ShrinkPopulation @ generation = " + to_string(opt.gao.generation) + ": NewPopulationSize = " + to_string(opt.gao.populationSize);
@@ -2374,6 +2554,7 @@ double GetFuncVal( int s, vector<double> &X, int function, OPTstruct &opt ){//Ev
 	else if(function==103) f = Rana(x,opt);
 	else if(function==104) f = UnconstrainedRana(x,opt);
 	else if(function==105) f = UnconstrainedEggholder(x,opt);
+	else if(function==106) f = InvertedGaussian(x,opt);
 	else if(function==200) f = NYFunction(x,opt);
 	else if(function==201) f = QuantumCircuitIA(x,false,opt);
 	else if(function==300) f = ConstrainedRastrigin(x,opt,s);
@@ -2462,7 +2643,7 @@ bool EqualityConstraintBoundedVariables(vector<double> &y, OPTstruct &opt){
 
 	vector<double> xlow(y), xmid(y), xupp(y);
 
-	for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],a,b,scale);//unconstrained y to constrained y
+	for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],a,b,scale,0.);//unconstrained y to constrained y
 
 	bool nlowFound = false, nuppFound = false;
 	while(ABS(EqualityConstraintViolation(y,opt))>threshold && (!nlowFound || !nuppFound) && count<failsafe){//find lower and upper bounds for y_i
@@ -2472,7 +2653,7 @@ bool EqualityConstraintBoundedVariables(vector<double> &y, OPTstruct &opt){
 			count++;
 			for(int d=0;d<opt.D;d++){
 				xupp[d] += max(threshold,1.23456789*ABS(xupp[d]));
-				y[d] = Sigmoid(xupp[d],a,b,scale);
+				y[d] = Sigmoid(xupp[d],a,b,scale,0.);
 			}
 			nuppFound = true;
 			//cout << "EqualityConstraintBoundedVariables (upp) " << VecTotal(y) << " -- " << vec_to_str(xupp) << endl; usleep(100000);
@@ -2481,7 +2662,7 @@ bool EqualityConstraintBoundedVariables(vector<double> &y, OPTstruct &opt){
 			count++;
 			for(int d=0;d<opt.D;d++){
 				xlow[d] -= max(threshold,1.23456789*ABS(xlow[d]));
-				y[d] = Sigmoid(xlow[d],a,b,scale);
+				y[d] = Sigmoid(xlow[d],a,b,scale,0.);
 			}
 			nlowFound = true;
 			//cout << "EqualityConstraintBoundedVariables (low) " << VecTotal(y) << " -- " << vec_to_str(xlow) << endl; usleep(100000);
@@ -2491,7 +2672,7 @@ bool EqualityConstraintBoundedVariables(vector<double> &y, OPTstruct &opt){
 		count++;
 		for(int d=0;d<opt.D;d++){
 			xmid[d] = 0.5*(xlow[d]+xupp[d]);
-			y[d] = Sigmoid(xmid[d],a,b,scale);
+			y[d] = Sigmoid(xmid[d],a,b,scale,0.);
 		}
 		if(VecTotal(y)<opt.AuxVal) xlow = xmid;
 		else xupp = xmid;
@@ -2596,9 +2777,9 @@ double UnconstrainedRana(vector<double> &x, OPTstruct &opt){//Rana's function, V
 
 double UnconstrainedEggholder(vector<double> &x, OPTstruct &opt){//Eggholder function, Vanaret2020,
 	//perform unconstrained search in x by not imposing constraints explicitly: opt.cma.Constraints = 0; (on: opt.SearchSpaceMin = -1.; opt.SearchSpaceMax = 1.;)
-	//minimum(dim=2) = -959.6406627 @ (512, 404.231805)
-	//minimum(dim=5) = -3719.7248363 @ (485.589834, 436.123707, 451.083199, 466.431218, 421.958519)
-	//minimum(dim=10) = -8291.2400675 @ (480.852413, 431.374221, 444.908694, 457.547223, 471.962527, 427.497291, 442.091345, 455.119420, 469.429312, 424.940608)
+	if(opt.D==2) opt.minimum = -959.6406627; //@ (512, 404.231805)
+	else if(opt.D==5) opt.minimum = -3719.7248363; //@ (485.589834, 436.123707, 451.083199, 466.431218, 421.958519)
+	else if(opt.D==10) opt.minimum = -8291.2400675; //@ (480.852413, 431.374221, 444.908694, 457.547223, 471.962527, 427.497291, 442.091345, 455.119420, 469.429312, 424.940608)
 	double res = 0.;
 	vector<double> y(opt.D);
 	for(int d=0;d<opt.D;d++) y[d] = SigmoidX(x[d],opt.lowerBound,opt.upperBound);
@@ -2610,6 +2791,13 @@ double UnconstrainedEggholder(vector<double> &x, OPTstruct &opt){//Eggholder fun
 		res -= (z[d+1]+47.)*sin(zp)+z[d]*sin(zm);
 	}
 	return res;
+}
+
+double InvertedGaussian(vector<double> &x, OPTstruct &opt){
+	//vector<double> y(opt.D);
+	//for(int d=0;d<opt.D;d++) y[d] = SigmoidX(x[d],opt.lowerBound,opt.upperBound);
+	//return 1.-EXP(-Norm2(y));
+	return 1.-EXP(-Norm2(x));
 }
 
 double NYFunction(vector<double> &x, OPTstruct &opt){//new, since 20250205
@@ -2729,7 +2917,24 @@ double NYFunction(vector<double> &x, OPTstruct &opt){//new, since 20250205
 }
 
 double QuantumCircuitIA(vector<double> &x, bool finalQ, OPTstruct &opt){
+
+	//BEGIN USER INPUT
+	bool DMPEPS = true;
+	opt.minimum = -5.770919159;
+	opt.minimumAcc = 1.0e-5;
+	//END USER INPUT
+
+	// For n qubits, 2*L=opt.D circuit parameters; the exact ground energies (noisy_mps_vector_sim-Martin.py without noise):
+	// n=4  E0 = -3.631385809
+	// n=5  E0 = -4.696054456
+	// n=6  E0 = -5.770919159
+	// n=7  E0 = -6.85230025
+	// n=8  E0 = -7.937821226
+
 	double res = 1.0e+300;
+
+	vector<double> y(x);
+	if(opt.SigmoidConstrainedQ) for(int d=0;d<opt.D;d++) y[d] = Sigmoid(x[d],opt.lowerBound,opt.upperBound,opt.SigmoidScale,opt.SearchSpaceLowerVec[d]+0.5*opt.searchSpaceExtent[d]);
 
 	// Execute Python script stored in .../mpScripts/...
     char exePath[PATH_MAX];// Get path to the current executable
@@ -2742,12 +2947,14 @@ double QuantumCircuitIA(vector<double> &x, bool finalQ, OPTstruct &opt){
     string exeDir = dirname(exePath);
     // Construct Python command for path relative to executable directory
 	string scriptPath = exeDir;
-	scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy-DM-PEPS-sim.py eval";
-	//if(finalQ) scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy_mps_vector_sim-Martin-final.py";
-	//else scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy_mps_vector_sim-Martin.py";
+	if(DMPEPS) scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy-DM-PEPS-sim.py eval";
+	else{
+		if(finalQ) scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy_mps_vector_sim-Martin-final.py";
+		else scriptPath += "/mpScripts/Project_ItaiArad_MIT/noisy_mps_vector_sim-Martin.py";
+	}
     ostringstream cmd;
     cmd << "python3 " << scriptPath;
-    for(double num : x) cmd << " " << num;
+    for(double num : y) cmd << " " << num;
 
 	// Execute the command, convert its output to double and return
     try {
@@ -2756,7 +2963,7 @@ double QuantumCircuitIA(vector<double> &x, bool finalQ, OPTstruct &opt){
 	} catch (const exception &e) {
         #pragma omp critical
         {
-            OPTprint("QuantumCircuitIA: Error !!! " + string(e.what()) + " @ x(dim=" + to_string(x.size()) + ") = " + vec_to_str_with_precision(x,16),opt);
+            OPTprint("QuantumCircuitIA: Error !!! " + string(e.what()) + " @ x(dim=" + to_string(y.size()) + ") = " + vec_to_str_with_precision(y,16),opt);
         }
     }
     return res;
@@ -3395,22 +3602,57 @@ bool ManualOPTbreakQ(OPTstruct &opt){
 	return false;
 }
 
-void InitRandomNumGenerator(OPTstruct &opt){
-    double MaxInt = (double)(std::numeric_limits<int>::max()), Now = ABS((double)chrono::high_resolution_clock::now().time_since_epoch().count() / 1.0e+10), now = (double)((int)Now), seed = 1.0e+10*(Now-now);
-    if(seed<1.0e-6) seed = (double)rand();
-    while(seed>=MaxInt) seed /= 2.; while(seed<1.0e+06) seed *= 2.;
-    mt19937_64 MTGEN((int)seed);
-    uniform_real_distribution<double> RNpos(0.,1.0);
-    normal_distribution<> RNnormal(0.,1.0);	
-    opt.MTGEN = MTGEN;
-    opt.RNpos = RNpos;
-	opt.RNnormal = RNnormal;
+// void InitRandomNumGenerator(OPTstruct &opt, bool fixedQ){
+// 	double seed = 123456.;//default seed
+// 	if(!fixedQ){
+// 		double MaxInt = (double)(std::numeric_limits<int>::max()), Now = ABS((double)chrono::high_resolution_clock::now().time_since_epoch().count() / 1.0e+10), now = (double)((int)Now);
+// 		seed = max(1.,1.0e+10*(Now-now));
+//     	if(seed<1.0e-6) seed = (double)rand();
+//     	while(seed>=MaxInt) seed /= 2.; while(seed<1.0e+03) seed *= 2.;
+// 	}
+//     mt19937_64 MTGEN((int)seed);
+// 	uniform_real_distribution<double> RN(-1.0,1.0);
+//     uniform_real_distribution<double> RNpos(0.,1.0);
+//     normal_distribution<> RNnormal(0.,1.0);
+// 	opt.RN.reset();
+// 	opt.RNpos.reset();
+// 	opt.RNnormal.reset();
+//     opt.MTGEN = MTGEN;
+// 	opt.RN = RN;
+//     opt.RNpos = RNpos;
+// 	opt.RNnormal = RNnormal;
+// }
+
+void InitRandomNumGenerator(OPTstruct &opt, bool fixedQ) {
+    //1) Decide on a 64-bit seed
+    uint64_t seed;
+    if (fixedQ) {
+        //use a reproducible default
+        seed = 123456789ULL;
+    } else {
+        //combine random_device and high-res clock for better entropy
+        std::random_device rd;
+        uint64_t t = std::chrono::high_resolution_clock::now()
+                         .time_since_epoch()
+                         .count();
+        seed = rd() ^ (t + (t << 32));
+    }
+
+    //2) Seed the engine directly
+    opt.MTGEN.seed(seed);
+
+    //3) (Re-)construct your distributions
+    opt.RN       = std::uniform_real_distribution<double>(-1.0, 1.0);
+    opt.RNpos    = std::uniform_real_distribution<double>( 0.0, 1.0);
+    opt.RNnormal = std::normal_distribution<double>(0.0, opt.RNnormalSigma);
+
+    //Note: you only need to call reset() if you want to
+    //clear internal distribution state for reproducibility.
+    opt.RN.reset();
+    opt.RNpos.reset();
+    opt.RNnormal.reset();
 }
 
-void SetDefaultOPTparams(OPTstruct &opt){
-  	InitRandomNumGenerator(opt);
-  	opt.timeStamp = YYYYMMDD() + hhmmss();
-}
 
 void RandomizeOptLocation(OPTstruct &opt){
 	int D = opt.D;
@@ -4652,14 +4894,32 @@ void ShrinkSwarm(OPTstruct &opt){
 				opt.ALlambda[i].resize(NewSwarmSize);
 				opt.ALlambda2[i].resize(NewSwarmSize);
 			}
-
 		}
   }
   else opt.pso.NewSwarmSizeQ = false;
 }
 
+void SetDefaultOPTparams(OPTstruct &opt){
+	bool FixedSeedQ = false;
+	//bool FixedSeedQ = true;
+	InitRandomNumGenerator(opt,FixedSeedQ);
+  	opt.timeStamp = YYYYMMDD() + hhmmss();
+}
+
+void UpdateOPTparams(OPTstruct &opt){
+    if(opt.surrogate>0. || opt.homotopy==3){//for training and use of surrogate Gaussian Process (GP)
+		opt.thresholdGP = 0.9;//minimum quality of surrogate at mean, for usage of surrogate
+		opt.trustfactorGP = 1.1e-1;//factor multiplying spread of obj_func values -> upper limit of f-uncertainty for using GP; decrease for more accurate predictions
+        opt.trustradiusGP = 1.1e-1*sqrt((double)opt.D)*opt.SearchSpaceExtent;//upper limit of distance to nearest GP training point; decrease for more accurate predictions
+		opt.MaxHistoryGP = min(500,10*opt.D*opt.D);//number of entries in rolling history
+		opt.retrainStrideGP = 1;// retrain GP every retrainStrideGP generations
+		opt.LengthScaleFactorGP = 1.0;//factor multiplying Gaussian "width" (="median distance of pts"); increase to smoothen surrogate
+		opt.SurrogateDecay = 0.;//increase for faster decay of surrogate usage
+    }
+}
+
 double Anneal(double f, int s, OPTstruct &opt){
-	double spread = 0., t = 1, T = 1;
+	double spread = 0., t = 1., T = 1., Homotopy = f;
 	vector<double> x(opt.D);
 	if(opt.ActiveOptimizer==101 && opt.loopCount>1){
 		t = (double)opt.loopCount;
@@ -4676,9 +4936,34 @@ double Anneal(double f, int s, OPTstruct &opt){
 		x = opt.cma.pop[p][c];
 		if(opt.homotopy>0 || opt.AnnealType==-1) spread = opt.cma.spread[p];
 		else if(opt.AnnealType==0) spread = opt.SearchSpaceExtent;
+		double currentSpread = *max_element(opt.cma.f[p].begin(),opt.cma.f[p].end())-*min_element(opt.cma.f[p].begin(),opt.cma.f[p].end());
+		if(opt.homotopy==3 && opt.SurrogateQ[p][c] && opt.cma.historyGP[p].size() > 1){
+			Homotopy = opt.cma.gp[p].predictGP(x);
+			//Homotopy = max(0.,opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]);
+			//Homotopy = 0.25*max(0.,min(currentSpread,opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]));
+			//Homotopy = 0.25*max(0.,min(opt.cma.spread[p],opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]));//at the order of 0.25*[0,spread]
+			//Homotopy = f+0.25*max(0.,min(opt.cma.spread[p],opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]));
+			//Homotopy = f+opt.cma.spread[p]-max(0.,min(opt.cma.spread[p],opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]));//spirit of novelty search
+			//Homotopy = f+1000.*(currentSpread-max(0.,min(currentSpread,opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0])));//spirit of novelty search
+			//Homotopy = f+0.25*max(0.,min(opt.cma.spread[p],opt.cma.gp[p].predictGP(x)-opt.cma.f[p][0]));
+		}
+		else if(opt.homotopy==4){
+			Homotopy = spread*Norm2(VecDiff(x,opt.cma.Randx[p]))/(opt.D*opt.SearchSpaceExtent*opt.SearchSpaceExtent);
+		}
+		else if(opt.homotopy==5){
+			Homotopy = 0.25*spread;
+			for(int d=0;d<opt.D;d++) Homotopy *= 1.+sin(6.*x[d]/opt.SearchSpaceExtent);
+		}
 	}
+
 	double admix = exp(-40.*t/T);
-	if(opt.homotopy>0) return -admix*f + admix*spread*Norm2(x)/(opt.D*opt.SearchSpaceExtent*opt.SearchSpaceExtent);
-	return opt.anneal*admix*spread;
+	//double admix = 1.-t/T;
+
+	if(opt.homotopy==0) return opt.anneal*admix*spread;
+	else if(opt.homotopy<3){//0.25*spread*(Norm2(x) /(sqrt(D)*HalfSearchSpace)^2; ...lies in interval 0.25*[0,spread]
+		Homotopy = spread*Norm2(x)/(opt.D*opt.SearchSpaceExtent*opt.SearchSpaceExtent);
+	}
+
+	return admix*(Homotopy-f);
 }
 

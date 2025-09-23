@@ -928,7 +928,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = data.steps/4;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = 128;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -1581,6 +1581,81 @@ void GetEnv(int s,datastruct &data){//omp-parallelized - careful about performan
       data.Env[s][i] = 0.5*(x*x+y*y+z*z);
     }
   }  
+
+  else if(data.Environments[s]==20){//isotropic Mexican hat potential (r^4)-mpp*(r^2)
+    #pragma omp parallel for schedule(dynamic)
+    for(int i = 0; i < data.GridSize; i++) data.Env[s][i] = pow(Norm2(data.VecAt[i]), 2.) - data.mpp[s]*Norm2(data.VecAt[i]);
+  }
+
+  else if(data.Environments[s]==21){//isotropic Disk potential with mpp radius
+    #pragma omp parallel for schedule(dynamic)
+      for(int i = 0; i < data.GridSize; i++){
+	if (Norm2(data.VecAt[i]) < data.mpp[s]){
+	  data.Env[s][i] = 0;
+	}
+	else {
+	  data.Env[s][i] = 1.0e7;
+	}
+      }
+  }
+
+  else if(data.Environments[s]==22){//Barbell potential O-O shape with mpp as bridge length
+    double bridge = data.mpp[s]; //The bridge length 
+    #pragma omp parallel for schedule(dynamic)
+    for(int i = 0; i < data.GridSize; i++)
+    {
+      if (data.VecAt[i][0] >= -bridge/2 && data.VecAt[i][0] <= bridge/2){// The bridge area
+        data.Env[s][i] = max(-10*exp(-pow((pow(data.VecAt[i][0]-1.-bridge/2.,2) + pow(data.VecAt[i][1], 2)), 2) + 2*(pow(data.VecAt[i][0]-1.-bridge/2.,2) + pow(data.VecAt[i][1], 2))) -10*exp(-pow((pow(data.VecAt[i][0]+1.+bridge/2.,2) + pow(data.VecAt[i][1], 2)), 2) + 2*(pow(data.VecAt[i][0]+1.+bridge/2.,2) + pow(data.VecAt[i][1], 2))) - 10*exp(-10*pow(data.VecAt[i][1],2) + 1), -10*exp(1));
+      }
+      else {// The ring area
+        data.Env[s][i] = -10*exp(-pow((pow(data.VecAt[i][0]-1.-bridge/2.,2) + pow(data.VecAt[i][1], 2)), 2) + 2*(pow(data.VecAt[i][0]-1.-bridge/2.,2) + pow(data.VecAt[i][1], 2))) -10*exp(-pow((pow(data.VecAt[i][0]+1.+bridge/2.,2) + pow(data.VecAt[i][1], 2)), 2) + 2*(pow(data.VecAt[i][0]+1.+bridge/2.,2) + pow(data.VecAt[i][1], 2)));
+      }
+    }
+  }
+
+  else if(data.Environments[s]==23){//Generalised barbell potential O-O with variable parameters
+    double r = 1.2; //The radius of the ring
+    double Rfourth = 1.12385; //The ring width
+    double Bsqrt = 0.3; //The bridge width
+    double V0 = 100.0; //The potential depth
+    double R = pow(Rfourth, 4); //For easy parameterisation in equation for ring width
+    double B = pow(Bsqrt, 2); //For easy parameterisation in equation for bridge width
+    double bridge = data.mpp[s]; //The bridge length is mpp in mpDPFT.input 
+    #pragma omp parallel for schedule(dynamic)
+    for(int i = 0; i < data.GridSize; i++)
+    {
+      if (data.VecAt[i][0] >= -bridge/2 && data.VecAt[i][0] <= bridge/2){// The bridge area
+        data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R)  - exp(-pow(data.VecAt[i][1],2)/B), -1.0);
+      }
+      else {
+	data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R), -1.0);
+      }
+    }
+  }
+
+  else if(data.Environments[s]==24){//Quartic ring potential
+    double D = data.mpp[s]; //mpp as width of the ring
+    double R = 1.0; //Radius of the ring
+    double V0 = 100.0; //Potential depth
+    double B = - V0*exp(-16/D*pow(R,4)); 
+    #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
+    for(int i = 0; i < data.GridSize; i++)
+    {
+      data.Env[s][i] = (B+V0)/pow(R,4)*(Norm2(data.VecAt[i])*Norm2(data.VecAt[i]) - 2*Norm2(data.VecAt[i])*R*R);
+    }
+  }
+
+  else if(data.Environments[s]==25){//Gaussian ring potential
+    double D = data.mpp[s]; //Width of the ring
+    double R = 1.0; //Radius of the ring
+    double V0 = 100.0; //Potential depth
+    #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
+    for(int i = 0; i < data.GridSize; i++)
+    {
+      data.Env[s][i] = -V0*exp(-16/D*pow((Norm2(data.VecAt[i])-R*R),2));
+    }
+  }
+
   else if(data.Environments[s]==30){
     int col, shift = 2, NumEnvParam = TASK.NumEnvParam;
     data.EnvAv[s] = 0.;
@@ -2798,8 +2873,10 @@ void getLIBXC(int EnergyQ, int ss, int neg_func_id, int polarization, datastruct
 
     #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1) 
     for(int i=0;i<data.GridSize;i++){
-      	if(data.Den[ss][i]>0.){//convert Den and GradSquared from [Angstrom] (in mpDPFT) to [Bohr] for LIBXC_rho and LIBXC_sigma
-			data.LIBXC_rho[i] = AngstromToBohr*data.Den[ss][i];
+        double den = data.Den[ss][i];
+        //if(data.DensityExpression==7 && den < MP) den += MP;
+      	if(den>0.){//convert Den and GradSquared from [Angstrom] (in mpDPFT) to [Bohr] for LIBXC_rho and LIBXC_sigma
+			data.LIBXC_rho[i] = AngstromToBohr*den;
 			if(func.info->family != XC_FAMILY_LDA) data.LIBXC_sigma[i] = AngstromToBohrForGradSquared*data.GradSquared[ss][i];
       	}
       	else{//consider only regions with positive densities
@@ -4370,7 +4447,6 @@ void Getn7(int s, datastruct &data){
         if(data.KD.IntermediateCleanUp) CleanUpTriangulation(data);
 	}
   PRINT("Getn7 FreeRAM = " + to_string_with_precision((double)getFreeRAM(data),8),data);
-
 }
 
 void GetSCOdensity(int s, datastruct &data){
@@ -8716,7 +8792,7 @@ void RunTests(taskstruct &task, datastruct &data){
 }
 
 void RunAuxTasks(taskstruct &task, datastruct &data){
-	//ParetoFront(data,task);
+	ParetoFront(data,task);
 }
 
 
@@ -10388,7 +10464,7 @@ string exec(const char* cmd) {
 }
 
 int testIAMIT(vector<double> &x, datastruct &data, taskstruct &task){
-  	cout << "testIAMIT:" << endl;
+  	cout << "test:" << endl;
 
     vector<double> Sum(data.ompThreads);
     // Parallel region using OpenMP.
@@ -10455,7 +10531,7 @@ void ParetoFront(datastruct &data, taskstruct &task){
 	int opt_ID = 106;
 	
 	//List of optimization tasks --- function identifier func_ID for specific OptimizationProblem (GetFuncVal, see Plugin_OPT.cpp for details):
-	//0: Template --- -2014+i: cec14 test functions (with indices i=1...30) --- -440: ForestGEO --- -100: custom objective function (defined in Plugin_OPT.cpp) --- -44: ForestGEO --- -20: NN --- -11: -2: 1pEx-DFT (combined minimization) --- -1: 1pEx-DFT (separated minimization) --- 1-9: Reserved slots --- 10-99: Test problems: 10: ChemicalProcess --- 100-999: Problem zoo: 100: MutuallyUnbiasedBases -- 101: ShiftedSphere -- 102: SineEnvelope -- 103: Rana -- 104: UnconstrainedRana -- 105: UnconstrainedEggholder -- 200: NYFunction -- 201: QuantumCircuitIA -- 300: ConstrainedRastrigin --- 1000-9999: DFTe
+	//0: Template --- -2014+i: cec14 test functions (with indices i=1...30) --- -440: ForestGEO --- -100: custom objective function (defined in Plugin_OPT.cpp) --- -44: ForestGEO --- -20: NN --- -11: -2: 1pEx-DFT (combined minimization) --- -1: 1pEx-DFT (separated minimization) --- 1-9: Reserved slots --- 10-99: Test problems: 10: ChemicalProcess --- 100-999: Problem zoo: 100: MutuallyUnbiasedBases -- 101: ShiftedSphere -- 102: SineEnvelope -- 103: Rana -- 104: UnconstrainedRana -- 105: UnconstrainedEggholder -- 106: InvertedGaussian -- 200: NYFunction -- 201: QuantumCircuitIA -- 300: ConstrainedRastrigin --- 1000-9999: DFTe
 	
 	//Uncomment one of the following tasks or create a new one
 
@@ -10468,6 +10544,8 @@ void ParetoFront(datastruct &data, taskstruct &task){
 	//for(int func_ID=-2014+1;func_ID<=-2014+30;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
     //ParetoFront.push_back(Optimize(10, opt_ID, 0, data, task));
 	//for(int func_ID=101;func_ID<=104;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(105, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(106, opt_ID, 0, data, task));
     //for(int i=0;i<9;i++) ParetoFront.push_back(Optimize(105, opt_ID, 2*i, data, task));
     ParetoFront.push_back(Optimize(201, opt_ID, 0, data, task));
     //for(int i=0;i<5;i++) ParetoFront.push_back(Optimize(300, opt_ID, i, data, task));
@@ -11000,17 +11078,21 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
             //begin adjust parameters
         	RandomizeOptLocation(opt);
             opt.epsf = 1.0e-14;
-        	opt.BreakBadRuns = 1;
+        	opt.BreakBadRuns = 2;
         	opt.ReportX = true;
-        	opt.homotopy = 1;
+        	opt.homotopy = 4;
+            //opt.surrogate = 0.99;
         	opt.printQ = 1;
-        	opt.cma.runs = (int)POW(2.,aux)*10*opt.D/opt.inflate;
-        	opt.cma.generationMax = 1000*opt.D;
-        	opt.cma.popExponent = 4.*data.RNpos(data.MTGEN);
+        	opt.cma.runs = 200000*opt.D/opt.inflate;
+            opt.cma.ResetSchedule = -1;
+            opt.cma.muRatio = 0.5;
+        	opt.cma.generationMax = 200*opt.D;
+        	opt.cma.popExponent = 1.;
         	opt.cma.VarianceCheck = 10*opt.D/opt.inflate;
-        	opt.stallCheck = 100*opt.D/opt.inflate;
+        	opt.stallCheck = opt.cma.generationMax;
         	opt.cma.CheckPopVariance = 0.1;
-        	opt.cma.PopulationDecayRate = 0.;
+        	opt.cma.PopulationDecayRate = 5.;
+            //opt.cma.CrossTalk = 1./((double)opt.cma.generationMax);
         	//opt.cma.PickRandomParamsQ = true;
         	//opt.cma.DelayEigenDecomposition = true;
         	opt.cma.elitism = true;
@@ -11025,6 +11107,51 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         	for(int d=0;d<opt.D;d++) y[d] = SigmoidX(y[d],opt.lowerBound,opt.upperBound);
         	vector<double> z(opt.D/opt.inflate,0.); for(int j=0;j<z.size();j++) for(int i=0;i<opt.inflate;i++) z[j] += y[opt.inflate*j+i];
         	paretofront.insert(paretofront.end(), z.begin(), z.end());
+            //SleepForever();
+      	}
+    }
+    else if(opt.function==106){//InvertedGaussian
+      	opt.D = 20;
+      	opt.lowerBound = -25.;
+      	opt.upperBound = +25.;
+      	opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
+      	opt.SearchSpaceUpperVec.clear(); opt.SearchSpaceUpperVec.resize(opt.D);
+      	opt.SearchSpaceMin = -1.; opt.SearchSpaceMax = 1.;
+
+      	if(opt_ID==106){//CMA
+        	SetDefaultCMAparams(opt);
+            //begin adjust parameters
+        	RandomizeOptLocation(opt);
+            opt.epsf = 1.0e-14;
+        	opt.BreakBadRuns = 0;
+        	opt.ReportX = true;
+        	//opt.homotopy = 1;
+            //opt.surrogate = 0.8;
+        	opt.printQ = 1;
+        	opt.cma.runs = 1*(int)POW(2.,aux)*opt.D;
+            //opt.cma.ResetSchedule = -1;
+            //opt.cma.muRatio = 0.99;
+        	opt.cma.generationMax = 10*opt.D;
+        	opt.cma.popExponent = 3.;
+        	opt.cma.VarianceCheck = 100*opt.D;
+        	opt.stallCheck = opt.cma.generationMax;
+        	opt.cma.CheckPopVariance = 0.1;
+        	//opt.cma.PopulationDecayRate = 3.;
+            //opt.cma.CrossTalk = 0.1;
+        	//opt.cma.PickRandomParamsQ = true;
+        	//opt.cma.DelayEigenDecomposition = true;
+        	opt.cma.elitism = true;
+        	opt.cma.WeightScenario = 2;
+        	opt.cma.Constraints = 0;
+            //end adjust parameters
+        	CMA(opt);
+        	paretofront.push_back(opt.nb_eval);
+        	paretofront.push_back(opt.currentBestf);
+        	vector<double> y(opt.currentBestx);
+        	if(opt.Rand) ShiftRot(y,opt);
+        	//for(int d=0;d<opt.D;d++) y[d] = SigmoidX(y[d],opt.lowerBound,opt.upperBound);
+        	paretofront.insert(paretofront.end(), y.begin(), y.end());
+        	//SleepForever();
       	}
     }
 	else if(opt.function>100 && opt.function<200){//ShiftedSphere, SineEnvelope, Rana's function, NYFunction, etc.
@@ -11201,6 +11328,12 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
     }
     else if(opt.function==201){//Itai Arad's quantum circuit, QuantumCircuitIA
       	opt.D = 20;//2*L, cf. noisy-DM-PEPS-sim.py, noisy_mps_vector_sim-Martin.py and noisy_mps_vector_sim-Martin-final.py
+      	opt.SigmoidConstrainedQ = false;
+      	if(opt.SigmoidConstrainedQ){
+          	opt.SigmoidScale = 2.;
+      		opt.lowerBound = 0.;
+      		opt.upperBound = 2.*PI;
+    	}
       	opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
       	opt.SearchSpaceUpperVec.clear(); opt.SearchSpaceUpperVec.resize(opt.D);
       	opt.SearchSpaceMin = 0.; opt.SearchSpaceMax = 2.*PI;
@@ -11234,20 +11367,24 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         	SetDefaultCMAparams(opt);
             //begin adjust parameters
             opt.epsf = 1.0e-14;
-        	opt.BreakBadRuns = 2;
+        	//opt.BreakBadRuns = 2;
         	opt.ReportX = true;
         	opt.homotopy = 0;
+            //opt.surrogate = 0.8;
             //opt.DivideAndConquer = 3.;
         	opt.printQ = 1;
-        	opt.cma.runs = 400;//(int)POW(2.,aux)*10*opt.D;
-            opt.cma.ResetSchedule = -1;
-            opt.cma.generationMax = 500;//10000;//
-        	opt.cma.popExponent = 1.;
-        	opt.cma.VarianceCheck = 5*opt.D;
-        	opt.stallCheck = 10*opt.D;
+            //opt.RNnormalSigma = 0.5;
+            //opt.cma.InitStepSizeFactor = 0.1;
+        	opt.cma.runs = 20;//(int)POW(2.,aux)*10*opt.D;
+            //opt.cma.ResetSchedule = -1;
+            //opt.cma.muRatio = 0.5;
+            opt.cma.generationMax = 1000;//10000;//
+        	opt.cma.popExponent = -1;
+        	opt.cma.VarianceCheck = 10*opt.D;//opt.cma.generationMax;//5*opt.D;
+        	opt.stallCheck = 10*opt.D;//opt.cma.generationMax;//10*opt.D;
         	opt.cma.CheckPopVariance = max(3./opt.cma.runs,3./20.);
-        	opt.cma.PopulationDecayRate = 5.;
-            //opt.cma.CrossTalk = 0.;
+        	opt.cma.PopulationDecayRate = 0.;
+            //opt.cma.CrossTalk = 1./((double)opt.cma.generationMax);
             //opt.cma.InitStepSizeFactor = 0.3;
         	//opt.cma.PickRandomParamsQ = true;
         	//opt.cma.DelayEigenDecomposition = true;
@@ -11258,7 +11395,10 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         	CMA(opt);
         	paretofront.push_back(opt.nb_eval);
         	paretofront.push_back(opt.currentBestf);
-        	paretofront.insert(paretofront.end(), opt.currentBestx.begin(), opt.currentBestx.end());
+            vector<double> y(opt.currentBestx);
+        	if(opt.SigmoidConstrainedQ) for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],opt.lowerBound,opt.upperBound,opt.SigmoidScale,opt.SearchSpaceLowerVec[d]+0.5*opt.searchSpaceExtent[d]);
+        	paretofront.insert(paretofront.end(), y.begin(), y.end());
+            // For final run without noise, if applicable:
             // vector<double> Finalf(opt.cma.runs);
             // #pragma omp parallel for schedule(static) if(data.ompThreads>1)
             // for(int p=0;p<opt.cma.runs;p++) Finalf[p] = QuantumCircuitIA(opt.cma.pop[p][0],true,opt);

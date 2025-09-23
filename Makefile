@@ -24,7 +24,7 @@ endif
 #default:
 CC = $(CXX) $(CXXSTD) $(CXXFLAGS) $(CXXOPTFLAGS)
 #for gdb & valgrind:
-#CC = $(CXX) -ggdb3 $(CXXSTD) $(CXXFLAGS) -O2 -fno-inline -fno-omit-frame-pointer
+#CC = $(CXX) -ggdb3 $(CXXSTD) $(CXXFLAGS) -O0 -fno-inline -fno-omit-frame-pointer
 #gdb with sanitation:
 #CC = $(CXX) -fsanitize=address -fsanitize=undefined -ggdb3 $(CXXSTD) $(CXXFLAGS) -O0 -fno-inline -fno-omit-frame-pointer
 #with production code optimization:
