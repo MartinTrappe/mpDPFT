@@ -19,6 +19,25 @@ mpScripts/Project_ItaiArad_MIT/**
 mpScripts/Project_CliffordStates/
 mpScripts/Project_CliffordStates/**
 
+# Ignore venvs and build crap
+**/.venv/
+**/venv/
+**/env/
+**/qc-env/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.so
+**/*.dylib
+**/*.dll
+**/*.a
+**/*.o
+
+# data and caches
+**/*.h5
+**/*.npz
+**/*.npy
+
 # Ignore specific files
 accessWorkStation.sh
 AccessWorkStation.sh
