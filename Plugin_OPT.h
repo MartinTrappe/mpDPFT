@@ -405,6 +405,9 @@ struct CMAstruct
     vector<SimpleGP> gp;
     vector<double> fAtMean;
     vector<vector<double>> Randx;
+    double cycling = -1.;
+    int SubProbSize;
+    vector<vector<int>> SubProbIndices;
 };
 
 struct GAOstruct//MIT
@@ -720,7 +723,7 @@ struct OPTstruct//MIT
   bool NewbestFoundQ = false;
   int FailCount = 0;
   int FailCountThreshold = 10;
-  int stallCheck = 100;
+  int stallCheck = 0;
   bool ReportX = false;
   string report = "";
   bool finalcalc = false;
@@ -803,6 +806,7 @@ void InitializeCMA(OPTstruct &opt);
 inline double ccCMA(int p, OPTstruct &opt){//Hansen2016_Eq.(61) with hyperparameter betac<=1
   return (opt.cma.alphac+pow(opt.cma.mueff/((double)opt.D),opt.cma.betac[p])) / (pow((double)opt.D,opt.cma.betac[p])+opt.cma.alphac+2.*pow(opt.cma.mueff/((double)opt.D),opt.cma.betac[p]));
 }
+void SetSubProbIndicesCMA(int p, OPTstruct &opt);
 void PickParamsCMA(OPTstruct &opt);
 void pickParamsCMA(int p, OPTstruct &opt);
 void UpdatePopulationSizeWeightParametersCMA(OPTstruct &opt);
@@ -838,6 +842,7 @@ double InvertedGaussian(vector<double> &x, OPTstruct &opt);
 double MutuallyUnbiasedBases(vector<double> &x, OPTstruct &opt);
 double NYFunction(vector<double> &x, OPTstruct &opt);
 double QuantumCircuitIA(vector<double> &x, bool finalQ, OPTstruct &opt);
+double CliffordState(vector<double> &x, OPTstruct &opt);
 vector<double> SampleFromSphere(OPTstruct &opt);
 vector<double> PostProcessNYFunction(double f, OPTstruct &opt);
 double DFTe_QPot(vector<double> &x, OPTstruct &opt);

@@ -150,6 +150,7 @@ void GetData(taskstruct &task, datastruct &data){
 
     if(task.lastQ) PRINT(" ***** get input parameters *****",data); 
     GetInputParameters(task,data);
+    //cout << "ForestGEO, GetData, data.Den.size() = " << data.Den.size() << endl; usleep(10000000); //ToDo: prints input file value [MARK12345]
     if(data.FLAGS.Export) PrintInputParameters(data);
     
     if(data.FLAGS.Export) PRINT(" ***** run auxilliary tasks 1 *****",data);
@@ -293,6 +294,7 @@ double FitFunction_ForestGeo_PSO(vector<double> var, int p){// var are the fit p
   //double a = Norm(VecDiff(localdata.TmpAbundances,localdata.Abundances))/localdata.AccumulatedAbundances, b = GetFigureOfMerit(localdata);
   //cout << "FitFunction_ForestGeo_PSO " << a << " " << b << endl;
   //if(a>0.01 && localdata.RelAcc>MP) return 1.0e+100; else return b;
+  //cout << "ForestGEO localdata.Den.size() = " << localdata.Den.size() << endl;
   return GetFigureOfMerit(localdata);
 }
 
@@ -312,7 +314,7 @@ void GetAuxilliaryFit(taskstruct &task){//for ForestGEO data on Barro Colorado I
     ConjugateGradientDescent(-4, 5, 100, Start, task, DATA);
   }
   else if(task.Type==44){
-    //begin USER INPUT
+    //BEGIN USER INPUT
     
     //do fit or use manual task.VEC below
     TASK.fitQ = 1; //0: use manualtaskVEC --- 1: yes,PSO --- 2/4&5: no,load parameters from TabFunc_FitParameters.dat/mpDPFT_FitResults.dat --- 3: yes,GAO
@@ -332,7 +334,7 @@ void GetAuxilliaryFit(taskstruct &task){//for ForestGEO data on Barro Colorado I
     TASK.NumIntParam = 4;//1 for noninteracting
     TASK.GuessMuVecQ = false;//something odd is happening if GuessMuVecQ = true: recomputed FigureOfMerit differs from so far encountered bestf...
     bool FixFitParams = false;//true: fix some parameters (specified below; at present: sigma, env params, resource params, and tau) to the ones loaded from mpDPFT_FitResults.dat
-    //end USER INPUT
+    //END USER INPUT
     
     
     TASK.Type = 44;
@@ -480,6 +482,7 @@ void GetAuxilliaryFit(taskstruct &task){//for ForestGEO data on Barro Colorado I
       int maxeval;
       double OptimalFuncValue;
       if(TASK.fitQ==1){
+        //cout << "ForestGEO DATA.S = " << DATA.S << endl; //ToDo: prints 0 [MARK12345]
 	SetDefaultPSOparams(opt);
 	opt.pso.InitialSwarmSize = 5*opt.D;/*DATA.S*opt.D;*//*opt.D*opt.D;*//*10*opt.D;*//*100*opt.D;*/
 	InitializeSwarmSizeDependentVariables(opt.pso.InitialSwarmSize,opt);
@@ -921,7 +924,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = 128;//data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = data.steps;//512;//data.steps/4;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -1029,7 +1032,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
 		}
 	}
   
-  if(data.TaskType==100){//1p-exact DFT, ToDo: more than one species in all dimensions, and other than unpolarized spin-1/2 (-> account for degeneracies)
+  if(data.TaskType==100){//1p-exact DFT, -> 1pEx-DFT main function is GetOptOccNum() ToDo: more than one species in all dimensions, and other than unpolarized spin-1/2 (-> account for degeneracies)
     TASK.ex.settings.clear(); TASK.ex.settings.resize(21);
     //retrieved from mpDPFT.input:
     TASK.ex.System = data.System;
@@ -1597,23 +1600,58 @@ void GetEnv(int s,datastruct &data){//omp-parallelized - careful about performan
     }
   }
 
+ //  else if(data.Environments[s]==23){//Generalised barbell potential O-O with variable parameters
+ //    double r = 1.2; //The radius of the ring
+ //    double Rfourth = 1.12385; //The ring width
+ //    double Bsqrt = 0.3; //The bridge width
+ //    double V0 = 100.0; //The potential depth
+ //    double R = pow(Rfourth, 4); //For easy parameterisation in equation for ring width
+ //    double B = pow(Bsqrt, 2); //For easy parameterisation in equation for bridge width
+ //    double bridge = data.mpp[s]; //The bridge length is mpp in mpDPFT.input
+ //    #pragma omp parallel for schedule(dynamic)
+ //    for(int i = 0; i < data.GridSize; i++)
+ //    {
+ //      if (data.VecAt[i][0] >= -bridge/2 && data.VecAt[i][0] <= bridge/2){// The bridge area
+ //        data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R)  - exp(-pow(data.VecAt[i][1],2)/B), -1.0);
+ //      }
+ //      else {
+	// data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R), -1.0);
+ //      }
+ //    }
+ //  }
+
   else if(data.Environments[s]==23){//Generalised barbell potential O-O with variable parameters
-    double r = 1.2; //The radius of the ring
-    double Rfourth = 1.12385; //The ring width
-    double Bsqrt = 0.3; //The bridge width
-    double V0 = 100.0; //The potential depth
-    double R = pow(Rfourth, 4); //For easy parameterisation in equation for ring width
-    double B = pow(Bsqrt, 2); //For easy parameterisation in equation for bridge width
-    double bridge = data.mpp[s]; //The bridge length is mpp in mpDPFT.input 
-    #pragma omp parallel for schedule(dynamic)
+    //(MIT code, HO-Units, [Length]=micrometer corresponding to omega = 10559.2 Hz and m = mass(Li-6), hence [Energy]=1.11355*10^{-30} Joule)
+    bool AddHOtrap = false;
+    //FigReal
+    double R = 1.; //The ring radius [Length]
+    double bridge = 2.; //The bridge length d [Length]
+    double DeltaR = 2.; //The ring width [Length]
+    double DeltaB = 0.3; //The bridge width [Length]
+    double V0 = 100.; //The potential depth [Energy]
+    //FigReal
+    // double R = 12.; //The ring radius [Length]
+    // double bridge = 20.; //The bridge length d [Length]
+    // double DeltaR = 12.1165; //The ring width [Length]
+    // double DeltaB = 1.5; //The bridge width [Length]
+    // double V0 = 350.; //The potential depth [Energy]
+
+    vector<double> rp = {0.5*bridge+R,0.};
+    vector<double> rm = {-0.5*bridge-R,0.};
+
+    #pragma omp parallel for schedule(static)
     for(int i = 0; i < data.GridSize; i++)
     {
-      if (data.VecAt[i][0] >= -bridge/2 && data.VecAt[i][0] <= bridge/2){// The bridge area
-        data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R)  - exp(-pow(data.VecAt[i][1],2)/B), -1.0);
-      }
-      else {
-	data.Env[s][i] = V0*max(-exp(-pow((bridge - 2*data.VecAt[i][0])*(bridge + 4*r - 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R) -exp(-pow((bridge + 2*data.VecAt[i][0])*(bridge + 4*r + 2*data.VecAt[i][0]) + 4*pow(data.VecAt[i][1],2),2)/R), -1.0);
-      }
+      vector<double> rpDiff = VecDiff(data.VecAt[i],rp);
+      vector<double> rmDiff = VecDiff(data.VecAt[i],rm);
+
+      double VB = 0.;
+      if (data.VecAt[i][0] >= -bridge/2 && data.VecAt[i][0] <= bridge/2) VB = -V0*EXP(-POW(data.VecAt[i][1]/DeltaB,2));
+      double VRp = -V0*EXP( -POW(2./DeltaR,4) * POW(Norm2(rpDiff)-R*R,2) );
+      double VRm = -V0*EXP( -POW(2./DeltaR,4) * POW(Norm2(rmDiff)-R*R,2) );
+      data.Env[s][i] = max(-V0,VB+VRp+VRm);
+
+      if(AddHOtrap) data.Env[s][i] += 6.13919e-6 * Norm2(data.VecAt[i]);
     }
   }
 
@@ -1625,7 +1663,8 @@ void GetEnv(int s,datastruct &data){//omp-parallelized - careful about performan
     #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
     for(int i = 0; i < data.GridSize; i++)
     {
-      data.Env[s][i] = (B+V0)/pow(R,4)*(Norm2(data.VecAt[i])*Norm2(data.VecAt[i]) - 2*Norm2(data.VecAt[i])*R*R);
+      double r2 = Norm2(data.VecAt[i]);
+      data.Env[s][i] = min(0.,(B+V0)/pow(R,4)*(r2*r2 - 2.*r2*R*R) + B);
     }
   }
 
@@ -1824,7 +1863,7 @@ void GetResources(datastruct &data){
   EndTimer("GetResources",data);
 }
 
-void GetOptOccNum(taskstruct &task, datastruct &data){
+void GetOptOccNum(taskstruct &task, datastruct &data){//1pEx-DFT main function
   //ToDo: for more than one species
   
   int L = TASK.ex.settings[0], NumPairs = (L*L-L)/2;
@@ -1941,7 +1980,7 @@ void GetOptOccNum(taskstruct &task, datastruct &data){
 
     SetDefaultPSOparams(opt);
     //begin adjust PSO parameters
-    opt.pso.runs = 10000;
+    opt.pso.runs = 10;
     opt.pso.loopMax = 100*opt.D;//2000*opt.D;
     opt.pso.increase = 100.;//increase of swarm size towards final run
     opt.pso.SwarmDecayRate = 1.7;
@@ -2895,14 +2934,27 @@ void RenormalizedContact(int EnergyQ, int ss, datastruct &data){
   int ssp = 0; if(ss==0) ssp = 1;
   bool WarningActive = false;
   double prefactor = 4.*PI*data.beta*data.beta;
+  int TotalNumViolations = 0;
   #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
   for(int i=0;i<data.GridSize;i++){
     //tweak densities:
     double ssDen = POS(data.Den[ss][i])+1.0e-16, sspDen = POS(data.Den[ssp][i])+1.0e-16, argss = prefactor*ssDen, argssp = prefactor*sspDen, etass = -2./log(argss), etassp = -2./log(argssp);
-    if(!WarningActive && (argss>1.-MP || argssp>1.-MP)){ WarningActive = true; data.warningCount++; PRINT("RenormalizedContact: Warning!!! eta is about to leave repulsive branch.",data); } 
+    double threshold = -0.15;//see PiotrBeta_20250917.nb
+    if( !WarningActive && ( (etass>threshold && etass<0.0) || (etassp>threshold && etassp<0.0) ) ){
+      #pragma omp critical
+      {
+        WarningActive = true;
+        data.warningCount++;
+        PRINT("RenormalizedContact: Warning!!! eta is outside the (monotonically) fitted data region: ",data);
+      	if(etass>threshold && etass<0.0) PRINT("eta1 = " + to_string(etass),data);
+      	if(etassp>threshold && etassp<0.0) PRINT("eta2 = " + to_string(etassp),data);
+        TotalNumViolations++;
+      }
+    }
     if(EnergyQ) data.TmpField2[i] = PI*ssDen*sspDen*(PiotrBeta(0,etass) + PiotrBeta(0,etassp));
     else data.TmpField2[i] = PI*sspDen*(PiotrBeta(0,etass) + PiotrBeta(0,etassp) + 0.5*PiotrBeta(1,etass)*etass*etass);
   }
+  if(TotalNumViolations>0) PRINT("#-#-#-# RenormalizedContact: TotalNumViolations (out of GridSize) = " + to_string(TotalNumViolations) + "(" + to_string(data.GridSize) + ")" ,data);
 }
 
 void DeltaEkin2D3Dcrossover(int EnergyQ, int ss, datastruct &data){
@@ -4212,7 +4264,7 @@ double HG1F2(const double a1,const double b1,const double b2,const double x){
 void Getn7(int s, datastruct &data){
   	struct KDintegrationParams KDip;
 	//BEGIN USER INPUT
-	int METHOD = 3;//0: brute-force integration --- 1: bisection --- 2: accumulative bisection --- 3: Plugin_KD (Alex & Tri) --- 4: new bisection (MIT)
+	int METHOD = 3;//0: brute-force integration --- 1: bisection --- 2: accumulative bisection --- 3: Plugin_KD (Alex, Tri, Michael) --- 4: new bisection (MIT)
 	//for METHOD==2:
 	double TargetAcc = sqrt(data.InternalAcc), Avtmpfieldj = data.AverageDensity[0]/(data.area*data.degeneracy), TEST = 1.0e-4*Avtmpfieldj;
 	//for METHOD<3:
@@ -4324,7 +4376,7 @@ void Getn7(int s, datastruct &data){
           	COMPUTEKD.clear();
             COMPUTEKD.resize(data.KD.CoarseGridSize);//points where the density is calculated
         }
-		#pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
+		#pragma omp parallel for schedule(static) if(data.ompThreads>1)
 		for(int c=0;c<data.KD.CoarseGridSize;c++){
 			int FocalIndex = data.KD.CoarseIndices[c];
 			double ABSERR2, AverageRelERR = 0.;
@@ -4356,7 +4408,7 @@ void Getn7(int s, datastruct &data){
 				}
 				else tmpfield[j] = GetID(tauThreshold,s,FocalIndex,Norm(rVec),FocalIndex,Norm(rVec),data);
 			}
-			data.Den[s][FocalIndex] = data.degeneracy*Integrate(data.ompThreads,data.method, data.DIM, tmpfield, data.frame);
+			data.Den[s][FocalIndex] = data.degeneracy*Integrate(1,data.method, data.DIM, tmpfield, data.frame);
  			if(omp_get_thread_num()==0) PRINT("density[" + to_string(FocalIndex) + "] = " + to_string(data.Den[s][FocalIndex]),data);
         }
 	}
@@ -4458,20 +4510,77 @@ void GetTFdensity(int s, int DenExpr, datastruct &data){//omp-parallelized - car
 }
 
 double PiotrBeta(int derivative, double x){
-  //new
-  double x2=x*x, x4 = x2*x2;
-  if(derivative==0){//betaQMC(x)
-    if(x<0.) return 100000.;
-    else if(x>1.55) return -0.4633747986519757/x + 1.443565409987811 - 0.20465388562309392/x2; 
-    else return -0.0004147527851895318 + 1.0062109233358525*x - 0.0584541517808854*x2 - 0.3073866986724988*x4 + 0.25331504986348463*x4*x - 0.06139783376450124*x4*x2;
+
+//since 20250919, see PiotrBeta_20250917.nb
+  double threshold = -0.15;
+  double x2=x*x, x3=x2*x, x4 = x3*x, x5 = x4*x, x6 = x5*x, x7 = x6*x, x8 = x7*x;
+  if(derivative==0){//betaQMC(x), Asymptote=1.443565409987811 (from old fit)
+    if(x<threshold) return 1.443565409987811 - 0.0009174599870876087/x3 - 0.03682558117190857/x2 - 0.4927093819257309/x;
+    else if(x<=0.0) return 3.363442122470854+5.512428055346572*(x-threshold);//linear extrapolation
+    else if(x>1.55) return 1.443565409987811 - 0.4633747986519757/x - 0.20465388562309392/x2;
+    else return -0.0004147527851895318 + 1.0062109233358525*x - 0.0584541517808854*x2 - 0.3073866986724988*x4 + 0.25331504986348463*x5 - 0.06139783376450124*x6;
   }
-  else{//betaQMCder(x)
-    if(x<0.) return 100000.;
-    else if(x>1.55) return -0.0011588876670877157 + 0.0663320388441727/x + 1.745208782122636/(x2*x) - 1.25878015302857/x4;
-    else{
-      return 1 - 0.028100195459653712*x - 0.3963015574364809*x2 - 0.3445575747110073*x2*x - 0.0987982521417292*x4 + 1.2591046941895094*x4*x - 1.2654959902790368*x4*x2 + 0.5086340329349458*x4*x2*x - 0.07525628170004087*x4*x4;  
-    }
-  }  
+  else{//betaQMCder(x), consistent with betaQMC(x)
+    if(x<threshold) return 0.002752379961262826/x4 + 0.07365116234381713/x3 + 0.4927093819257309/x2;
+    else if(x<=0.0) return 5.512428055346572;//linear extrapolation
+    else if(x>1.55) return 0.4093077712461878/x3 + 0.4633747986519757/x2;
+    else return 1.006210923335852 - 0.1169083035617708*x - 1.229546794689995*x3 + 1.266575249317423*x4 - 0.3683870025870074*x5;
+  }
+
+// //until 20250918
+// bool ManualCutoff = true;
+//   double x2=x*x, x4 = x2*x2;
+//   if(derivative==0){//betaQMC(x)
+//     //if(x<-0.7) return 1.5164549333670667 + 0.05568969772816085/x2 - 0.3369272858212335/x;
+//     if(x<-0.7) return 1.4436-0.22703788237435546/(x2*x) - 0.5007548779982743/x2 - 0.7274262303004327/x; //Alex
+//     else if (x<0.0){
+// 	    //cout << "Beta: We are using x = " << x << endl;
+// 	    if(ManualCutoff){
+//           x = -0.7;
+//           x2 = x*x;
+//           return 1.4436-0.22703788237435546/(x2*x) - 0.5007548779982743/x2 - 0.7274262303004327/x;
+//         }
+//         else return 100000.;
+//     }
+//     else if(x>1.55) return -0.4633747986519757/x + 1.443565409987811 - 0.20465388562309392/x2;
+//     else return -0.0004147527851895318 + 1.0062109233358525*x - 0.0584541517808854*x2 - 0.3073866986724988*x4 + 0.25331504986348463*x4*x - 0.06139783376450124*x4*x2;
+//   }
+//   else{//betaQMCder(x)
+//     //if (x < -0.7) return -0.1113793954563217/(x2*x) + 0.3369272858212335/x2;
+//     if (x < -0.7) return 0.6811136471230663/x4 + 1.0015097559965487/(x2*x) + 0.7274262303004327/x2;
+//     else if (x<0.) {
+// 	    //cout << "Beta': We are using x = " << x << endl;
+// 	    if(ManualCutoff){
+//           x = -0.7;
+//           x2 = x*x;
+//           x4 = x2*x2;
+//           return 0.6811136471230663/x4 + 1.0015097559965487/(x2*x) + 0.7274262303004327/x2;
+//         }
+//         else return 100000.;
+//     }
+//     else if(x>1.55) return -0.0011588876670877157 + 0.0663320388441727/x + 1.745208782122636/(x2*x) - 1.25878015302857/x4;
+//     else{
+//       return 1 - 0.028100195459653712*x - 0.3963015574364809*x2 - 0.3445575747110073*x2*x - 0.0987982521417292*x4 + 1.2591046941895094*x4*x - 1.2654959902790368*x4*x2 + 0.5086340329349458*x4*x2*x - 0.07525628170004087*x4*x4;
+//     }
+//   }
+
+  // //until 20250912
+  // double x2=x*x, x4 = x2*x2;
+  // if(derivative==0){//betaQMC(x)
+  //   if(x<0.) return 100000.;
+  //   else if(x>1.55) return -0.4633747986519757/x + 1.443565409987811 - 0.20465388562309392/x2;
+  //   else return -0.0004147527851895318 + 1.0062109233358525*x - 0.0584541517808854*x2 - 0.3073866986724988*x4 + 0.25331504986348463*x4*x - 0.06139783376450124*x4*x2;
+  // }
+  // else{//betaQMCder(x)
+  //   if(x<0.) return 100000.;
+  //   else if(x>1.55) return -0.0011588876670877157 + 0.0663320388441727/x + 1.745208782122636/(x2*x) - 1.25878015302857/x4;
+  //   else{
+  //     return 1 - 0.028100195459653712*x - 0.3963015574364809*x2 - 0.3445575747110073*x2*x - 0.0987982521417292*x4 + 1.2591046941895094*x4*x - 1.2654959902790368*x4*x2 + 0.5086340329349458*x4*x2*x - 0.07525628170004087*x4*x4;
+  //   }
+  // }
+
+
+
 //   //old
 //   double eta2=eta*eta;
 //   if(derivative==0){//beta(eta)
@@ -4924,7 +5033,7 @@ void AdmixDensities(datastruct &data){//omp-parallelized - careful about perform
 	StartTimer("AdmixDensities",data);
 	
 	//BEGIN USER INPUT
-	double LinAdmix = -1.;//0.8;//negative LinAdmix if NONE of the Pulay steps (except the 1st) should be replaced by linear steps
+	double LinAdmix = -1.;//0.8;//negative (default) LinAdmix if NONE of the Pulay steps (except the 1st) should be replaced by linear steps
 	double CCcritForPulayActivation = 1.0e+300;//sqrt(data.SCcriterion);//large value (e.g. 1.0e+300) if NONE of the Pulay steps (except the 1st) should be replaced by linear steps
 	//END USER INPUT
 	
@@ -8737,7 +8846,9 @@ void RunTests(taskstruct &task, datastruct &data){
 }
 
 void RunAuxTasks(taskstruct &task, datastruct &data){
-	ParetoFront(data,task);
+    //BEGIN USER INPUT for Optimization Tasks
+	//ParetoFront(data,task);
+    //END USER INPUT
 }
 
 
@@ -10476,23 +10587,28 @@ void ParetoFront(datastruct &data, taskstruct &task){
 	int opt_ID = 106;
 	
 	//List of optimization tasks --- function identifier func_ID for specific OptimizationProblem (GetFuncVal, see Plugin_OPT.cpp for details):
-	//0: Template --- -2014+i: cec14 test functions (with indices i=1...30) --- -440: ForestGEO --- -100: custom objective function (defined in Plugin_OPT.cpp) --- -44: ForestGEO --- -20: NN --- -11: -2: 1pEx-DFT (combined minimization) --- -1: 1pEx-DFT (separated minimization) --- 1-9: Reserved slots --- 10-99: Test problems: 10: ChemicalProcess --- 100-999: Problem zoo: 100: MutuallyUnbiasedBases -- 101: ShiftedSphere -- 102: SineEnvelope -- 103: Rana -- 104: UnconstrainedRana -- 105: UnconstrainedEggholder -- 106: InvertedGaussian -- 200: NYFunction -- 201: QuantumCircuitIA -- 300: ConstrainedRastrigin --- 1000-9999: DFTe
+	//0: Template --- -2014+i: cec14 test functions (with indices i=1...30) --- -440: ForestGEO --- -100: custom objective function (defined in Plugin_OPT.cpp) --- -44: ForestGEO --- -20: NN --- -11: -2: 1pEx-DFT (combined minimization) --- -1: 1pEx-DFT (separated minimization) --- 1-9: Reserved slots --- 10-99: Test problems: 10: ChemicalProcess --- 100-999: Problem zoo: 100: MutuallyUnbiasedBases -- 101: ShiftedSphere -- 102: SineEnvelope -- 103: Rana -- 104: UnconstrainedRana -- 105: UnconstrainedEggholder -- 106: InvertedGaussian -- 200: NYFunction -- 201: QuantumCircuitIA -- 202: JI's CliffordState (stabilizer state) project -- 300: ConstrainedRastrigin --- 1000-9999: DFTe
 	
 	//Uncomment one of the following tasks or create a new one
 
     //Task Misc
 	//ParetoFront.push_back(Optimize(0, opt_ID, 0, data, task));
 	//ParetoFront.push_back(Optimize(-2014+5, opt_ID, 0, data, task));
-	//for(int func_ID=-2014+1;func_ID<=-2014+16;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
+	for(int func_ID=-2014+1;func_ID<=-2014+16;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
 	//for(int func_ID=-2014+1;func_ID<=-2014+22;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
-	//for(int func_ID=-2014+23;func_ID<=-2014+30;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(-2014+23, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(-2014+24, opt_ID, 0, data, task));
+	//for(int func_ID=-2014+24;func_ID<=-2014+30;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
 	//for(int func_ID=-2014+1;func_ID<=-2014+30;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
     //ParetoFront.push_back(Optimize(10, opt_ID, 0, data, task));
 	//for(int func_ID=101;func_ID<=104;func_ID++) ParetoFront.push_back(Optimize(func_ID, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(102, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(104, opt_ID, 0, data, task));
     //ParetoFront.push_back(Optimize(105, opt_ID, 0, data, task));
     //ParetoFront.push_back(Optimize(106, opt_ID, 0, data, task));
     //for(int i=0;i<9;i++) ParetoFront.push_back(Optimize(105, opt_ID, 2*i, data, task));
-    ParetoFront.push_back(Optimize(201, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(201, opt_ID, 0, data, task));
+    //ParetoFront.push_back(Optimize(202, opt_ID, 0, data, task));
     //for(int i=0;i<5;i++) ParetoFront.push_back(Optimize(300, opt_ID, i, data, task));
 
 	//Task NYFunction:
@@ -10545,7 +10661,7 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
 	
 	if(opt.function==0){//template (copy all & delete / comment what is not needed)
 		//BEGIN USER INPUT template
-		opt.D = 10;
+		opt.D = 5;
 		opt.epsf = 1.0e-6;
 		opt.SearchSpaceMin = -1.; opt.SearchSpaceMax = 1.;
 		opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
@@ -10608,12 +10724,13 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
 			//opt.UpdateSearchSpaceQ = 2;
 			opt.BreakBadRuns = 1;//0: don't --- 1: only in case of severe violations --- 2: aggressive termination policy
 			SetDefaultCMAparams(opt);
-			opt.cma.runs = opt.threads;
-			opt.cma.popExponent = 5.;//population prop to 2^popExponent
+			opt.cma.runs = 100*opt.threads;
+			opt.cma.popExponent = 0.;//population prop to 2^popExponent
 			opt.cma.CheckPopVariance = 0.2;//percentage of best populations to assess for termination criterion
 			opt.cma.PickRandomParamsQ = true;
 			opt.cma.DelayEigenDecomposition = true;
 			opt.cma.elitism = true;
+            opt.stallCheck = 100*opt.D;
 			opt.cma.WeightScenario = 1;//0: constant weights --- 1: standard positive weights
 			opt.cma.Constraints = 2;//0: No Contraints --- 1: Box Constraints --- 2: Penalty (smooth square of box repair distance) --- 3: Penalty (sharp sqrt of box repair distance) --- 4: Penalty (constant 1.0e+100)
 			CMA(opt);
@@ -10624,13 +10741,22 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
 		//END USER INPUT template
 	}
 	else if(opt.function>=-2014+1 && opt.function<=-2014+30){//cec14 test functions (with indices i=1...30)
-		opt.D = 10;//20;//2;//50;//
+        //opt.TestMode = -1;
+		opt.D = 2;//10;//20;//50;//
+      	opt.SigmoidConstrainedQ = false;
+      	if(opt.SigmoidConstrainedQ){
+      		opt.lowerBound = -100.;
+      		opt.upperBound = 100.;
+            opt.SigmoidScale = 1./(opt.upperBound-opt.lowerBound);
+    	}
+      	opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
+      	opt.SearchSpaceUpperVec.clear(); opt.SearchSpaceUpperVec.resize(opt.D);
+      	opt.SearchSpaceMin = -100.; opt.SearchSpaceMax = 100.;
 		opt.epsf = 1.0e-6;
-		opt.SearchSpaceMin = -100.; opt.SearchSpaceMax = 100.;
-		opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
-		opt.SearchSpaceUpperVec.clear(); opt.SearchSpaceUpperVec.resize(opt.D);
+        opt.printQ = 1;
 		
 		if(opt_ID==101){//PSO
+            opt.SigmoidConstrainedQ = false;
 			SetDefaultPSOparams(opt);
 			//begin adjust parameters
 			opt.pso.epsf = 1.0e-9;
@@ -10667,24 +10793,32 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
 			paretofront.insert(paretofront.end(), opt.gao.bestx.begin(), opt.gao.bestx.end());
 		}
 		else if(opt_ID==106){//CMA
-			opt.epsf = 1.0e-14;//1.0e-6;//
+            opt.TestMode = 2;
+			opt.epsf = 1.0e-14;
 			opt.BreakBadRuns = 1;
 			SetDefaultCMAparams(opt);
-			opt.cma.runs = 100/*100000*/;//opt.D;//10*opt.D;
-			opt.cma.popExponent = 5;//10;
-			opt.cma.muRatio = 0.5;//0.9;//
+			opt.cma.runs = 10000/*100000*/;//opt.D;//10*opt.D;
+            //opt.cma.ResetSchedule = 1;
+			opt.cma.popExponent = 4;//aux;//10;
+			//opt.cma.muRatio = 0.9;//0.5;//
 			//opt.cma.CheckPopVariance = 0.1;
-			opt.cma.VarianceCheck = 10*opt.D;
-			opt.cma.DelayEigenDecomposition = true;
+			//opt.cma.VarianceCheck = 10*opt.D;
+            opt.cma.generationMax = 1000;
+			//opt.cma.DelayEigenDecomposition = true;
+            //opt.cma.InitStepSizeFactor = 10.;
 			opt.cma.elitism = true;
+            opt.stallCheck = 20*opt.D;
 			opt.cma.WeightScenario = 2;//1;
 			opt.cma.Constraints = 2;
+            //opt.cma.cycling = 2.;
 			CMA(opt);
 			paretofront.push_back(opt.nb_eval);
 			paretofront.push_back(opt.currentBestf);
-			paretofront.insert(paretofront.end(), opt.currentBestx.begin(), opt.currentBestx.end());
-// 			opt.TestMode = 1;
-// 			cout << GetFuncVal( 0, opt.currentBestx, opt.function, opt ) << endl;
+            vector<double> y(opt.currentBestx);
+        	if(opt.SigmoidConstrainedQ) for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],opt.lowerBound,opt.upperBound,opt.SigmoidScale,opt.SearchSpaceLowerVec[d]+0.5*opt.searchSpaceExtent[d]);
+        	paretofront.insert(paretofront.end(), y.begin(), y.end());
+			// opt.TestMode = 1;
+   //          TASKPRINT(" ^^^^^ cec14 (TestMode=1) ^^^^^ f_" + to_string(2014+func_ID) + " = " + to_string_with_precision(GetFuncVal( 0, opt.currentBestx, opt.function, opt ),16),task,1);
 // 			SleepForever();
 		}
 	}
@@ -10967,8 +11101,8 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         opt.ReportX = true;
         SetDefaultCMAparams(opt);
         opt.printQ = 1;
-        opt.cma.runs = 100*opt.D;
-        opt.cma.popExponent = 5.;
+        opt.cma.runs = 20;
+        opt.cma.popExponent = 1.;
         opt.cma.VarianceCheck = 10*opt.D;
         opt.stallCheck = 100*opt.D;
         opt.cma.CheckPopVariance = 0.1;
@@ -10976,7 +11110,7 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         //opt.cma.PickRandomParamsQ = true;
         //opt.cma.DelayEigenDecomposition = true;
         opt.cma.elitism = true;
-        opt.cma.WeightScenario = 1;
+        opt.cma.WeightScenario = 2;
         opt.cma.Constraints = 0;
         CMA(opt);
         paretofront.push_back(opt.nb_eval);
@@ -11275,7 +11409,7 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
       	opt.D = 20;//2*L, cf. noisy-DM-PEPS-sim.py, noisy_mps_vector_sim-Martin.py and noisy_mps_vector_sim-Martin-final.py
       	opt.SigmoidConstrainedQ = false;
       	if(opt.SigmoidConstrainedQ){
-          	opt.SigmoidScale = 2.;
+          	opt.SigmoidScale = 1.;
       		opt.lowerBound = 0.;
       		opt.upperBound = 2.*PI;
     	}
@@ -11286,28 +11420,30 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
         if(opt_ID==101){//PSO
         	SetDefaultPSOparams(opt);
         	//begin adjust parameters
-        	opt.pso.epsf = 1.0e-6;
-        	opt.pso.runs = opt.D;
-        	opt.pso.increase = 10.;
-        	opt.pso.SwarmDecayRate = 1.7;
-        	opt.pso.InitialSwarmSize = opt.D;
+        	opt.pso.epsf = -1.0e-14;
+        	opt.pso.runs = 1;
+        	opt.pso.increase = 0.;
+        	opt.pso.SwarmDecayRate = 0.;
+        	opt.pso.InitialSwarmSize = 120;
         	InitializeSwarmSizeDependentVariables(opt.pso.InitialSwarmSize,opt);
         	opt.pso.VarianceCheck = opt.D;
-        	opt.pso.loopMax = 1500;
-        	opt.pso.CoefficientDistribution = 5; opt.pso.AbsAcc = 0.01;
+        	opt.pso.loopMax = 1000;
+            opt.pso.elitism = 1.;
+        	//opt.pso.CoefficientDistribution = 5; opt.pso.AbsAcc = 0.01;
         	opt.pso.TargetMinEncounters = opt.pso.runs;
         	//end adjust parameters
         	PSO(opt);
         	paretofront.push_back(opt.nb_eval);
         	paretofront.push_back(opt.pso.bestf);
-        	paretofront.insert(paretofront.end(), opt.pso.bestx.begin(), opt.pso.bestx.end());
+            vector<double> y(opt.pso.bestx);
+        	if(opt.SigmoidConstrainedQ) for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],opt.lowerBound,opt.upperBound,opt.SigmoidScale,opt.SearchSpaceLowerVec[d]+0.5*opt.searchSpaceExtent[d]);
+        	paretofront.insert(paretofront.end(), y.begin(), y.end());
             // vector<double> Finalf(opt.pso.runs);
             // #pragma omp parallel for schedule(static) if(data.ompThreads>1)
             // for(int p=0;p<opt.pso.Finalx.size();p++) Finalf[p] = QuantumCircuitIA(opt.pso.Finalx[p],true,opt);
             // sort(Finalf.begin(),Finalf.end());
             // TASKPRINT("QuantumCircuitIA Final f list: " + vec_to_str_with_precision(Finalf,16),task,1);
       	}
-
       	else if(opt_ID==106){//CMA
         	SetDefaultCMAparams(opt);
             //begin adjust parameters
@@ -11351,6 +11487,74 @@ vector<double> Optimize(int func_ID, int opt_ID, int aux, datastruct &data, task
             // TASKPRINT("QuantumCircuitIA Final f list: " + vec_to_str_with_precision(Finalf,16),task,1);
 
       	}
+    }
+    else if(opt.function==202){//JI's CliffordState (stabilizer state) project
+		opt.D = 8;
+      	opt.SigmoidConstrainedQ = false;
+      	if(opt.SigmoidConstrainedQ){
+      		opt.lowerBound = 0.;
+      		opt.upperBound = 1.;
+            opt.SigmoidScale = 1./(opt.upperBound-opt.lowerBound);
+    	}
+      	opt.SearchSpaceLowerVec.clear(); opt.SearchSpaceLowerVec.resize(opt.D);
+      	opt.SearchSpaceUpperVec.clear(); opt.SearchSpaceUpperVec.resize(opt.D);
+      	opt.SearchSpaceMin = -5.; opt.SearchSpaceMax = 5.;
+        opt.printQ = 1;
+
+		if(opt_ID==104){//GAO
+			//begin adjust parameters
+			opt.UpdateSearchSpaceQ = 0;
+            opt.gao.runs = 1;//20;//1*opt.D;
+			opt.evalMax = (double)opt.gao.runs*2.0e+3;//start low
+			opt.gao.popExponent = 0.5;
+			SetDefaultGAOparams(opt);
+			opt.gao.mutationRate = 0.02;//in [0.0,0.2]
+			opt.gao.mutationRateDecay = 1.0;//in [-0.2,1.0]
+			opt.gao.mutationStrength = 10.;//in [0,100]
+			opt.gao.mutationStrengthDecay = 1.0;//in [-0.2,1.0]
+			opt.gao.invasionRate = 0.02;//in [0,0.05]
+			opt.gao.invasionRateDecay = 1.0;//in [-0.2,1.0]
+			opt.gao.crossoverRate = 0.8;//in [0.2,1.0]
+			opt.gao.crossoverRateDecay = 0.;//in [0.0,1.0]
+			opt.gao.dispersalStrength = 1.5;//in [0,runs]
+			opt.gao.dispersalStrengthDecay = -(double)opt.gao.runs;//in [-runs,0]
+			opt.gao.HyperParamsDecayQ = true;
+			opt.gao.HyperParamsSchedule = 3;
+			opt.PickRandomParamsQ = true;
+			opt.gao.ShrinkPopulationsQ = false;
+            opt.gao.VarianceCheck = (int)(1.0*(double)opt.gao.generationMax);
+			//end adjust parameters
+			GAO(opt);
+			paretofront.push_back(opt.nb_eval);
+			paretofront.push_back(opt.gao.bestf);
+			paretofront.insert(paretofront.end(), opt.gao.bestx.begin(), opt.gao.bestx.end());
+		}
+		else if(opt_ID==106){//CMA
+			opt.epsf = 1.0e-14;
+			opt.BreakBadRuns = 1;
+			SetDefaultCMAparams(opt);
+            opt.evalMax = 5.*2.0e+3;
+			opt.cma.runs = 20/*100000*/;//opt.D;//10*opt.D;
+            opt.cma.ResetSchedule = 0;
+			opt.cma.popExponent = -1.;//aux;//10.;
+			//opt.cma.muRatio = 0.9;//0.5;//
+			//opt.cma.CheckPopVariance = 0.1;
+			//opt.cma.VarianceCheck = 10*opt.D;
+            //opt.cma.generationMax = 100;
+			//opt.cma.DelayEigenDecomposition = true;
+            //opt.cma.InitStepSizeFactor = 10.;
+			opt.cma.elitism = true;
+            opt.stallCheck = -1;
+			opt.cma.WeightScenario = 2;//1;
+			opt.cma.Constraints = 0;
+            //opt.cma.cycling = 2.;
+			CMA(opt);
+			paretofront.push_back(opt.nb_eval);
+			paretofront.push_back(opt.currentBestf);
+            vector<double> y(opt.currentBestx);
+        	if(opt.SigmoidConstrainedQ) for(int d=0;d<opt.D;d++) y[d] = Sigmoid(y[d],opt.lowerBound,opt.upperBound,opt.SigmoidScale,opt.SearchSpaceLowerVec[d]+0.5*opt.searchSpaceExtent[d]);
+        	paretofront.insert(paretofront.end(), y.begin(), y.end());
+		}
     }
 	else if(opt.function==300){//Rastrigin constrained on polytope
 
@@ -13785,6 +13989,9 @@ double Overlap(vector<double> &p,vector<double> &d){
 }
 
 double fomOverlap(int s, datastruct &data){
+  cout << "fomOverlap " << s << endl;
+  cout << data.Den.size() << endl;
+  cout << data.Den[s].size() << endl;
   if(TASK.CoarseGrain && TASK.refDataType==2){
     int M = data.GridSize, col = 15+2*s+(data.System-35);
     vector<double> p(M), d(M);

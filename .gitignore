@@ -16,6 +16,8 @@
 # …but re-ignore the confidential folders inside it
 mpScripts/Project_ItaiArad_MIT/
 mpScripts/Project_ItaiArad_MIT/**
+mpScripts/Project_CliffordStates/
+mpScripts/Project_CliffordStates/**
 
 # Ignore specific files
 accessWorkStation.sh

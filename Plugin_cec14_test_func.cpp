@@ -1022,7 +1022,7 @@ void cf01 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	i=4;
 	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,0);
 	fit[i]=10000*fit[i]/1e+10;	if(TestMode==1) std::cout << "cf01 fit[" << i << "] = " << fit[i] << std::endl;
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf02 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT*/int TestMode) /* Composition Function 2 */
@@ -1038,7 +1038,7 @@ void cf02 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	rastrigin_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
 	i=2;
 	hgbat_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf03 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT*/int TestMode) /* Composition Function 3 */
@@ -1056,7 +1056,7 @@ void cf03 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	i=2;
 	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
 	fit[i]=1000*fit[i]/1e+10;
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf04 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT*/int TestMode) /* Composition Function 4 */
@@ -1080,7 +1080,7 @@ void cf04 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	i=4;
 	griewank_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
 	fit[i]=1000*fit[i]/100;
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf05 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT*/int TestMode) /* Composition Function 4 */
@@ -1104,7 +1104,7 @@ void cf05 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	i=4;
 	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
 	fit[i]=10000*fit[i]/1e+10;
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf06 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT*/int TestMode) /* Composition Function 6 */
@@ -1128,7 +1128,7 @@ void cf06 (double *x, double *f, int nx, double *Os,double *Mr,int r_flag, /*MIT
 	i=4;
 	ellips_func(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],1,r_flag);
 	fit[i]=10000*fit[i]/1e+10;
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf07 (double *x, double *f, int nx, double *Os,double *Mr,int *SS,int r_flag, /*MIT*/int TestMode) /* Composition Function 7 */
@@ -1143,7 +1143,7 @@ void cf07 (double *x, double *f, int nx, double *Os,double *Mr,int *SS,int r_fla
 	hf02(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],&SS[i*nx],1,r_flag);
 	i=2;
 	hf03(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],&SS[i*nx],1,r_flag);
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 void cf08 (double *x, double *f, int nx, double *Os,double *Mr,int *SS,int r_flag, /*MIT*/int TestMode) /* Composition Function 8 */
@@ -1158,7 +1158,7 @@ void cf08 (double *x, double *f, int nx, double *Os,double *Mr,int *SS,int r_fla
 	hf05(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],&SS[i*nx],1,r_flag);
 	i=2;
 	hf06(x,&fit[i],nx,&Os[i*nx],&Mr[i*nx*nx],&SS[i*nx],1,r_flag);
-	cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
+	if(TestMode>=0) cf_cal(x, f, nx, Os, delta,bias,fit,cf_num,TestMode);
 }
 
 
@@ -1273,6 +1273,8 @@ void oszfunc (double *x, double *xosz, int nx)
 
 void cf_cal(double *x, double *f, int nx, double *Os,double * delta,double * bias,double * fit, int cf_num, /*MIT*/int TestMode)
 {
+	for (int i=0; i<cf_num; i++) if(TestMode==2) f[0] += fit[i]/(double)cf_num;
+	else{
 	int i,j;
 	double *w;
 	double w_max=0,w_sum=0;
@@ -1305,10 +1307,10 @@ void cf_cal(double *x, double *f, int nx, double *Os,double * delta,double * bia
 		w_sum=cf_num;
 	}
 	f[0] = 0.0;
-    for (i=0; i<cf_num; i++)
-    {
+	for (i=0; i<cf_num; i++){
 		f[0]=f[0]+w[i]/w_sum*fit[i];
 		if(TestMode==1) std::cout << "cf_cal coeff[" << i << "] = " << w[i]/w_sum << " -> total f = " << f[0] << std::endl;
-    }
+	}
 	free(w);
+	}
 }
