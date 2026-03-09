@@ -1,3 +1,6 @@
+#ifndef mpDPFT_H
+#define mpDPFT_H
+
 #include "stdafx.h"
 #include "statistics.h"
 #include "specialfunctions.h"
@@ -12,15 +15,22 @@
 #include "ap.h"
 #include "alglibmisc.h"
 #include "alglibinternal.h"
+#include <unistd.h>
 #include <sstream>
+#include <fstream>
 #include <functional>
+#include <iomanip>
 #include <stdlib.h>
 #include <fftw3.h>
 #include <omp.h>
+#include <random>
+#include <vector>
+#include <string>
 #include <gsl/gsl_sf_gamma.h>
 #include <Eigen/Dense>
 #include <Eigen/QR>
 #include "sys/sysinfo.h"
+#include "MPDPFT_HEADER_ONEPEXDFT.h"
 
 using namespace std;
 using namespace alglib;
@@ -551,3 +561,5 @@ void ExportTriangulation(datastruct &data);
 void CleanUpTriangulation(datastruct &data);
 void RemoveSmallTriangles(const double percentage, const vector<vector<vector<double>>> &InTriangles, vector<vector<vector<double>>> &OutTriangles, datastruct &data);
 bool ExtractIntegerFromPattern(string filename, int &out);
+
+#endif

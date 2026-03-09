@@ -311,6 +311,7 @@ double KD_Contour(int D, double A, double B, KDintegrationParams &KDip){
     return KD_contour(D, A, B, KDip);
 }
 
+
 double KD(int D, double A, double B, double &abserr, double reltolx, KDintegrationParams &KDip) {
   
   //MIT20200914: introduce additional USERINPUT accuracy variables:
@@ -641,6 +642,9 @@ double fcontour(double u, void *params){
             v = u-1;
         else
             v = coeff * sqrt( (A0 + B0) / (p8));
+            if (u>0.000119110791 && u<0.000119110793){
+            printf("A0: %.14f, B0: %.14f, p8: %.14f, sqrtinterior: %.14f, sqrt: %.14f\n", A0, B0, p8, (A0 + B0) / (p8), sqrt( (A0 + B0) / (p8)));
+            }
 
     }
     double v2 = pow(v, 2);
@@ -665,6 +669,11 @@ double fcontour(double u, void *params){
         double numerator = p00+p01+p02-p03;
         double denominator = 2*u*v*(1 + g + 4*B3*g4*v2*(2*u2+v2) );
         dvdu_term = numerator / denominator;
+        if (u>0.000119110791 && u<0.000119110793){
+            double test = (1 + 8*A*u2*g2 + g);
+            printf("v2: %.12f, A: %.12f, g2: %.12f, g: %.12f test: %.12f\n", v2, A, g2, g, test);
+            printf("p00: %.12f, p01: %.12f, p02: %.12f, p03: %.12f, num: %.12f, denom: %.12f \n", p00, p01, p02, p03, numerator, denominator);
+        }
     }
 
     double re = exp(Reexponent);
@@ -685,7 +694,10 @@ double fcontour(double u, void *params){
         val2 =  - (-4*u3*v+4*u*v3) * (sinim + dvdu_term * cosim);
         val = re * (val1 + val2) / (16*g3*pow((u2+v2), 4));
     }
-
+    if (u>0.000119110791 && u<0.000119110793){
+    printf("A: %f, B: %f, u: %.12f, val: %.12f \n", A, B, u, val);
+    printf("v: %.12f, dvdu: %.12f, val1: %.12f, val2: %.12f \n", v, dvdu_term, val1, val2);
+    }
     return val;
 }
 
@@ -755,7 +767,7 @@ double fcontour_gaussian(double u, void *params){
         A0 = p0 - p1 - p2;
         B0 = sqrt( g2 * (p3 + p4 + p5 - p6 + p7));
 
-        if (is_close(A0, -B0))
+        if (is_close(A0, -B0, 1.0e-12))
             v = u-1;
         else
             v = coeff * sqrt( (A0 + B0) / (p8));
@@ -768,7 +780,7 @@ double fcontour_gaussian(double u, void *params){
 
     // Calculate dv / du term
     double dvdu;
-    if (u==1 || is_close(u, v+1) ){
+    if (u==1 || is_close(u, v+1, 1.0e-12) ){
         dvdu = 1.;
     } else {
         double g = 4*B3*u4*g4;
@@ -780,6 +792,7 @@ double fcontour_gaussian(double u, void *params){
         double numerator = p00+p01+p02-p03;
         double denominator = 2*u*v*(1 + g + 4*B3*g4*v2*(2*u2+v2) );
         dvdu = numerator / denominator;
+        //printf("dvdu %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f\n", g, p00, p01, p02, p03, numerator, denominator);
     }
 
     double dvdu2 = pow(dvdu, 2);
@@ -795,6 +808,7 @@ double fcontour_gaussian(double u, void *params){
     t03 = -4*B3*g4 + (-u2 + 3*v2) / u2v2_3;
     t04 = 4*B3*g4 + 1 / (u2v2_2);
     ddvduu = (t01 + t02 + u*(t03 + dvdu2 * t04)) / (u*v*t04);
+    //printf("ddvduu %f %f %f %f %f %f\n", t01, t02, t03, t04, u, v);
 
     double a, b, c;
     a = -A*gamma*v + v/(4*gamma*(1+v2)) + 1./3*B3*g3*(-3*v+v3);
@@ -834,6 +848,7 @@ double fcontour_gaussian(double u, void *params){
     } else if (D==2){
         val1 = (3*u2*v-v3) * (cosim - dvdu*sinim);
         val2 =  - (u3 - 3*u*v2) * (sinim + dvdu * cosim);
+        //printf("%12.8f %12.8f %12.8f %12.8f %12.8f %12.8f\n", A, B, dvdu, ddvduu, val1, val2);
         result = re * (val1 + val2) / (8*g2*pow((u2+v2), 3));
     } else if (D==3){
         val1 = (u4-6*u2*v2+v4) * (cosim - dvdu*sinim);
@@ -889,10 +904,12 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
     double result_gaussian;
     int IntegrationArraySize = 1000;
     if(abs(fcontour(0.999, &params)) > 1.e-5 && abs(fcontour(0.94, &params)) < 1.e-6 && abs(fcontour(1.06, &params)) < 1.e-6){
-
-        if(check_gaussian_profile(&params, 1.e-4))
+        if(check_gaussian_profile(&params, 1.e-4)){
+            cout << "gaussian1" << endl;
             result = fcontour_gaussian(1.000001, &params);
-        else{
+        }else{
+            cout << "gaussian2" << endl;
+
             gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(IntegrationArraySize);
             gsl_set_error_handler_off();
             int status = gsl_integration_qags(&F, 0.8, 1.2, 1e-6, 1e-4, IntegrationArraySize, workspace, &result, &error);
@@ -903,13 +920,14 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
 
         }
     } else {
+        printf("integral");
 
         gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(IntegrationArraySize);
         gsl_set_error_handler_off();
         int status = gsl_integration_qags(&F, 1e-4, 3., 1e-6, 1e-4, IntegrationArraySize, workspace, &result, &error);
         if (status != GSL_SUCCESS){
             double resultp1, resultp2, resultp3;
-            //printf("KD_contour: Error in integration: %s\n A = %f B = %f -> result %f\n", gsl_strerror(status),A,B, result);
+            printf("KD_contour: Error in integration: %s\n A = %f B = %f -> result %f\n", gsl_strerror(status),A,B, result);
             gsl_integration_workspace *workspace2 = gsl_integration_workspace_alloc(IntegrationArraySize);
             gsl_integration_workspace *workspace3 = gsl_integration_workspace_alloc(IntegrationArraySize);
             gsl_integration_workspace *workspace4 = gsl_integration_workspace_alloc(IntegrationArraySize);
@@ -919,8 +937,8 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
             int status4 = gsl_integration_qags(&F, 2., 3., 1e-5, 1e-4, IntegrationArraySize, workspace4, &resultp3, &error); 
 
             result = resultp1 + resultp2 + resultp3;
-            if (status2 != GSL_SUCCESS || status3 != GSL_SUCCESS || status4 != GSL_SUCCESS)
-                printf("New result WITH error @ A = %f B = %f: %f, %s, %s, %s\n", A, B, result, gsl_strerror(status2), gsl_strerror(status3), gsl_strerror(status4));
+            //if (status2 != GSL_SUCCESS || status3 != GSL_SUCCESS || status4 != GSL_SUCCESS)
+            //    printf("New result WITH error @ A = %f B = %f: %f, %s, %s, %s\n", A, B, result, gsl_strerror(status2), gsl_strerror(status3), gsl_strerror(status4));
             //else
             //    printf("New result, NO error: %f\n", result);
 

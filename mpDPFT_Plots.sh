@@ -32,7 +32,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [-0.00888366:3.22098] noreverse nowriteback
+set cbrange [-0.0252803:1.35496] noreverse nowriteback
 set pm3d implicit
 set palette defined ( 0 "black", 0.05 "blue", 0.3 "cyan", 0.45 "green", 0.6 "yellow", 0.8 "orange", 1 "red" )
 splot 'mpDPFT_ContourData.dat' using 1:2:4 with pm3d notitle
@@ -83,8 +83,8 @@ set title 'Den0 along (-8,0)\$\to\$(8,0)'
 set mxtics 5
 set mytics 5
 set grid xtics ytics mxtics mytics
-set yrange [-0.008884:3.22098]
-mu(x)=27.421128
+set yrange [-0.025280:1.35496]
+mu(x)=7.974678
 plot 'mpDPFT_CutData.dat' using 1:2 with lines ls 1 title 'Den0'
 EOF
 cat tmp_split.eps \
@@ -186,8 +186,8 @@ set title 'Env+V0 along (-8,0)\$\to\$(8,0)'
 set mxtics 5
 set mytics 5
 set grid xtics ytics mxtics mytics
-set yrange [0.000000:35.2]
-mu(x)=27.421128
+set yrange [0.000000:35.2025]
+mu(x)=7.974678
 plot 'mpDPFT_CutData.dat' using 1:3 with lines ls 3 title 'Env0', mu(x) ls 2 title '\$\mu\$', 'mpDPFT_CutData.dat' using 1:4 with lines ls 7 title 'V0' 
 EOF
 cat tmp_split.eps \
@@ -238,7 +238,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [1.77494e-31:70.4] noreverse nowriteback
+set cbrange [0.304812:70.4039] noreverse nowriteback
 set pm3d implicit
 set palette defined ( 0 "black", 0.05 "blue", 0.3 "cyan", 0.45 "green", 0.6 "yellow", 0.8 "orange", 1 "red" )
 splot 'mpDPFT_ContourData.dat' using 1:2:6 with pm3d notitle
@@ -289,8 +289,8 @@ set title 'LogPlotDen0 along (-8,0)\$\to\$(8,0)'
 set logscale y
 set format y "%e"
 set samples 1000
-set yrange [1e-16:3.22098]
-mu(x)=27.421128
+set yrange [1e-16:1.35496]
+mu(x)=7.974678
 plot 'mpDPFT_CutData.dat' using 1:2 with lines ls 1 title 'Den0'
 EOF
 cat tmp_split.eps \
@@ -341,7 +341,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [-0.00888127:3.22099] noreverse nowriteback
+set cbrange [-0.0256758:1.36663] noreverse nowriteback
 set pm3d implicit
 set palette defined ( 0 "black", 0.05 "blue", 0.3 "cyan", 0.45 "green", 0.6 "yellow", 0.8 "orange", 1 "red" )
 splot 'mpDPFT_ContourData.dat' using 1:2:7 with pm3d notitle
@@ -392,8 +392,8 @@ set title 'Den1 along (-8,0)\$\to\$(8,0)'
 set mxtics 5
 set mytics 5
 set grid xtics ytics mxtics mytics
-set yrange [-0.008881:3.22099]
-mu(x)=27.421213
+set yrange [-0.025676:1.36663]
+mu(x)=8.013700
 plot 'mpDPFT_CutData.dat' using 1:5 with lines ls 1 title 'Den1'
 EOF
 cat tmp_split.eps \
@@ -495,8 +495,8 @@ set title 'Env+V1 along (-8,0)\$\to\$(8,0)'
 set mxtics 5
 set mytics 5
 set grid xtics ytics mxtics mytics
-set yrange [0.000000:35.2]
-mu(x)=27.421213
+set yrange [0.000000:35.2127]
+mu(x)=8.013700
 plot 'mpDPFT_CutData.dat' using 1:6 with lines ls 3 title 'Env1', mu(x) ls 2 title '\$\mu\$', 'mpDPFT_CutData.dat' using 1:7 with lines ls 7 title 'V1' 
 EOF
 cat tmp_split.eps \
@@ -547,7 +547,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [1.77494e-31:70.4] noreverse nowriteback
+set cbrange [0.259731:70.4017] noreverse nowriteback
 set pm3d implicit
 set palette defined ( 0 "black", 0.05 "blue", 0.3 "cyan", 0.45 "green", 0.6 "yellow", 0.8 "orange", 1 "red" )
 splot 'mpDPFT_ContourData.dat' using 1:2:9 with pm3d notitle
@@ -598,8 +598,8 @@ set title 'LogPlotDen1 along (-8,0)\$\to\$(8,0)'
 set logscale y
 set format y "%e"
 set samples 1000
-set yrange [1e-16:3.22099]
-mu(x)=27.421213
+set yrange [1e-16:1.36663]
+mu(x)=8.013700
 plot 'mpDPFT_CutData.dat' using 1:5 with lines ls 1 title 'Den1'
 EOF
 cat tmp_split.eps \
@@ -650,7 +650,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [-0.0177649:6.44197] noreverse nowriteback
+set cbrange [-0.00452266:1.41153] noreverse nowriteback
 set pm3d implicit
 set palette defined ( 0 "black", 0.05 "blue", 0.3 "cyan", 0.45 "green", 0.6 "yellow", 0.8 "orange", 1 "red" )
 splot 'mpDPFT_ContourData.dat' using 1:2:((\$4)+(\$7)) with pm3d notitle
@@ -703,7 +703,7 @@ unset surface
 set style data pm3d
 set xrange [-8:8] noreverse nowriteback
 set yrange [-8:8] noreverse nowriteback
-set cbrange [-8.77485e-05:8.77485e-05] noreverse nowriteback
+set cbrange [-1.20486:1.20486] noreverse nowriteback
 set pm3d implicit
 set palette defined ( -0.05 "black", 0.05 "#0000dd", 0.1 "#0000ff", 0.2 "#00ddff", 0.45 "#ff88ff", 0.5 "white", 0.55 "#88ff88", 0.8 "yellow", 0.9 "orange", 0.95 "#ff6633", 1.05 "#cc0000")
 splot 'mpDPFT_ContourData.dat' using 1:2:((\$4)-(\$7)) with pm3d notitle
@@ -754,7 +754,7 @@ set title 'Overview Den along (-8,0)\$\to\$(8,0)'
 set mxtics 5
 set mytics 5
 set grid xtics ytics mxtics mytics
-set yrange [-0.008884:3.22099]
+set yrange [-0.025676:1.36663]
 plot 'mpDPFT_CutData.dat' using 1:2 with lines ls 1 title 'Den0', 'mpDPFT_CutData.dat' using 1:5 with lines ls 2 title 'Den1'
 EOF
 cat tmp_split.eps \
