@@ -90,6 +90,7 @@
 #include <iostream>
 #include <fstream>
 #include "utils/interactions.h"
+#include "utils/potentials.h"
 
 
 
@@ -1581,6 +1582,11 @@ void GetEnv(int s,datastruct &data){//omp-parallelized - careful about performan
 		double x = data.mpp[0]*data.VecAt[i][0], y = data.mpp[1]*data.VecAt[i][1], z = data.mpp[2]*data.VecAt[i][2];
       data.Env[s][i] = 0.5*(x*x+y*y+z*z);
     }
+  }
+
+  else if(data.Environments[s]==17){//Hooke atom in 3D momentum space
+    cout << "Preparing Hooke Atom" << endl;
+    Hooke_momentum_effective(s, data);
   }  
 
   else if(data.Environments[s]==20){//isotropic Mexican hat potential (r^4)-mpp*(r^2)
@@ -2382,27 +2388,6 @@ void GetSCOgradients(vector<double> &infield,vector<double> &outfield, datastruc
 	}
 }
 
-
-void MomentumContactInteractionFiniteT(int ss, datastruct &data){//Alex
-  double lam = 2.0*PI/data.degeneracy/data.TVec[ss];
-  
-  #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
-  for (int i = 0; i < data.GridSize; i++){
-    vector<double> integrand(data.GridSize);
-    double Den1 = data.Den[ss][i];//POS(data.Den[ss][i]);
-    for (int j = 0; j < data.GridSize; j++){
-      double Den2 = data.Den[1-ss][j];//POS(data.Den[1-ss][j]);
-      if (ABS(Den1 - Den2) < 1e-10) {
-	integrand[j] = 0.5*(1 - exp(-lam*Den2));
-      }
-      else {
-	integrand[j] = (exp(lam*Den2) - 1)*(exp(lam*Den2) + exp(lam*Den1)*(lam*Den1 - lam*Den2 - 1))/((exp(lam*Den1) - exp(lam*Den2))*(exp(lam*Den1) - exp(lam*Den2)) );
-      }
-    }
-    data.TmpField2[i] = data.beta*data.degeneracy/(4.*PI*PI)*Integrate(1,data.method, data.DIM, integrand, data.frame);
-    //data.TmpField2[i] = data.beta * POS(data.Den[1-ss][i]);
-  }
-}
 
 void ResourceIntegrand(int EnergyQ, int ss, datastruct &data){//resource terms for 2D
   //EnergyQ==0: Vint->TMPField2[ss]

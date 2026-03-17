@@ -84,7 +84,7 @@ export OMP_THREAD_LIMIT=$threads
 #export OMP_SCHEDULE=OMP_SCHED_GUIDED
 #export OMP_SCHEDULE=OMP_SCHED_AUTO
 #export ASAN_OPTIONS=detect_leaks=1:print_summary=1:verbosity=1
-nice -19 ./mpDPFT #option 1; default
+nice -19 ./mpDPFT_michael #option 1; default
 #echo "gdb..." && gdb mpDPFT #option 2; for debugging. Select in MakeFile: CC= g++ -ggdb3 ...; type 'run' when in (gdb) terminal, type 'bt' or 'thread apply all bt' for back-tracing; when stuck -> ctrl-c -> bt -> cont
 #echo "valgrind..." && valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes ./mpDPFT
 #echo "valgrind..." && valgrind --tool=massif --massif-out-file=massif.out ./mpDPFT

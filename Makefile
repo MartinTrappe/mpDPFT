@@ -41,8 +41,8 @@ LDFLAGS= -L${EBROOTGSL} -L/usr -L/usr/local/lib -L/opt/etsf -L/opt/etsf/lib -L/u
 
 #################### END USER INPUT ####################
 
-OBJS = mpDPFTmain.o mpDPFT.o Plugin_KD.o Plugin_Triangulation.o Plugin_1pEx.o Plugin_1pEx_Rho1p.o Plugin_OPT.o Plugin_cec14_test_func.o statistics.o specialfunctions.o solvers.o optimization.o linalg.o kernels_sse2.o kernels_fma.o kernels_avx2.o interpolation.o integration.o fasttransforms.o diffequations.o dataanalysis.o ap.o alglibmisc.o alglibinternal.o utils/interactions.o
-HEADERS = stdafx.h statistics.h specialfunctions.h solvers.h optimization.h linalg.h kernels_sse2.h kernels_fma.h kernels_avx2.h interpolation.h integration.h fasttransforms.h diffequations.h dataanalysis.h ap.h alglibmisc.h alglibinternal.h utils/interactions.h
+OBJS = mpDPFTmain.o mpDPFT.o Plugin_KD.o Plugin_Triangulation.o Plugin_1pEx.o Plugin_1pEx_Rho1p.o Plugin_OPT.o Plugin_cec14_test_func.o statistics.o specialfunctions.o solvers.o optimization.o linalg.o kernels_sse2.o kernels_fma.o kernels_avx2.o interpolation.o integration.o fasttransforms.o diffequations.o dataanalysis.o ap.o alglibmisc.o alglibinternal.o utils/interactions.o utils/potentials.o
+HEADERS = stdafx.h statistics.h specialfunctions.h solvers.h optimization.h linalg.h kernels_sse2.h kernels_fma.h kernels_avx2.h interpolation.h integration.h fasttransforms.h diffequations.h dataanalysis.h ap.h alglibmisc.h alglibinternal.h utils/interactions.h utils/potentials.h
 
 .PHONY: all clean
 
