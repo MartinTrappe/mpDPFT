@@ -208,7 +208,7 @@ void FourierFilter(vector<double> &Field, datastruct &data);
 void ExpandSymmetry(int ExpandDensityQ, vector<double> &Field, datastruct &data);
 
 // G L O B A L   I N I T I A L I Z A T I O N S
-inline void SetOmpThreads(taskstruct &task,datastruct &data){ if(task.Type==44) data.ompThreads = 1; else data.ompThreads = (int)omp_get_max_threads(); /*cout << "SetOmpThreads to " << data.ompThreads;*/ }
+inline void SetOmpThreads(taskstruct &task,datastruct &data){ if(task.Type==44) data.ompThreads = 1; else data.ompThreads = (int)4/*omp_get_max_threads()*/; cout << "SetOmpThreads to " << data.ompThreads; }
 void RetrieveTask(datastruct &data,taskstruct &task);
 void SetupSCO(datastruct &data);
 void SanityChecks(datastruct &data);

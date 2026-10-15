@@ -6,42 +6,42 @@
 
  I N I T I A L I Z A T I O N ...
 
- ***** OMP_NUM_THREADS = 12 *****
+ ***** OMP_NUM_THREADS = 4 *****
  ***** get input parameters *****
 
  ***** Input loaded *****
 System 0
-Symmetry 1
+Symmetry 0
 TaskType 0
 TaskParameterCount 0
 TaskHyperBox 0 0
-DIM 3
+DIM 1
 Units 1
-edge 8
-steps 48
-S 2
-Abundances 1 1
+edge 6
+steps 400
+S 1
+Abundances 1
 RelAcc 1e-05
 InternalAcc 1
 K 0
 Resources
 DensityExpression 11
-mpp 0.5 0.5
+mpp 0.5
 Mpp 1 1 1e-06
-tauVec 1 1
-tVec 1 1
-TVec 1 1
-Environments 17 17
+tauVec 1
+tVec 1
+TVec 1
+Environments 191
 stretchfactor 1
 Wall 0
-Noise 0.1
+Noise 0
 InterpolVQ 0
 Interactions 0
 incrementalV 1
-muVec 6 6
+muVec 6
 DeltamuModifier -3
 Mixer 0 10 -1
-thetaVec 0.3 0.3
+thetaVec 0.3
 SCcriterion 1e-12
 maxSCcount 0
 method 2
@@ -50,7 +50,7 @@ MovieQ 1
 Schedule 4
 EkinTypes 0
 alpha 0
-beta 8
+beta 4
 gamma 0
 gammaH 0
 degeneracy 1
@@ -60,7 +60,7 @@ Print 1
 
  ***** run auxilliary tasks 1 *****
  ***** initialize support, input derivatives, additional and system-specific parameters *****
-InitializeHardCodedParameters: data.KD.CoarseIndices = 81 159 189 211 215 330 337 393 401 411 ... 116795 116872 116908 117099 117199 117226 117343 117498 117514 
+InitializeHardCodedParameters: Warning !!! data.Symmetry changed to data.Symmetry==0
  ***** run auxilliary tasks 2 *****
  ***** set up task parameterization *****
  ***** allocate memory and FFT plans *****
@@ -69,138 +69,96 @@ InitializeHardCodedParameters: data.KD.CoarseIndices = 81 159 189 211 215 330 33
  ***** test ground *****
  ***** run auxilliary tasks 3 ****
  ***** initialize densities ****
-Getn7 FreeRAM = 1.5672893e+09
-Getn7 FreeRAM = 1.5672893e+09
-    Start with muVec = 6 6  -> TmpAbundances = 141.2566980774531 141.2566980774531  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5698412e+09
-   Find muVecMIN[s=0]: 5.701277589792817 6  -> TmpAbundances = 128.3678814998377 141.2566980774531  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5698412e+09
-   Find muVecMIN[s=0]: 4.89481143691582 6  -> TmpAbundances = 94.5946611224069 141.2566980774531  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5698412e+09
-   Find muVecMIN[s=0]: 3.685112207600324 6  -> TmpAbundances = 48.41549086608471 141.2566980774531  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5702508e+09
-   Find muVecMIN[s=0]: 2.07217990184633 6  -> TmpAbundances = 6.460083946409439 141.2566980774531  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5712461e+09
-   Find muVecMIN[s=0]: 0.05601451965383752 6  -> TmpAbundances = -0.01643745825224681 141.2566980774531  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5795036e+09
-   Find muVecMIN[s=1]: 0.05601451965383752 5.596766923561502  -> TmpAbundances = -0.01643745825224681 123.898466729477  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.5805317e+09
-   Find muVecMIN[s=1]: 0.05601451965383752 4.540324932573031  -> TmpAbundances = -0.01643745825224681 80.34674753963823  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.580286e+09
-   Find muVecMIN[s=1]: 0.05601451965383752 2.955661946090325  -> TmpAbundances = -0.01643745825224681 25.33792406016994  [Abundances = 1 1 ] 
-Getn7 FreeRAM = 1.580286e+09
-   Find muVecMIN[s=1]: 0.05601451965383752 0.8427779641133841  -> TmpAbundances = -0.01643745825224681 0.05414988017440087  [Abundances = 1 1 ] 
-   [mu-ranges found] muVecMIN = 0.05601451965383752 0.8427779641133841 
-                     muVecMAX = 2.07217990184633 2.955661946090325 
-Getn7 FreeRAM = 1.580286e+09
- Bisectional search for muVec[s=0]: 1.064097210750084 1.899219955101855  -> TmpAbundances = 0.2533917661565168 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.580286e+09
- Bisectional search for muVec[s=0]: 1.568138556298207 1.899219955101855  -> TmpAbundances = 1.83230576612707 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5801549e+09
- Bisectional search for muVec[s=0]: 1.316117883524146 1.899219955101855  -> TmpAbundances = 0.8105173000305942 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5801549e+09
- Bisectional search for muVec[s=0]: 1.442128219911176 1.899219955101855  -> TmpAbundances = 1.249213341978789 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5801549e+09
- Bisectional search for muVec[s=0]: 1.379123051717661 1.899219955101855  -> TmpAbundances = 1.013427941221704 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5801549e+09
- Bisectional search for muVec[s=0]: 1.347620467620903 1.899219955101855  -> TmpAbundances = 0.8973121630463733 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5799747e+09
- Bisectional search for muVec[s=0]: 1.363371759669282 1.899219955101855  -> TmpAbundances = 0.9568180498143812 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5802655e+09
- Bisectional search for muVec[s=0]: 1.371247405693471 1.899219955101855  -> TmpAbundances = 0.985357891981816 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5800361e+09
- Bisectional search for muVec[s=0]: 1.375185228705566 1.899219955101855  -> TmpAbundances = 0.999419617345756 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.580073e+09
- Bisectional search for muVec[s=0]: 1.377154140211613 1.899219955101855  -> TmpAbundances = 1.006427615803565 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5812731e+09
- Bisectional search for muVec[s=0]: 1.37616968445859 1.899219955101855  -> TmpAbundances = 1.002924759228707 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5824814e+09
- Bisectional search for muVec[s=0]: 1.375677456582078 1.899219955101855  -> TmpAbundances = 1.001172568795801 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5824814e+09
- Bisectional search for muVec[s=0]: 1.375431342643822 1.899219955101855  -> TmpAbundances = 1.000296187103135 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5826493e+09
- Bisectional search for muVec[s=0]: 1.375308285674694 1.899219955101855  -> TmpAbundances = 0.9998579207616989 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5826493e+09
- Bisectional search for muVec[s=0]: 1.375369814159258 1.899219955101855  -> TmpAbundances = 1.000077063772486 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5826493e+09
- Bisectional search for muVec[s=0]: 1.375339049916976 1.899219955101855  -> TmpAbundances = 0.9999674916680682 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5826493e+09
- Bisectional search for muVec[s=0]: 1.375354432038117 1.899219955101855  -> TmpAbundances = 1.000022276315766 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5826493e+09
- Bisectional search for muVec[s=0]: 1.375346740977547 1.899219955101855  -> TmpAbundances = 0.9999948871921743 0.05414988017440087  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5831327e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.899219955101855  -> TmpAbundances = 0.9999948871921743 4.309126576003933  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5862743e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.370998959607619  -> TmpAbundances = 0.9999948871921743 0.9844675657033498  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5857951e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.635109457354737  -> TmpAbundances = 0.9999948871921743 2.214505058834847  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5858033e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.503054208481178  -> TmpAbundances = 0.9999948871921743 1.504596842202149  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5828132e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.437026584044399  -> TmpAbundances = 0.9999948871921743 1.228894416617808  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5828132e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.404012771826009  -> TmpAbundances = 0.9999948871921743 1.103024958869905  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5828132e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.387505865716814  -> TmpAbundances = 0.9999948871921743 1.043189027751481  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5825592e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.379252412662217  -> TmpAbundances = 0.9999948871921743 1.01388785035765  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5825592e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.375125686134918  -> TmpAbundances = 0.9999948871921743 0.9992075104642074  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5823299e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.377189049398567  -> TmpAbundances = 0.9999948871921743 1.006551795136995  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5823299e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.376157367766743  -> TmpAbundances = 0.9999948871921743 1.002880961207714  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5820841e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.37564152695083  -> TmpAbundances = 0.9999948871921743 1.001044646735481  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5822602e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.375383606542874  -> TmpAbundances = 0.9999948871921743 1.000126182839427  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5848202e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.375254646338896  -> TmpAbundances = 0.9999948871921743 0.999666873073832  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5848202e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.375319126440885  -> TmpAbundances = 0.9999948871921743 0.9998965318660932  [Abundances = 1 1 ]
-Getn7 FreeRAM = 1.5848202e+09
- Bisectional search for muVec[s=1]: 1.375346740977547 1.37535136649188  -> TmpAbundances = 0.9999948871921743 1.000011360452885  [Abundances = 1 1 ]
-EnforceConstraints: [Success] DeltamuModifier  = -2.430000
-                             muVecSearchCount  = 41
-                              TmpAbundances    = 0.9999948871921743 1.000011360452885 
-                              TargetAbundances = 1 1 
-                              Minimal Deltamu  = 7.69106057041391e-06
-                              Previous muVec   = 6 6 
-                              Final muVec      = 1.375346740977547 1.37535136649188 
-InitializePulayMixer: Required (Free) RAM = 7.53e+07 (1.585e+09) bytes
+Getn7 FreeRAM = 7.9092736e+09
+    Start with muVec = 6  -> TmpAbundances = 8.702380085029736  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9083192e+09
+   Find muVecMIN[s=0]: 5.701277589792817  -> TmpAbundances = 8.594249748436326  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9080612e+09
+   Find muVecMIN[s=0]: 4.89481143691582  -> TmpAbundances = 8.293995020736732  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9078646e+09
+   Find muVecMIN[s=0]: 3.685112207600324  -> TmpAbundances = 7.81864913791434  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9077499e+09
+   Find muVecMIN[s=0]: 2.07217990184633  -> TmpAbundances = 7.130857103088426  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9073198e+09
+   Find muVecMIN[s=0]: 0.05601451965383752  -> TmpAbundances = 6.153061665034981  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9070618e+09
+   Find muVecMIN[s=0]: -2.363383938977154  -> TmpAbundances = 4.698760296820282  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9065457e+09
+   Find muVecMIN[s=0]: -5.186015474046643  -> TmpAbundances = 1.827947739025342  [Abundances = 1 ] 
+Getn7 FreeRAM = 7.9074755e+09
+   Find muVecMIN[s=0]: -8.411880085554632  -> TmpAbundances = 2.601079416398423e-05  [Abundances = 1 ] 
+   [mu-ranges found] muVecMIN = -8.411880085554632 
+                     muVecMAX = -5.186015474046643 
+Getn7 FreeRAM = 7.9075533e+09
+ Bisectional search for muVec[s=0]: -6.798947779800637  -> TmpAbundances = 0.0007324553913834687  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9073608e+09
+ Bisectional search for muVec[s=0]: -5.99248162692364  -> TmpAbundances = 0.02294590663179611  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9071642e+09
+ Bisectional search for muVec[s=0]: -5.589248550485141  -> TmpAbundances = 0.9608476038285504  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9076966e+09
+ Bisectional search for muVec[s=0]: -5.387632012265892  -> TmpAbundances = 1.422730733816918  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9082332e+09
+ Bisectional search for muVec[s=0]: -5.488440281375517  -> TmpAbundances = 1.19642967092723  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9086305e+09
+ Bisectional search for muVec[s=0]: -5.538844415930329  -> TmpAbundances = 1.083116453042544  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9079629e+09
+ Bisectional search for muVec[s=0]: -5.564046483207735  -> TmpAbundances = 1.024170501718936  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9085691e+09
+ Bisectional search for muVec[s=0]: -5.576647516846439  -> TmpAbundances = 0.9932441791051542  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9081349e+09
+ Bisectional search for muVec[s=0]: -5.570347000027088  -> TmpAbundances = 1.008865215196006  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9083848e+09
+ Bisectional search for muVec[s=0]: -5.573497258436763  -> TmpAbundances = 1.001097262917508  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9089664e+09
+ Bisectional search for muVec[s=0]: -5.575072387641601  -> TmpAbundances = 0.9971817624605793  [Abundances = 1 ]
+Getn7 FreeRAM = 7.908565e+09
+ Bisectional search for muVec[s=0]: -5.574284823039182  -> TmpAbundances = 0.9991422224893509  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9084421e+09
+ Bisectional search for muVec[s=0]: -5.573891040737973  -> TmpAbundances = 1.000120413881883  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9087247e+09
+ Bisectional search for muVec[s=0]: -5.574087931888577  -> TmpAbundances = 0.9996314867619966  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9079506e+09
+ Bisectional search for muVec[s=0]: -5.573989486313275  -> TmpAbundances = 0.9998759923681764  [Abundances = 1 ]
+Getn7 FreeRAM = 7.9072174e+09
+ Bisectional search for muVec[s=0]: -5.573940263525624  -> TmpAbundances = 0.9999982136243686  [Abundances = 1 ]
+EnforceConstraints: [Success] DeltamuModifier  = -2.700000
+                             muVecSearchCount  = 23
+                              TmpAbundances    = 0.9999982136243686 
+                              TargetAbundances = 1 
+                              Minimal Deltamu  = 4.922278765118193e-05
+                              Previous muVec   = 6 
+                              Final muVec      = -5.573940263525624 
+Skip Noise
+InitializePulayMixer: Required (Free) RAM = 1.283e+05 (7.907e+09) bytes
 
- ***** Initialization complete;  Timing = 13.000000 *****
+ ***** Initialization complete;  Timing = 204.000000 *****
 
  ***** skip self-consistent loop ****
 
  O U T P U T ...
 
-FreeRAM1 = 1.5846e+09
+FreeRAM1 = 7.9072e+09
 .......... GetDispersalEnergy to be implemented for this system ..............
-.......... GetDispersalEnergy to be implemented for this system ..............
-FreeRAM3 = 1.5846e+09
-FreeRAM4 = 1.5927e+09
+FreeRAM3 = 7.9072e+09
+FreeRAM4 = 7.9072e+09
  ***** prepare export ****
  ***** get field stats ****
- ***** get FieldInterpolations ****
  ***** get CutInterpolations ****
  ***** get consumption ****
-FreeRAM5 = 1.5927e+09
+FreeRAM5 = 7.9072e+09
  ***** export Den ****
-FreeRAM7 = 1.591e+09
+FreeRAM7 = 7.9072e+09
  ***** export V ****
-FreeRAM8 = 1.575e+09
- ***** export ContourData ****
-FreeRAM9 = 1.575e+09
+FreeRAM8 = 7.9072e+09
+FreeRAM9 = 7.9072e+09
  ***** export CutData ****
  ***** export Triangulation Data ****
-FreeRAM10 = 1.575e+09
-maxlocalmagnetization = 0.099719 at rVec = {0.5 -1.333333333333333 2.833333333333333 }
-threads = 12\\**** InputParameters from mpDPFT.input ****\\System 0\\Symmetry 1\\TaskType 0\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 3\\Units 1\\edge 8\\steps 48\\S 2\\Abundances 1 1\\RelAcc 1e-05\\InternalAcc 1\\K 0\\Resources\\DensityExpression 11\\mpp 0.5 0.5\\Mpp 1 1 1e-06\\tauVec 1 1\\tVec 1 1\\TVec 1 1\\Environments 17 17\\stretchfactor 1\\Wall 0\\Noise 0.1\\InterpolVQ 0\\Interactions 0\\incrementalV 1\\muVec 6 6\\DeltamuModifier -3\\Mixer 0 10 -1\\thetaVec 0.3 0.3\\SCcriterion 1e-12\\maxSCcount 0\\method 2\\DelFieldMethod 2\\MovieQ 1\\Schedule 4\\EkinTypes 0\\alpha 0\\beta 8\\gamma 0\\gammaH 0\\degeneracy 1\\regularize 0\\RegularizationThreshold 0.375\\Print 1\\\newpage 
-**** HardCodedParameters ****\\Deltax 0.166667\\k0 -18.8496\\U 1\\KD.ExportCleanDensity 100\\KD.UseTriangulation 0\\KD.UpdateTriangulation 1\\KD.IntermediateCleanUp 0\\KD.ReevaluateTriangulation 100\\KD.NumChecks 100\\FocalDensitySteps 12\\KD.MergerRatioThreshold 0.1\\KD.RemovalFraction 0.6\\KD.RetainSurplusFraction 0.1\\Symmetry 1\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 50\\MaxIteration 4\\SmearingExtent 1 = 6*Deltax\\ConvolutionSigma -0.5\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronPP 2\\AllElectronParam 4.1081\\libxcPolarization 1\\OutPrecision 16\\OutCut -4 0 4 0 \\MonitorFlag 0\\\newpage 
-**** FieldStats ****\\DenMin = -0.0006689259097306597 -0.0006690288390585228 \\DenMax = 0.04575587861019225 0.04578116687034275 \\EnvMin = 0.4112817821319615 0.4112817821319615 \\EnvMax = 2.650690819458291 2.650690819458291 \\VMin = 0.4112817821319615 0.4112817821319615 \\VMax = 2.650690819458291 2.650690819458291 \\**** Final Output Variables ****\\FinalAbundances              = 0.9999948871921743 1.000011360452885 \\TargetAbundances             = 1 1 \\RelativeAbundances           = 0.5 0.5 \\NetMagnetization             = 0.003271151786946036 0.05719398383524299 0.0334532716403603 0.09971917963830591 0.02741322649163548 0.039770715728586 \\NetColumnMagnetization       = 0.00762654\\muVec                        = 1.375346740977547 1.37535136649188 \\DeltamuModifier              = -2.43\\Linear/Pulay-Mixings         = 0/0\\AuxilliaryEkin[s=0]          = 0.3325821263952933 0.1635586343085546 1.472027708776991 0 \\AuxilliaryEkin[s=1]          = 0.3329449971185706 0.1631056733253046 1.467951059927741 0 \\AuxilliaryEint[s=0]          = 0 0 0 0 \\AuxilliaryEint[s=1]          = 0 0 0 0 \\DispersalEnergies            = 0 0 \\AlternativeDispersalEnergies = 0 0 \\EnvironmentalEnergies        = 0.6503476280509787 0.6504359118094585 \\InteractionEnergies          = 0 \\TotalEnergy                  = 1.300783539860437\\FigureOfMerit                = 0\\SCiterations                 = -1/0\\ConvergenceCheck             = 0\\ComputationalTime            = 13\\\newpage 
+FreeRAM10 = 7.9072e+09
+threads = 4\\**** InputParameters from mpDPFT.input ****\\System 0\\Symmetry 0\\TaskType 0\\TaskParameterCount 0\\TaskHyperBox 0 0\\DIM 1\\Units 1\\edge 6\\steps 400\\S 1\\Abundances 1\\RelAcc 1e-05\\InternalAcc 1\\K 0\\Resources\\DensityExpression 11\\mpp 0.5\\Mpp 1 1 1e-06\\tauVec 1\\tVec 1\\TVec 1\\Environments 191\\stretchfactor 1\\Wall 0\\Noise 0\\InterpolVQ 0\\Interactions 0\\incrementalV 1\\muVec 6\\DeltamuModifier -3\\Mixer 0 10 -1\\thetaVec 0.3\\SCcriterion 1e-12\\maxSCcount 0\\method 2\\DelFieldMethod 2\\MovieQ 1\\Schedule 4\\EkinTypes 0\\alpha 0\\beta 4\\gamma 0\\gammaH 0\\degeneracy 1\\regularize 0\\RegularizationThreshold 0.375\\Print 1\\\newpage 
+**** HardCodedParameters ****\\Deltax 0.015\\k0 -209.44\\U 1\\KD.ExportCleanDensity 100\\KD.UseTriangulation 0\\KD.UpdateTriangulation 1\\KD.IntermediateCleanUp 0\\KD.ReevaluateTriangulation 100\\KD.NumChecks 100\\FocalDensitySteps 400\\KD.MergerRatioThreshold 0.1\\KD.RemovalFraction 0.6\\KD.RetainSurplusFraction 0.1\\Symmetry 0\\SplineType 1\\InterpolAcc 0.1\\UpdateSymMaskFraction 0.05\\FourierFilterPercentage 50\\MaxIteration 4\\SmearingExtent 0.09 = 6*Deltax\\ConvolutionSigma -0.00405\\ConjugateGradientDescent: ConjGradParam ( epsf,epsg,epsx,diffstep ) = ( 0 0 0 0 )\\rpow 1\\flatEnv 0\\AutomaticTratio 1e-06\\AllElectronPP 2\\AllElectronParam 49.1067\\libxcPolarization 1\\OutPrecision 16\\OutCut -3 0 3 0 \\MonitorFlag 0\\\newpage 
+**** FieldStats ****\\DenMin = 0.05259285005094912 \\DenMax = 0.263317325290677 \\EnvMin = -5.852594183485398 \\EnvMax = -5.649427672177762 \\VMin = -5.852594183485398 \\VMax = -5.649427672177762 \\**** Final Output Variables ****\\FinalAbundances              = 0.9999982136243686 \\TargetAbundances             = 1 \\RelativeAbundances           = 1 \\muVec                        = -5.573940263525624 \\DeltamuModifier              = -2.7\\Linear/Pulay-Mixings         = 0/0\\AuxilliaryEkin[s=0]          = 0.06915868609972987 0 0 0 \\AuxilliaryEint[s=0]          = 0 0 0 0 \\DispersalEnergies            = 0 \\AlternativeDispersalEnergies = 0 \\EnvironmentalEnergies        = -5.781402323860412 \\InteractionEnergies          = 0 \\TotalEnergy                  = -5.781402323860412\\FigureOfMerit                = 0\\SCiterations                 = -1/0\\ConvergenceCheck             = 0\\ComputationalTime            = 204\\\newpage 
 
  ***** produce plot and movie shells ****
-FreeRAM11 = 1.575e+09
- TotalRunTime = 13.000000;  0 Error(s);  0 Warning(s)
+FreeRAM11 = 7.9072e+09
+ TotalRunTime = 204.000000;  0 Error(s);  0 Warning(s)
  EndOfControlFile

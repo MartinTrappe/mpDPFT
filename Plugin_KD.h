@@ -1,3 +1,6 @@
+#ifndef INTERACTIONS_H
+#define INTERACTIONS_H
+
 #include <cstdio>
 #include <cmath>
 #include <iostream>
@@ -48,3 +51,5 @@ void writeVectorsToFile(const std::vector<double>& vec1, const std::vector<doubl
 double log_uniform(double min, double max, std::mt19937& gen);
 int run_range(int fnum, double scale, double amin, double amax, double bmin, double bmax);
 int run_full_range(void);
+
+#endif

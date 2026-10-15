@@ -930,7 +930,7 @@ void InitializeHardCodedParameters(datastruct &data, taskstruct &task){
       	data.txtout << "KD.ReevaluateTriangulation " << data.KD.ReevaluateTriangulation << "\\\\";
       	data.KD.NumChecks = 100;//1: minimum (centroid) --- >1: more points to check in GoodTriangleQ. Discard triangles that do not pass NumChecks
       	data.txtout << "KD.NumChecks " << data.KD.NumChecks << "\\\\";
-      	int FocalDensitySteps = data.steps/4;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
+      	int FocalDensitySteps = data.steps;//data.steps;//min(512,data.steps);//determines grid size for density n7 (should be less than data.steps), will be truncated automatically if necessary, for now only used together with Getn7()-METHOD==3.
       	data.txtout << "FocalDensitySteps " << FocalDensitySteps << "\\\\";
       	data.KD.MergerRatioThreshold = 0.1;//minimum percentage of #CurrentMergers to merge good triangles again
       	data.txtout << "KD.MergerRatioThreshold " << data.KD.MergerRatioThreshold << "\\\\";
@@ -1584,9 +1584,40 @@ void GetEnv(int s,datastruct &data){//omp-parallelized - careful about performan
     }
   }
 
-  else if(data.Environments[s]==17){//Hooke atom in 3D momentum space
-    cout << "Preparing Hooke Atom" << endl;
+  else if(data.Environments[s]==171){//H Effective ooke atom in 3D momentum space
+    cout << "Preparing effective Hooke Atom" << endl;
     Hooke_momentum_effective(s, data);
+  }  
+
+  else if(data.Environments[s]==172){// Interacting Hooke atom in 3D momentum space
+    cout << "Preparing Hooke external potential for interacting system" << endl;
+    Hooke_momentum_external_potential(s, data);
+  }
+
+  else if(data.Environments[s]==181){// Effective Moshinsky atom in 3D momentum space
+    cout << "Preparing effective Moshinsky Atom" << endl;
+    Moschinsky_effective_potential(s, data);
+  }  
+
+  else if(data.Environments[s]==182){// Interacting Moshinsky atom in 3D momentum space
+    cout << "Preparing Moshinsky external potential for interacting system" << endl;
+    Hooke_momentum_external_potential(s, data);
+  }  
+
+  else if(data.Environments[s]==191){//Effective Contactium in 3D momentum space
+    cout << "Preparing effective contactium" << endl;
+    Contactium_effective_potential(s, data);
+  }  
+
+  else if(data.Environments[s]==192){//Interacting contactium in 3D momentum space
+    cout << "Preparing Contactium external potential for interacting system" << endl;
+    #pragma omp parallel for schedule(dynamic) if(data.ompThreads > 1)
+    for(int i = 0; i < data.GridSize; i++) {
+
+        double x = data.VecAt[i][0];
+        // data.beta should be 4, comes from the need to regularise the KS equation to -1/2\nabla^2 + ...
+        data.Env[s][i] = 1./2. * (x*x);
+    }
   }  
 
   else if(data.Environments[s]==20){//isotropic Mexican hat potential (r^4)-mpp*(r^2)
@@ -2318,7 +2349,9 @@ void getVint(int InteractionType, int ss, datastruct &data){
 	else if(InteractionType==62) EkinDynDFTe(0, ss, data);
   else if(InteractionType==101) MomentumContactInteraction(ss, data);
 	else if(InteractionType==102) MomentumContactInteractionFiniteT(ss,data);//harmonic interaction, single species, spin-1/2, unpolarized
-  else if(InteractionType==103) MomentumCoulombInteraction(ss, data);
+  else if(InteractionType==103) ContactMomentumInteractionTwoBody(ss, data);
+  else if(InteractionType==104) MomentumCoulombInteraction(ss, data);
+  else if (InteractionType=105) MomentumHookeInteraction(ss, data);
 	else if(data.FLAGS.SCO){//SelfConsistentOptimization method, for data.S==1 and only one InteractionType at a time
 		
 		//set up gradients (derivatives of objective functions)
@@ -3309,6 +3342,7 @@ vector<int> NeighborhoodIndices(int GridIndex, bool NNN, datastruct &data){//ind
 // S E C O N D A R Y    R O U T I N E S
 
 void GetDensities(taskstruct &task, datastruct &data){
+  cout << "Getting Densities" << endl;
 	if(data.TaskType==100 && TASK.ex.System>=100) GetOptOccNum(task, data);
 	for(int s=0;s<data.S;s++){
 		GetDensity(s,data);
@@ -4244,7 +4278,7 @@ void Getn7(int s, datastruct &data){
 	KDparameters.distinguishabilityThreshold = 1.0e-14;
 	KDparameters.printQ = 0;
 	KDparameters.CompareKD = true;
-  KDip.contourQ = true;
+  KDip.contourQ = false;
 	//data.Print = 1;
     double tauThreshold = 1.0e-10;
 	//END USER INPUT
@@ -4252,15 +4286,15 @@ void Getn7(int s, datastruct &data){
 	vector<vector<struct ComputeKD>> COMPUTEKD;
 
 	DelField(data.V[s], s, data.DelFieldMethod, data);
-    cout << "Getn7 derivatives computed " << sizeof(data) << endl;
+  cout << "Getn7 derivatives computed " << sizeof(data) << endl;
 
-    double ABSERR;
+  double ABSERR;
 
 	if( data.Symmetry==1 || METHOD<3 ){
       	data.TestMat.resize(0);
         if(data.Symmetry==1){//CASE isotropic
 
-            vector<int> pf = primeFactors((int)omp_get_max_threads(),0);
+            vector<int> pf = primeFactors((int)omp_get_max_threads(),0); //CHANGE
             cout << IntVec_to_CommaSeparatedString(pf) << endl;
             vector<int> tn = GetNestedThreadNumbers(pf,0);
             cout << "Getn7 thread numbers: Outer(" << tn[0] << ") Inner(" << tn[1] << ")" << endl;
@@ -4282,13 +4316,7 @@ void Getn7(int s, datastruct &data){
                			double rp = Norm(data.VecAt[data.HDI[j]]);
                			if(ABS(rp-r)<MP) tmpfield[j] = 0.;// 4.*PI*rp*rp*GetID(tauThreshold,s,i,r,data.HDI[j],rp,data);//wrong//ToDo
                			else{//CASE rp!=r
-                    		if(data.DIM==1){//ToDo
-
-                    		}
-                    		else if(data.DIM==2){//ToDo
-
-                    		}
-                   			else if(data.DIM==3){//CASE D==3
+                      if(data.DIM==1){
                     			double p2 = (rp+r)*(rp+r);
                     			double m2 = (rp-r)*(rp-r);
                     			double alpha = 8.*(data.muVec[s] - (data.V[s][i] + 2.*data.V[s][data.HDI[j]])/3.)/data.U;
@@ -4307,14 +4335,40 @@ void Getn7(int s, datastruct &data){
                         			else{//CASE rp>0
                           				tmpfield[j] = rp/(r*32.*PI*PI) * (KD(2, Aminus, Bminus, ABSERR, data.InternalAcc, KDip)/(m2*m2) - KD(2, Aplus, Bplus, ABSERR, data.InternalAcc, KDip)/(p2*p2));
                         			}
-                      			}
-                        	}
-                    	}
+                      		}
+                      }
+                      else if(data.DIM==2){//ToDo
+
+                    		}
+                   		  else if(data.DIM==3){//CASE D==1 or D==3
+                    			double p2 = (rp+r)*(rp+r);
+                    			double m2 = (rp-r)*(rp-r);
+                    			double alpha = 8.*(data.muVec[s] - (data.V[s][i] + 2.*data.V[s][data.HDI[j]])/3.)/data.U;
+                    			double beta = 4.*pow(data.GradSquared[s][data.HDI[j]]/(3.*data.U*data.U), 1./3.);
+                    			double Aplus = p2*alpha;
+                    			double Aminus = m2*alpha;
+                    			double Bplus = p2*beta;
+                    			double Bminus = m2*beta;
+                    			if(r<MP){//CASE r==0
+                       				tmpfield[j] = KD(3, Aplus, Bplus, ABSERR, data.InternalAcc, KDip)/(16.*PI*PI*POW(rp,4));
+                    			}
+                    			else{//CASE r>0
+                      				if(rp<MP){//CASE rp==0
+	                   					tmpfield[j] = 0.;
+    	               				}
+                        			else{//CASE rp>0
+                          				tmpfield[j] = rp/(r*32.*PI*PI) * (KD(2, Aminus, Bminus, ABSERR, data.InternalAcc, KDip)/(m2*m2) - KD(2, Aplus, Bplus, ABSERR, data.InternalAcc, KDip)/(p2*p2));
+                        			}
+                      		}
+                        }
+                    }
                 	}
             		isoframe[0] = 0.;
                 	isoframe[1] = sqrt(data.DDIM)*data.frame[1];
-                	data.Den[s][i] = data.degeneracy*Integrate(data.ompThreads, data.method, 1, tmpfield, isoframe);
-                	cout << "density[i=" << i << "] = " << data.Den[s][i] << endl;
+                  data.Den[s][i] = data.degeneracy*Integrate(data.ompThreads, data.method, 1, tmpfield, isoframe);
+
+                	//data.Den[s][i] = std::max(0.0, data.degeneracy*Integrate(data.ompThreads, data.method, 1, tmpfield, isoframe)); // CHANGED
+                	//cout << "density[i=" << i << "] = " << data.Den[s][i] << endl;
           		}
             }
 
@@ -4551,7 +4605,7 @@ void ImposeNoise(int fields, datastruct &data){
 }
 
 void PreparationsForSCdensity(datastruct &data){
-    
+  cout << "Preparations for SC density" << endl;  
   if(data.DensityExpression==1){//handle NaN and inf of data.V
     #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
     for(int s=0;s<data.S;s++){
@@ -4653,6 +4707,9 @@ void EnforceConstraints(datastruct &data){
 	  if(ABS(data.muVec[s])>1.0e+20){ data.warningCount++; if(data.Print>=0) PRINT("EnforceConstraints: Warning!!! ABS(mu) likely too big " + vec_to_str(Deltamu) + vec_to_str(data.muVec) + vec_to_str(data.TmpAbundances),data); data.muVec[s]=/*1.0e+20*/data.PreviousmuVec[s]; break; /*cout << "sleep..." << endl; usleep(1*sec);*/ }
 	  GetDensity(s,data);
 	  double testAbundance = Integrate(data.ompThreads,data.method, data.DIM, data.Den[s], data.frame);
+    double dx = data.edge/(data.EdgeLength-1);
+    double volume = std::accumulate(data.Den[s].begin(), data.Den[s].end(), 0.0) * pow(dx, 3);
+    cout << "Volume " << volume << endl;
 	  //if(muVecRangeCount==0 || testAbundance<PrevioustestAbundance || data.RelAcc<MP)){
 	    data.TmpAbundances[s] = testAbundance;
 	    muVecRangeCount++; if(muVecRangeCount>data.S*10000){ data.warningCount++; if(data.Print>=0) PRINT("EnforceConstraints: Warning!!! muVecRange not found " + vec_to_str(Deltamu) + vec_to_str(data.muVec) + vec_to_str(data.TmpAbundances),data); break;}
@@ -4683,6 +4740,9 @@ void EnforceConstraints(datastruct &data){
 	    if(ABS(data.muVec[s])>1.0e+20){ data.warningCount++; if(data.Print>=0) PRINT("EnforceConstraints: Warning!!! ABS(mu) likely too big " + vec_to_str(Deltamu) + vec_to_str(data.muVec) + vec_to_str(data.TmpAbundances),data); data.muVec[s]=/*1.0e+20*/data.PreviousmuVec[s]; break; /*cout << "sleep..." << endl; usleep(1*sec);*/ }
 	    GetDensity(s,data);
 	    double testAbundance = Integrate(data.ompThreads,data.method, data.DIM, data.Den[s], data.frame);
+      double dx = data.edge/(data.EdgeLength-1);
+      double volume = std::accumulate(data.Den[s].begin(), data.Den[s].end(), 0.0) * pow(dx, 3);
+      cout << "Volume " << volume << endl;
 	    //if(muVecRangeCount==0 || testAbundance>PrevioustestAbundance || data.RelAcc<MP){
 	      data.TmpAbundances[s] = testAbundance;
 	      muVecRangeCount++; if(muVecRangeCount>data.S*10000){ data.warningCount++; if(data.Print>=0) PRINT("EnforceConstraints: Warning!!! muVecRange not found " + vec_to_str(Deltamu) + vec_to_str(data.muVec) + vec_to_str(data.TmpAbundances),data); break;}
@@ -4732,6 +4792,9 @@ void EnforceConstraints(datastruct &data){
 	    success = true;
 	    GetDensity(s,data);//operate with data.RelAcc
 	    data.TmpAbundances[s] = Integrate(data.ompThreads,data.method, data.DIM, data.Den[s], data.frame);
+      double dx = data.edge/(data.EdgeLength-1);
+      double volume = std::accumulate(data.Den[s].begin(), data.Den[s].end(), 0.0) * pow(dx, 3);
+      cout << "Volume " << volume << endl;
 	    if(data.TmpAbundances[s]>0.) history[s].push_back(data.TmpAbundances[s]);
 	    int trapcount = 0;
 	    if(history[s].size()>5){
@@ -4804,6 +4867,7 @@ void GetTmpAbundances(datastruct &data){
 }
 
 void CheckConvergence(datastruct &data){
+  cout << "Check convergence" << endl;
   StartTimer("CheckConvergence",data);
   double mp = 100.*MachinePrecision;
   if(data.SCcount>0){
@@ -4861,7 +4925,7 @@ void StoreCurrentIteration(datastruct &data){
 
 void UpdateV(datastruct &data){
   StartTimer("UpdateV",data);
-  
+  cout << "Update V" << endl;
   if(data.System==2 || data.FLAGS.ForestGeo){
     #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
     for(int s=0;s<data.S;s++){
@@ -6409,6 +6473,7 @@ void AllocateTMPmemory(datastruct &data){
 }
 
 void InitializeEnvironments(datastruct &data){
+  cout << " initialising square root" << endl;
   data.Env.resize(data.S); data.V.resize(data.GridSize); data.EnvMin.resize(data.S); data.EnvMax.resize(data.S); data.VMin.resize(data.S); data.VMax.resize(data.S); data.EnvAv.resize(data.S);
   if(data.FLAGS.Del){
     data.Dx.resize(data.S); data.Dy.resize(data.S); data.Dz.resize(data.S); data.D2x.resize(data.S); data.D2y.resize(data.S); data.D2z.resize(data.S); data.GradSquared.resize(data.S); data.Laplacian.resize(data.S);
@@ -6420,6 +6485,7 @@ void InitializeEnvironments(datastruct &data){
     }
   }
   
+  cout << " initialising square root again"<< data.GridSize << " " << data.S << " " << data.FLAGS.vW << " " << data.FLAGS.Del << endl;
   #pragma omp parallel for schedule(dynamic) if(data.ompThreads>1)
   for(int s=0;s<data.S;s++){
     data.Env[s].resize(data.GridSize); data.V[s].resize(data.GridSize);
@@ -6433,6 +6499,7 @@ void InitializeEnvironments(datastruct &data){
       }
     }
   }
+
   for(int s=0;s<data.S;s++) GetEnv(s,data);
   data.V = data.Env;
   //for(int s=0;s<data.S;s++) for(int i=0;i<data.GridSize;i++) if(data.V[s][i]!=data.V[s][i]) cout << s << " " << i << " " << data.V[s][i] << endl;
@@ -9529,7 +9596,7 @@ void testKD(datastruct &data){
     // SleepForever();
 
     cout << "KD single point: " << KD(1, 16355.26079955373, 12.3106690028169,ABSERR,RELERR,KDip) << endl;
-    KDip.contourQ = true;
+    KDip.contourQ = false;
     cout << "KD single point: " << KD(1, 16355.26079955373, 12.3106690028169,ABSERR,RELERR,KDip) << endl;
 
     double a,b,A,B,res,pmin,pmax;
@@ -12605,6 +12672,9 @@ void ExportData(datastruct &data){
       	PRINT(" ***** export Den ****",data);
       	ofstream DenData;//S-column row-major file of densities;
       	double conversion = 1.;
+        double dx = data.edge/(data.EdgeLength-1);
+        double volume = std::accumulate(data.Den[0].begin(), data.Den[0].end(), 0.0) * pow(dx, 3);
+        cout << "Volume 2 " << volume << endl;
       	//double c = 0.52917721067, conversion = c*c*c;//to switch from Angstrom to Bohr:
       	DenData.open("mpDPFT_Den.dat");
       	DenData << std::setprecision(data.OutPrecision);

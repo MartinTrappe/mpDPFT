@@ -46,7 +46,7 @@ HEADERS = stdafx.h statistics.h specialfunctions.h solvers.h optimization.h lina
 
 .PHONY: all clean
 
-all: mpDPFT_michael
+all: mpDPFT_michael tests
 
 mpDPFT_michael: $(OBJS)
 	@echo "Linking mpDPFT..."
@@ -62,122 +62,48 @@ DEPFILES = $(OBJS:.o=.d)
 %.o: %.cpp
 	$(CC) -MMD -MP -c $< -o $@
 
-TEST_SRC = tests/Plugin_KD_test.cpp
-TEST_OBJ = $(TEST_SRC:.cpp=.o)
-TEST_BIN = Plugin_KD_test
-TEST_INCLUDES = -I.. -I.
 
-# Build test executable
-$(TEST_BIN): $(TEST_OBJ) Plugin_KD.o
-	@echo "Linking test executable..."
-	$(CC) $(TEST_OBJ) Plugin_KD.o -o $(TEST_BIN) $(LDFLAGS)
+################################
+### TEST
+################################
 
-# Compile test object
-$(TEST_OBJ): $(TEST_SRC)
-	@echo "Compiling test: $<"
-	$(CC) -MMD -MP $(TEST_INCLUDES) -c $< -o $@
+SRCDIR = src
+TESTDIR = test
+BINDIR = bin
+BUILDDIR = build
+TESTDIR = tests
 
-# Run the test
-test: $(TEST_BIN)
-	@echo "Running Plugin_KD_test..."
-	@./$(TEST_BIN)
+# Test sources
+TEST_SRCS = $(wildcard $(TESTDIR)/*.cpp)
+TEST_OBJS = $(TEST_SRCS:.cpp=.o)
+TEST_TARGET = $(BINDIR)/tests.exe
+TEST_INCLUDES = -I.. -I./utils
+TEST_LIB_OBJS = $(filter-out mpDPFTmain.o,$(OBJS))
 
+# Compile each test .cpp → .o
+$(TESTDIR)/%.o: $(TESTDIR)/%.cpp
+	$(CC) $(TEST_INCLUDES) -MMD -MP -c $< -o $@
+
+# Link test executable
+$(TEST_TARGET): $(OBJS) $(TEST_OBJS)
+	$(CC) $(TEST_OBJS) $(TEST_LIB_OBJS) -o $@ $(LDFLAGS)
+
+# Run tests
+.PHONY: test
+test: $(TEST_TARGET)
+	@echo "Running tests..."
+	@./$(TEST_TARGET)
+
+# Clean
 .PHONY: clean
 clean:
 	rm -f mpDPFT_michael \
 	       $(OBJS) \
-	       $(OBJS:.o=.d)
+	       $(OBJS:.o=.d) \
+	       tests/*.o \
+		   $(BUILDDIR)/*.o 
 
-
-
-# DIFF_SRC = tests/differential_equation.cpp
-# DIFF_OBJ = $(DIFF_SRC:.cpp=.o)
-# ALGLIB_SRCS = ap.cpp alglibmisc.cpp optimization.cpp interpolation.cpp
-# PLUGIN_SRC = Plugin_KD.cpp
-# DIFF_BIN = differential_equation
-# DIFF_INCLUDES = -I. -I${CURDIR}/Eigen_Headers -I/opt/etsf/include -I${CURDIR}
-
-# # Build differential executable
-# $(DIFF_BIN): $(DIFF_OBJ)
-# 	@echo "Linking differential..."
-# 	$(CC) $(DIFF_OBJ) $(ALGLIB_SRCS) $(PLUGIN_SRC) -o $(DIFF_BIN) $(LDFLAGS)
-
-
-# # Compile differential object
-# $(DIFF_OBJ): $(DIFF_SRC)
-# 	@echo "Compiling differential: $<"
-# 	$(CC) -MMD -MP $(DIFF_INCLUDES) -c $< -o $@
-
-# # Run differential
-# run_diff: $(DIFF_BIN)
-# 	@echo "Running differential..."
-# 	@./$(DIFF_BIN)
-
-#################### Differential Equation Build ####################
-
-############################
-# Sources
-############################
-
-DIFF_SRC      = tests/differential_equation.cpp
-PLUGIN_SRC    = Plugin_KD.cpp
-
-ALGLIB_SRCS   := $(wildcard alglib/src/*.cpp)
-
-############################
-# Objects
-############################
-
-DIFF_OBJ      = $(DIFF_SRC:.cpp=.o)
-PLUGIN_OBJ    = $(PLUGIN_SRC:.cpp=.o)
-ALGLIB_OBJS   = $(ALGLIB_SRCS:.cpp=.o)
-
-############################
-# Executable
-############################
-
-DIFF_BIN = differential_equation
-
-############################
-# Includes
-############################
-
-DIFF_INCLUDES = -I. \
-                -I${CURDIR}/Eigen_Headers \
-                -I/opt/etsf/include \
-                -I${CURDIR}/alglib/src \
-
-############################
-# Build executable
-############################
-
-$(DIFF_BIN): $(DIFF_OBJ) $(PLUGIN_OBJ) $(ALGLIB_OBJS)
-	@echo "Linking differential..."
-	$(CXX) $^ -o $@ $(LDFLAGS) -fopenmp
-
-############################
-# Compile rules
-############################
-
-%.o: %.cpp
-	@echo "Compiling $<"
-	$(CXX) -MMD -MP $(DIFF_INCLUDES) $(TEST_INCLUDES) -c $< -o $@
-
-############################
-# Run
-############################
-
-run_diff: $(DIFF_BIN)
-	./$(DIFF_BIN)
-
-############################
-# Clean
-############################
-
-.PHONY: clean
-clean:
-	rm -f $(DIFF_OBJ) $(PLUGIN_OBJ) $(ALGLIB_OBJS) \
-	      $(DIFF_BIN) \
-	      $(DIFF_OBJ:.o=.d) \
-	      $(PLUGIN_OBJ:.o=.d) \
-	      $(ALGLIB_OBJS:.o=.d)
+.PHONY: clean_test
+clean_test:
+	rm -f tests/*.o \
+		   $(BUILDDIR)/*.o 

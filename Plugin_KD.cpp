@@ -920,7 +920,7 @@ double KD_contour(int D, double A, double B, KDintegrationParams &KDip){
 
         }
     } else {
-        printf("integral");
+        //printf("integral");
 
         gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(IntegrationArraySize);
         gsl_set_error_handler_off();
